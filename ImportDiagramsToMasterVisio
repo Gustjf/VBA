@@ -12,10 +12,23 @@ Sub ImportDiagramsToMasterVisio()
     Dim TabCount As Integer
     
     TabCount = 2
+''
+''
+'' How to use the file - Change "Project Atlas VSM.vsdm" to the name of the Visio file that needs to be changed. 
+'' Make sure the "Project Atlas VSM.vsdm" document is the last in the filename - so I named mine "zzProject Atlas VSM.vsdm" 
+'' This could be changed to ignore the Project Atlas VSM, or modify the file path in the "Get the folder path of master visio file"
+''
+''
+''
+''
+''
+''
     ' Open the master Visio document explicitly
     Set masterVisioDoc = Application.Documents("Project Atlas VSM.vsdm")
     
     ' Get the folder path of the master Visio file
+    ' This can be modified to be a prompt. Would resolve some of the bugs in the code. 
+    ' Something like - change the VisioFolderPath to be copy and pasted where that is - doesn't even have to be a prompt. 
     visioFolderPath = masterVisioDoc.Path ' Get the folder path of the master document
     
     ' Enable diagram services
