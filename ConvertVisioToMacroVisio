@@ -1,0 +1,40 @@
+Sub ConvertVisioFilesToMacroEnabled()
+    Dim visApp As Visio.Application
+    Dim visDoc As Visio.Document
+    Dim filePath As String, folderPath As String
+    Dim currentFileName As String
+    Dim file As String
+
+    ' Initialize Visio Application
+    Set visApp = Visio.Application
+
+    ' Get the folder path of the active document
+    folderPath = visApp.ActiveDocument.Path
+
+    ' Get the current file name to skip it
+    currentFileName = visApp.ActiveDocument.Name
+
+    ' Get the first .vsdx file in the directory
+    file = Dir(folderPath & "*.vsdx")
+
+    ' Loop through all .vsdx files in the directory
+    Do While file <> ""
+        ' Skip the current file
+        If file <> currentFileName Then
+            ' Open the Visio document
+            Set visDoc = visApp.Documents.Open(folderPath & file)
+            
+            ' Save it as a macro-enabled document
+            filePath = folderPath & Left(file, InStrRev(file, ".") - 1) & ".vsdm"
+            visDoc.SaveAs filePath
+            
+            ' Close the Visio document
+            visDoc.Close
+        End If
+        
+        ' Get the next .vsdx file in the directory
+        file = Dir
+    Loop
+    
+    MsgBox "Conversion complete!"
+End Sub
