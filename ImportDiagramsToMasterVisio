@@ -1,0 +1,73 @@
+Sub ImportDiagramsToMasterVisio()
+    ' Declare variables
+    Dim masterVisioDoc As Visio.Document ' Master Visio document object
+    Dim standaloneVisioDoc As Visio.Document ' Standalone Visio document object
+    Dim visioFolderPath As String ' Folder path containing Visio files
+    Dim visioFileName As String ' Name of the Visio file
+    Dim visioFullPath As String ' Full path of the Visio file
+    Dim visioPage As Visio.Page ' Individual page in the Visio document
+    Dim newPage As Visio.Page ' New page in the master Visio document
+    Dim DiagramServices As Integer ' Diagram services variable
+    Dim selectedShapes As Visio.Selection ' Selection object for shapes
+    Dim TabCount As Integer
+    
+    TabCount = 2
+    ' Open the master Visio document explicitly
+    Set masterVisioDoc = Application.Documents("Project Atlas VSM.vsdm")
+    
+    ' Get the folder path of the master Visio file
+    visioFolderPath = masterVisioDoc.Path ' Get the folder path of the master document
+    
+    ' Enable diagram services
+    DiagramServices = masterVisioDoc.DiagramServicesEnabled
+    masterVisioDoc.DiagramServicesEnabled = visServiceVersion140 + visServiceVersion150
+
+    ' Loop through each Visio file in the specified folder
+    visioFileName = Dir(visioFolderPath & "*.vsd*") ' Get the first Visio file in the folder
+    Do While visioFileName <> "" ' Loop until no more files are found
+        ' Open each standalone Visio file
+        visioFullPath = visioFolderPath & "" & visioFileName ' Get the full path of the Visio file
+        Set standaloneVisioDoc = Application.Documents.Open(visioFullPath) ' Open the standalone Visio file
+        
+        ' Iterate through each page in the standalone Visio document
+        For Each visioPage In standaloneVisioDoc.Pages
+            ' Add a new page in the Master Visio file with the name of the standalone Visio file (excluding extension)
+            Set newPage = masterVisioDoc.Pages.Add ' Add a new page to the master document
+            newPage.Name = Replace(visioFileName, ".vsdx", "") ' Replace .vsdx with an empty string
+            newPage.Name = Replace(newPage.Name, ".vsdm", "") ' Replace .vsd with an empty string
+
+            ' Activate the standalone document and select all shapes on the current page
+            Application.Windows.ItemEx(standaloneVisioDoc.Name).Activate
+            visioPage.Application.ActiveWindow.SelectAll
+
+            ' Copy all selected shapes
+            visioPage.Application.ActiveWindow.Selection.Copy
+            
+            ' Activate the new page in the master document and paste shapes
+            
+            ' *** Start of modification ***
+            Application.Windows.ItemEx("Project Atlas VSM.vsdm").Activate
+            
+            Application.ActiveWindow.Page = Application.ActiveDocument.Pages.ItemU(TabCount)
+            TabCount = TabCount + 1
+            
+            Application.ActiveWindow.Paste ' Paste the copied shapes
+            ' *** End of modification ***
+
+
+        Next 'visioPage
+
+        ' Close the standalone Visio file
+        standaloneVisioDoc.Close ' Close the file without saving
+
+        ' Get the next file in the folder
+        visioFileName = Dir ' Use Dir to get the next file in the folder
+    Loop
+
+    ' Restore diagram services
+    masterVisioDoc.DiagramServicesEnabled = DiagramServices
+
+    ' Notify the user when the process is completed
+    MsgBox "All diagrams have been imported to the master Visio file." ' Display completion message
+End Sub
+
