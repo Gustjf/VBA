@@ -1,0 +1,18 @@
+Private Sub ToggleButton1_Click()
+    Dim layerName As String
+    Dim layer As Visio.layer
+
+    ' This code should be embedded in a toggle button or Macro.
+    ' Name of the layer to be toggled
+    layerName = "Kaizen_Bursts"
+    
+    ' Get the layer object
+    Set layer = ActivePage.Layers(layerName)
+    
+    ' Toggle the visibility of the layer
+    If layer.CellsC(visLayerVisible).ResultIU = 0 Then
+        layer.CellsC(visLayerVisible).ResultIU = 1
+    Else
+        layer.CellsC(visLayerVisible).ResultIU = 0
+    End If
+End Sub
