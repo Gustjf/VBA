@@ -1,0 +1,676 @@
+Attribute VB_Name = "FleetFuelReport"
+Option Explicit
+
+'==============================================================================
+' Fleet Fuel Report  (v2.0 - hardened revision)
+'
+' Sums Total Gallons by fuel type (DIESEL / GASOLINE) from a fleet fuel export
+' (e.g. the Emkay monthly report) and writes a summary + audit trail to a
+' sheet named "Fleet Fuel Report" in the same workbook.
+'
+' How it finds the data:
+'   * Columns are located by HEADER NAME (see FUEL_TYPE_HEADERS and
+'     GALLONS_HEADERS), not by fixed position, in the first HEADER_SCAN_ROWS
+'     rows of the sheet.
+'   * The active sheet is used if it has those headers. Otherwise every
+'     worksheet is checked; if exactly one matches it is used.
+'
+' Behaviour notes:
+'   * Hidden / filtered-out rows ARE included (same as v1).
+'   * Every row is accounted for: included, blank, or listed under
+'     "Rows Needing Review" on the output sheet with the reason.
+'   * Nothing on the output sheet is touched until all source data has been
+'     read and validated.
+'==============================================================================
+
+Private Const REPORT_TITLE As String = "Fleet Fuel Report"
+Private Const OUTPUT_SHEET_NAME As String = "Fleet Fuel Report"
+Private Const OUTPUT_HEADING As String = "Fleet Fuel Summary"
+
+' Accepted header names, in priority order, separated by "|". Case-insensitive.
+Private Const FUEL_TYPE_HEADERS As String = "Fuel Type|FuelType|Fuel"
+Private Const GALLONS_HEADERS As String = "Total Gallons|Gallons|Total Gal|Fuel Gallons"
+
+Private Const HEADER_SCAN_ROWS As Long = 10        ' how far down to look for the header row
+Private Const MAX_HEADER_COLUMNS As Long = 500     ' safety cap when scanning header cells
+Private Const LARGE_ROW_GALLONS As Double = 1000   ' per-row value that triggers a "please verify" note
+Private Const MAX_LISTED_ISSUES As Long = 500      ' cap on review rows written to the sheet
+
+'------------------------------------------------------------------------------
+Public Sub GenerateFleetFuelReport()
+    Dim wb As Workbook
+    Dim wsSource As Worksheet
+    Dim wsOutput As Worksheet
+    Dim headerRow As Long, fuelCol As Long, galCol As Long
+    Dim firstDataRow As Long, lastRow As Long, rowCount As Long
+    Dim fuelData As Variant, galData As Variant
+    Dim i As Long, sheetRow As Long
+    Dim rawFuel As Variant, rawGal As Variant
+    Dim fuelText As String, fuelKey As String
+    Dim galBlank As Boolean, galOk As Boolean
+    Dim gallons As Double
+
+    Dim dieselGallons As Double, gasolineGallons As Double, otherGallons As Double
+    Dim dieselRows As Long, gasolineRows As Long
+    Dim blankRows As Long, blankGallonRows As Long
+    Dim missingFuelRows As Long, unrecognizedRows As Long, invalidGallonRows As Long
+    Dim negativeRows As Long, largeRows As Long
+    Dim issues As Collection
+
+    Dim oldScreenUpdating As Boolean, oldEnableEvents As Boolean
+    Dim settingsSaved As Boolean
+    Dim msg As String
+
+    On Error GoTo ErrorHandler
+
+    oldScreenUpdating = Application.ScreenUpdating
+    oldEnableEvents = Application.EnableEvents
+    settingsSaved = True
+    Application.ScreenUpdating = False
+    Application.EnableEvents = False
+
+    Set issues = New Collection
+
+    '--- 1. Workbook ---------------------------------------------------------
+    Set wb = ActiveWorkbook
+    If wb Is Nothing Then
+        MsgBox "No active workbook was found.", vbExclamation, REPORT_TITLE
+        GoTo SafeExit
+    End If
+
+    If Left$(UCase$(wb.Name), 9) = "PERSONAL." Then
+        MsgBox "Please activate the workbook containing the fleet data and run the macro again.", _
+               vbExclamation, REPORT_TITLE
+        GoTo SafeExit
+    End If
+
+    '--- 2. Source sheet and columns (by header name) ------------------------
+    Set wsSource = ResolveSourceSheet(wb, headerRow, fuelCol, galCol)
+    If wsSource Is Nothing Then GoTo SafeExit   ' ResolveSourceSheet already explained why
+
+    firstDataRow = headerRow + 1
+    lastRow = MaxLong(LastUsedRowInColumn(wsSource, fuelCol), LastUsedRowInColumn(wsSource, galCol))
+
+    If lastRow < firstDataRow Then
+        MsgBox "Headers were found on sheet '" & wsSource.Name & "' (row " & headerRow & _
+               ") but there are no data rows beneath them.", vbExclamation, REPORT_TITLE
+        GoTo SafeExit
+    End If
+
+    '--- 3. Read both columns in one shot and classify every row -------------
+    fuelData = ReadColumn(wsSource, fuelCol, firstDataRow, lastRow)
+    galData = ReadColumn(wsSource, galCol, firstDataRow, lastRow)
+    rowCount = lastRow - firstDataRow + 1
+
+    For i = 1 To rowCount
+        sheetRow = firstDataRow + i - 1
+        rawFuel = fuelData(i, 1)
+        rawGal = galData(i, 1)
+
+        fuelText = NormalizeText(rawFuel)
+        galBlank = IsBlankValue(rawGal)
+        galOk = False
+        gallons = 0
+        If Not galBlank Then galOk = TryParseGallons(rawGal, gallons)
+
+        If IsError(rawFuel) Then
+            unrecognizedRows = unrecognizedRows + 1
+            If galOk Then otherGallons = otherGallons + gallons
+            AddIssue issues, sheetRow, "Fuel type cell contains an error value (e.g. #N/A); row excluded. " & _
+                                       "Gallons: " & DescribeValue(rawGal) & "."
+
+        ElseIf Len(fuelText) = 0 Then
+            If galBlank Then
+                blankRows = blankRows + 1           ' fully blank row - nothing to report
+            Else
+                missingFuelRows = missingFuelRows + 1
+                AddIssue issues, sheetRow, "Gallons present (" & DescribeValue(rawGal) & _
+                                           ") but fuel type is blank; row excluded. (Is this a total/subtotal row?)"
+            End If
+
+        Else
+            fuelKey = ClassifyFuel(fuelText)
+
+            If Len(fuelKey) = 0 Then
+                unrecognizedRows = unrecognizedRows + 1
+                If galOk Then otherGallons = otherGallons + gallons
+                AddIssue issues, sheetRow, "Unrecognized fuel type '" & fuelText & "'; row excluded. " & _
+                                           "Gallons: " & DescribeValue(rawGal) & "."
+
+            ElseIf galBlank Then
+                blankGallonRows = blankGallonRows + 1
+                AddIssue issues, sheetRow, fuelKey & " vehicle with a blank gallons cell; counted as 0 gal."
+
+            ElseIf Not galOk Then
+                invalidGallonRows = invalidGallonRows + 1
+                AddIssue issues, sheetRow, fuelKey & " row has a gallons value that is not a valid number (" & _
+                                           DescribeValue(rawGal) & "); row excluded."
+
+            Else
+                Select Case fuelKey
+                    Case "DIESEL"
+                        dieselGallons = dieselGallons + gallons
+                        dieselRows = dieselRows + 1
+                    Case "GASOLINE"
+                        gasolineGallons = gasolineGallons + gallons
+                        gasolineRows = gasolineRows + 1
+                End Select
+
+                If gallons < 0 Then
+                    negativeRows = negativeRows + 1
+                    AddIssue issues, sheetRow, "Negative gallons (" & DescribeValue(rawGal) & ") INCLUDED in " & _
+                                               fuelKey & " total - confirm this is a credit/reversal."
+                ElseIf gallons > LARGE_ROW_GALLONS Then
+                    largeRows = largeRows + 1
+                    AddIssue issues, sheetRow, "Unusually large value (" & DescribeValue(rawGal) & " gal) INCLUDED in " & _
+                                               fuelKey & " total - please verify."
+                End If
+            End If
+        End If
+    Next i
+
+    ' Clean up floating-point noise from repeated addition (e.g. 401.90000000000003)
+    dieselGallons = Round(dieselGallons, 4)
+    gasolineGallons = Round(gasolineGallons, 4)
+    otherGallons = Round(otherGallons, 4)
+
+    '--- 4. Output sheet (only now that the data has been read) --------------
+    Set wsOutput = PrepareOutputSheet(wb)
+    If wsOutput Is Nothing Then GoTo SafeExit   ' PrepareOutputSheet already explained why
+
+    WriteReport wsOutput, wb, wsSource, headerRow, fuelCol, galCol, firstDataRow, lastRow, rowCount, _
+                dieselGallons, gasolineGallons, otherGallons, dieselRows, gasolineRows, _
+                blankRows, blankGallonRows, missingFuelRows, unrecognizedRows, invalidGallonRows, _
+                negativeRows, largeRows, issues
+
+    wsOutput.Activate
+    wsOutput.Range("A1").Select
+
+    '--- 5. Tell the user -----------------------------------------------------
+    msg = "Fleet Fuel Report created." & vbCrLf & vbCrLf & _
+          "Diesel Gallons: " & Format$(dieselGallons, "#,##0.00") & "  (" & dieselRows & " rows)" & vbCrLf & _
+          "Gasoline Gallons: " & Format$(gasolineGallons, "#,##0.00") & "  (" & gasolineRows & " rows)" & vbCrLf & vbCrLf & _
+          "Source: " & wsSource.Name & ", rows " & firstDataRow & "-" & lastRow
+
+    If dieselRows + gasolineRows = 0 Then
+        MsgBox msg & vbCrLf & vbCrLf & _
+               "WARNING: No DIESEL or GASOLINE rows were found. Check that the correct sheet was used " & _
+               "and that the fuel type values match.", vbExclamation, REPORT_TITLE
+    ElseIf issues.Count > 0 Then
+        MsgBox msg & vbCrLf & vbCrLf & _
+               issues.Count & " row(s) need review - see 'Rows Needing Review' on the report sheet.", _
+               vbExclamation, REPORT_TITLE
+    Else
+        MsgBox msg & vbCrLf & vbCrLf & "All rows were accounted for with no issues.", vbInformation, REPORT_TITLE
+    End If
+
+SafeExit:
+    If settingsSaved Then
+        Application.ScreenUpdating = oldScreenUpdating
+        Application.EnableEvents = oldEnableEvents
+    End If
+    Exit Sub
+
+ErrorHandler:
+    MsgBox "The Fleet Fuel Report could not be completed." & vbCrLf & vbCrLf & _
+           "Error " & Err.Number & ": " & Err.Description & vbCrLf & vbCrLf & _
+           "If the report sheet was partly written, its numbers should not be used.", _
+           vbCritical, REPORT_TITLE & " Error"
+    Resume SafeExit
+End Sub
+
+'==============================================================================
+' Source sheet / header discovery
+'==============================================================================
+
+' Returns the worksheet to report on and the header row / column numbers.
+' Returns Nothing (after telling the user why) if no unambiguous sheet is found.
+Private Function ResolveSourceSheet(ByVal wb As Workbook, ByRef headerRow As Long, _
+                                    ByRef fuelCol As Long, ByRef galCol As Long) As Worksheet
+    Dim ws As Worksheet, candidate As Worksheet
+    Dim hr As Long, fc As Long, gc As Long
+    Dim matchCount As Long, matchNames As String
+
+    ' 1) Prefer the active sheet if it is a normal worksheet with the right headers.
+    If TypeOf wb.ActiveSheet Is Worksheet Then
+        Set ws = wb.ActiveSheet
+        If Not IsOutputSheet(ws) Then
+            If LocateHeaders(ws, hr, fc, gc) Then
+                headerRow = hr: fuelCol = fc: galCol = gc
+                Set ResolveSourceSheet = ws
+                Exit Function
+            End If
+        End If
+    End If
+
+    ' 2) Otherwise look through every worksheet.
+    For Each ws In wb.Worksheets
+        If Not IsOutputSheet(ws) Then
+            If LocateHeaders(ws, hr, fc, gc) Then
+                matchCount = matchCount + 1
+                matchNames = matchNames & vbCrLf & "   - " & ws.Name
+                If matchCount = 1 Then
+                    Set candidate = ws
+                    headerRow = hr
+                    fuelCol = fc
+                    galCol = gc
+                End If
+            End If
+        End If
+    Next ws
+
+    Select Case matchCount
+        Case 0
+            MsgBox "Could not find the fleet data." & vbCrLf & vbCrLf & _
+                   "No worksheet has both a fuel type column (" & Replace(FUEL_TYPE_HEADERS, "|", " / ") & _
+                   ") and a gallons column (" & Replace(GALLONS_HEADERS, "|", " / ") & _
+                   ") in its first " & HEADER_SCAN_ROWS & " rows.", vbExclamation, REPORT_TITLE
+        Case 1
+            Set ResolveSourceSheet = candidate
+        Case Else
+            MsgBox "More than one worksheet looks like fleet data:" & matchNames & vbCrLf & vbCrLf & _
+                   "Select the one you want and run the macro again.", vbExclamation, REPORT_TITLE
+    End Select
+End Function
+
+' Finds the header row and the fuel / gallons columns on a sheet.
+Private Function LocateHeaders(ByVal ws As Worksheet, ByRef headerRow As Long, _
+                               ByRef fuelCol As Long, ByRef galCol As Long) As Boolean
+    Dim r As Long, lastCol As Long, fc As Long, gc As Long
+
+    lastCol = ws.UsedRange.Column + ws.UsedRange.Columns.Count - 1
+    If lastCol > MAX_HEADER_COLUMNS Then lastCol = MAX_HEADER_COLUMNS
+
+    For r = 1 To HEADER_SCAN_ROWS
+        fc = FindHeaderColumn(ws, r, FUEL_TYPE_HEADERS, lastCol)
+        If fc > 0 Then
+            gc = FindHeaderColumn(ws, r, GALLONS_HEADERS, lastCol)
+            If gc > 0 And gc <> fc Then
+                headerRow = r
+                fuelCol = fc
+                galCol = gc
+                LocateHeaders = True
+                Exit Function
+            End If
+        End If
+    Next r
+End Function
+
+' Returns the column of the first accepted header name found in the row (0 if none).
+' Names are tried in priority order, so "Total Gallons" wins over "Gallons".
+Private Function FindHeaderColumn(ByVal ws As Worksheet, ByVal rowNum As Long, _
+                                  ByVal candidates As String, ByVal lastCol As Long) As Long
+    Dim names() As String, n As Long, c As Long
+    Dim headerVals As Variant
+
+    If lastCol < 1 Then Exit Function
+    headerVals = ReadRow(ws, rowNum, lastCol)
+    names = Split(candidates, "|")
+
+    For n = LBound(names) To UBound(names)
+        For c = 1 To lastCol
+            If NormalizeText(headerVals(1, c)) = NormalizeText(names(n)) Then
+                FindHeaderColumn = c
+                Exit Function
+            End If
+        Next c
+    Next n
+End Function
+
+Private Function IsOutputSheet(ByVal ws As Worksheet) As Boolean
+    IsOutputSheet = (StrComp(ws.Name, OUTPUT_SHEET_NAME, vbTextCompare) = 0)
+End Function
+
+'==============================================================================
+' Output sheet
+'==============================================================================
+
+' Finds or creates the output sheet and clears it. Returns Nothing (after
+' telling the user why) if that is not possible or the user cancels.
+Private Function PrepareOutputSheet(ByVal wb As Workbook) As Worksheet
+    Dim sh As Object
+    Dim ws As Worksheet
+
+    ' Look through ALL sheets (incl. chart sheets) so a name clash is caught cleanly.
+    For Each sh In wb.Sheets
+        If StrComp(sh.Name, OUTPUT_SHEET_NAME, vbTextCompare) = 0 Then
+            If Not TypeOf sh Is Worksheet Then
+                MsgBox "A chart or other non-worksheet sheet named '" & OUTPUT_SHEET_NAME & _
+                       "' already exists. Rename or delete it and run the macro again.", _
+                       vbExclamation, REPORT_TITLE
+                Exit Function
+            End If
+            Set ws = sh
+            Exit For
+        End If
+    Next sh
+
+    If ws Is Nothing Then
+        If wb.ProtectStructure Then
+            MsgBox "The workbook structure is protected, so the '" & OUTPUT_SHEET_NAME & _
+                   "' sheet cannot be added." & vbCrLf & _
+                   "Unprotect the workbook (Review > Protect Workbook) and run the macro again.", _
+                   vbExclamation, REPORT_TITLE
+            Exit Function
+        End If
+        Set ws = wb.Worksheets.Add(After:=wb.Sheets(wb.Sheets.Count))
+        ws.Name = OUTPUT_SHEET_NAME
+    Else
+        If ws.ProtectContents Then
+            MsgBox "The '" & OUTPUT_SHEET_NAME & "' sheet is protected. Unprotect it and run the macro again.", _
+                   vbExclamation, REPORT_TITLE
+            Exit Function
+        End If
+
+        ' Don't silently wipe a sheet this macro didn't create.
+        If Not IsBlankValue(ws.Range("A1").Value) Then
+            If NormalizeText(ws.Range("A1").Value) <> NormalizeText(OUTPUT_HEADING) Then
+                If MsgBox("A sheet named '" & OUTPUT_SHEET_NAME & "' already exists but doesn't look like it " & _
+                          "was created by this macro." & vbCrLf & vbCrLf & _
+                          "Clear it and overwrite with the new report?", _
+                          vbQuestion + vbYesNo + vbDefaultButton2, REPORT_TITLE) <> vbYes Then
+                    Exit Function
+                End If
+            End If
+        End If
+
+        ws.Cells.Clear
+    End If
+
+    Set PrepareOutputSheet = ws
+End Function
+
+Private Sub WriteReport(ByVal ws As Worksheet, ByVal wb As Workbook, ByVal wsSource As Worksheet, _
+                        ByVal headerRow As Long, ByVal fuelCol As Long, ByVal galCol As Long, _
+                        ByVal firstDataRow As Long, ByVal lastRow As Long, ByVal rowCount As Long, _
+                        ByVal dieselGallons As Double, ByVal gasolineGallons As Double, ByVal otherGallons As Double, _
+                        ByVal dieselRows As Long, ByVal gasolineRows As Long, _
+                        ByVal blankRows As Long, ByVal blankGallonRows As Long, _
+                        ByVal missingFuelRows As Long, ByVal unrecognizedRows As Long, ByVal invalidGallonRows As Long, _
+                        ByVal negativeRows As Long, ByVal largeRows As Long, ByVal issues As Collection)
+    Dim r As Long, n As Long, listCount As Long
+    Dim issueArr() As Variant
+    Dim borderEdges As Variant, e As Variant
+
+    With ws
+        '--- Title (center-across instead of Merge, so the sheet stays easy to edit)
+        .Range("A1").Value = OUTPUT_HEADING
+        With .Range("A1:C1")
+            .HorizontalAlignment = xlCenterAcrossSelection
+            .VerticalAlignment = xlCenter
+            .Font.Bold = True
+            .Font.Size = 16
+            .Font.Color = RGB(255, 255, 255)
+            .Interior.Color = RGB(31, 78, 121)
+        End With
+        .Rows(1).RowHeight = 25
+
+        '--- Summary table (B4 / B5 kept in the same cells as v1)
+        .Range("A3").Value = "Fuel Category"
+        .Range("B3").Value = "Gallons"
+        .Range("C3").Value = "Rows Included"
+        .Range("A4").Value = "Diesel Fuel - Fleet - Gallons of DIESEL"
+        .Range("B4").Value = dieselGallons
+        .Range("C4").Value = dieselRows
+        .Range("A5").Value = "Gasoline - Fleet - gallons of GAS"
+        .Range("B5").Value = gasolineGallons
+        .Range("C5").Value = gasolineRows
+        .Range("A6").Value = "Total"
+        .Range("B6").Formula = "=SUM(B4:B5)"
+        .Range("C6").Formula = "=SUM(C4:C5)"
+
+        With .Range("A3:C3")
+            .Font.Bold = True
+            .Interior.Color = RGB(217, 225, 242)
+        End With
+        .Range("A6:C6").Font.Bold = True
+        .Range("B4:B6").NumberFormat = "#,##0.00"
+        .Range("C4:C6").NumberFormat = "#,##0"
+        .Range("B4:B5").Font.Bold = True
+
+        borderEdges = Array(xlEdgeLeft, xlEdgeTop, xlEdgeBottom, xlEdgeRight, xlInsideVertical, xlInsideHorizontal)
+        For Each e In borderEdges
+            With .Range("A3:C6").Borders(e)
+                .LineStyle = xlContinuous
+                .Weight = xlThin
+            End With
+        Next e
+        .Range("A6:C6").Borders(xlEdgeTop).Weight = xlMedium
+
+        '--- Audit trail
+        r = 8
+        .Cells(r, 1).Value = "Report Details"
+        .Cells(r, 1).Font.Bold = True
+        .Cells(r, 1).Font.Size = 12
+        r = r + 1
+        WriteDetail ws, r, "Generated:", Now, "yyyy-mm-dd hh:mm"
+        WriteDetail ws, r, "Source Workbook:", wb.Name
+        WriteDetail ws, r, "Source Worksheet:", wsSource.Name
+        WriteDetail ws, r, "Header Row:", headerRow
+        WriteDetail ws, r, "Fuel Type Column:", ColumnLetter(wsSource, fuelCol) & "  (" & SafeText(wsSource.Cells(headerRow, fuelCol).Value) & ")"
+        WriteDetail ws, r, "Gallons Column:", ColumnLetter(wsSource, galCol) & "  (" & SafeText(wsSource.Cells(headerRow, galCol).Value) & ")"
+        WriteDetail ws, r, "Data Rows Scanned:", rowCount & "  (rows " & firstDataRow & "-" & lastRow & ")"
+
+        r = r + 1
+        .Cells(r, 1).Value = "Row Reconciliation"
+        .Cells(r, 1).Font.Bold = True
+        .Cells(r, 1).Font.Size = 12
+        r = r + 1
+        WriteDetail ws, r, "Diesel Rows Included:", dieselRows
+        WriteDetail ws, r, "Gasoline Rows Included:", gasolineRows
+        WriteDetail ws, r, "Recognized Fuel, Blank Gallons (0 gal):", blankGallonRows
+        WriteDetail ws, r, "Blank Rows Ignored:", blankRows
+        WriteDetail ws, r, "Excluded - Unrecognized/Unreadable Fuel Type:", unrecognizedRows
+        If unrecognizedRows > 0 Then
+            WriteDetail ws, r, "   Gallons on those excluded rows:", otherGallons, "#,##0.00"
+        End If
+        WriteDetail ws, r, "Excluded - Blank Fuel Type With Gallons:", missingFuelRows
+        WriteDetail ws, r, "Excluded - Invalid Gallons Value:", invalidGallonRows
+        WriteDetail ws, r, "Check Total (should equal rows scanned):", _
+                    dieselRows + gasolineRows + blankGallonRows + blankRows + unrecognizedRows + missingFuelRows + invalidGallonRows
+        WriteDetail ws, r, "Included but Flagged - Negative Gallons:", negativeRows
+        WriteDetail ws, r, "Included but Flagged - Over " & Format$(LARGE_ROW_GALLONS, "#,##0") & " gal:", largeRows
+
+        '--- Review list
+        r = r + 1
+        .Cells(r, 1).Value = "Rows Needing Review (" & issues.Count & ")"
+        .Cells(r, 1).Font.Bold = True
+        .Cells(r, 1).Font.Size = 12
+        r = r + 1
+
+        If issues.Count = 0 Then
+            .Cells(r, 1).Value = "None - every row was either included or blank."
+            .Cells(r, 1).Font.Italic = True
+        Else
+            listCount = issues.Count
+            If listCount > MAX_LISTED_ISSUES Then listCount = MAX_LISTED_ISSUES
+            ReDim issueArr(1 To listCount, 1 To 1)
+            For n = 1 To listCount
+                issueArr(n, 1) = issues(n)
+            Next n
+            .Cells(r, 1).Resize(listCount, 1).Value = issueArr
+            If issues.Count > listCount Then
+                .Cells(r + listCount, 1).Value = "... and " & (issues.Count - listCount) & " more not shown."
+                .Cells(r + listCount, 1).Font.Italic = True
+            End If
+        End If
+
+        '--- Column widths (AutoFit A on the summary area only, so long review lines don't blow it out)
+        .Range("A3:A30").Columns.AutoFit
+        If .Columns("A").ColumnWidth < 42 Then .Columns("A").ColumnWidth = 42
+        If .Columns("A").ColumnWidth > 60 Then .Columns("A").ColumnWidth = 60
+        .Columns("B:C").AutoFit
+        If .Columns("B").ColumnWidth < 15 Then .Columns("B").ColumnWidth = 15
+        If .Columns("C").ColumnWidth < 14 Then .Columns("C").ColumnWidth = 14
+        .Range(.Cells(9, 2), .Cells(r, 2)).HorizontalAlignment = xlLeft
+    End With
+End Sub
+
+' Writes one label/value pair at row r of columns A/B, then advances r.
+Private Sub WriteDetail(ByVal ws As Worksheet, ByRef r As Long, ByVal label As String, _
+                        ByVal detailValue As Variant, Optional ByVal fmt As String = "")
+    ws.Cells(r, 1).Value = label
+    ws.Cells(r, 1).Font.Bold = True
+    If VarType(detailValue) = vbString Then
+        ws.Cells(r, 2).NumberFormat = "@"      ' keep text like "E  (Fuel Type)" as text
+    ElseIf Len(fmt) > 0 Then
+        ws.Cells(r, 2).NumberFormat = fmt
+    End If
+    ws.Cells(r, 2).Value = detailValue
+    r = r + 1
+End Sub
+
+'==============================================================================
+' Value helpers
+'==============================================================================
+
+' Maps a normalized fuel type to a report bucket. Returns "" if unrecognized.
+' To accept other spellings from a different vendor, add them here
+' (e.g. Case "DIESEL", "DSL"), and they will be reported under that bucket.
+Private Function ClassifyFuel(ByVal normalizedFuel As String) As String
+    Select Case normalizedFuel
+        Case "DIESEL"
+            ClassifyFuel = "DIESEL"
+        Case "GASOLINE"
+            ClassifyFuel = "GASOLINE"
+        Case Else
+            ClassifyFuel = ""
+    End Select
+End Function
+
+' Strict numeric parse for gallons. Accepts real numbers, or text that is
+' ONLY digits / sign / decimal point / thousands separator. Rejects error
+' values, booleans, dates, currency symbols, "(5)", "1e3", "&H10", etc. -
+' all of which VBA's IsNumeric would happily accept.
+Private Function TryParseGallons(ByVal v As Variant, ByRef result As Double) As Boolean
+    Dim s As String, i As Long
+
+    result = 0
+    If IsError(v) Then Exit Function
+
+    Select Case VarType(v)
+        Case vbDouble, vbSingle, vbInteger, vbLong, vbCurrency, vbDecimal, vbByte, 20  ' 20 = vbLongLong (64-bit)
+            result = CDbl(v)
+            TryParseGallons = True
+
+        Case vbString
+            s = Replace(CStr(v), ChrW$(160), "")
+            s = Trim$(Replace(s, " ", ""))
+            If Len(s) = 0 Then Exit Function
+            For i = 1 To Len(s)
+                If InStr(1, "0123456789.,-+", Mid$(s, i, 1), vbBinaryCompare) = 0 Then Exit Function
+            Next i
+            If Not IsNumeric(s) Then Exit Function
+            result = CDbl(s)
+            TryParseGallons = True
+
+        Case Else
+            ' Boolean, Date, Empty, Null, arrays, objects -> not a gallons value
+    End Select
+End Function
+
+' Uppercase, trimmed text with non-breaking spaces / tabs / line breaks
+' turned into spaces and runs of spaces collapsed. Safe on error values.
+Private Function NormalizeText(ByVal v As Variant) As String
+    Dim s As String
+
+    If IsError(v) Or IsNull(v) Or IsEmpty(v) Then Exit Function
+    If IsArray(v) Or IsObject(v) Then Exit Function
+
+    s = CStr(v)
+    s = Replace(s, ChrW$(160), " ")
+    s = Replace(s, vbTab, " ")
+    s = Replace(s, vbCr, " ")
+    s = Replace(s, vbLf, " ")
+    s = Trim$(s)
+    Do While InStr(1, s, "  ", vbBinaryCompare) > 0
+        s = Replace(s, "  ", " ")
+    Loop
+    NormalizeText = UCase$(s)
+End Function
+
+Private Function IsBlankValue(ByVal v As Variant) As Boolean
+    If IsError(v) Then Exit Function
+    If IsEmpty(v) Or IsNull(v) Then
+        IsBlankValue = True
+    ElseIf VarType(v) = vbString Then
+        IsBlankValue = (Len(NormalizeText(v)) = 0)
+    End If
+End Function
+
+' Human-readable description of a cell value for the review list.
+Private Function DescribeValue(ByVal v As Variant) As String
+    If IsError(v) Then
+        DescribeValue = "[error value]"
+    ElseIf IsEmpty(v) Then
+        DescribeValue = "[blank]"
+    ElseIf VarType(v) = vbString Then
+        DescribeValue = "'" & v & "'"
+    Else
+        DescribeValue = CStr(v)
+    End If
+End Function
+
+Private Function SafeText(ByVal v As Variant) As String
+    If IsError(v) Or IsNull(v) Or IsEmpty(v) Then Exit Function
+    SafeText = CStr(v)
+End Function
+
+Private Sub AddIssue(ByVal issues As Collection, ByVal sheetRow As Long, ByVal issueText As String)
+    issues.Add "Row " & sheetRow & ": " & issueText
+End Sub
+
+'==============================================================================
+' Range helpers
+'==============================================================================
+
+' Reads one column into a 1-based 2-D array (n, 1), even when n = 1.
+' Uses Value2 so currency-formatted cells aren't rounded to 4 dp and dates
+' come through as plain numbers.
+Private Function ReadColumn(ByVal ws As Worksheet, ByVal col As Long, _
+                            ByVal firstRow As Long, ByVal lastRow As Long) As Variant
+    Dim v As Variant
+    Dim arr() As Variant
+
+    v = ws.Range(ws.Cells(firstRow, col), ws.Cells(lastRow, col)).Value2
+    If IsArray(v) Then
+        ReadColumn = v
+    Else
+        ReDim arr(1 To 1, 1 To 1)
+        arr(1, 1) = v
+        ReadColumn = arr
+    End If
+End Function
+
+' Reads one row (columns 1..lastCol) into a 1-based 2-D array (1, n).
+Private Function ReadRow(ByVal ws As Worksheet, ByVal rowNum As Long, ByVal lastCol As Long) As Variant
+    Dim v As Variant
+    Dim arr() As Variant
+
+    v = ws.Range(ws.Cells(rowNum, 1), ws.Cells(rowNum, lastCol)).Value2
+    If IsArray(v) Then
+        ReadRow = v
+    Else
+        ReDim arr(1 To 1, 1 To 1)
+        arr(1, 1) = v
+        ReadRow = arr
+    End If
+End Function
+
+' Last row with anything in the column. Unlike End(xlUp), this is not fooled
+' by filtered/hidden rows (LookIn:=xlFormulas searches hidden cells too).
+Private Function LastUsedRowInColumn(ByVal ws As Worksheet, ByVal col As Long) As Long
+    Dim f As Range
+    Set f = ws.Columns(col).Find(What:="*", After:=ws.Cells(1, col), LookIn:=xlFormulas, _
+                                 LookAt:=xlPart, SearchOrder:=xlByRows, _
+                                 SearchDirection:=xlPrevious, MatchCase:=False)
+    If Not f Is Nothing Then LastUsedRowInColumn = f.Row
+End Function
+
+Private Function ColumnLetter(ByVal ws As Worksheet, ByVal col As Long) As String
+    ColumnLetter = Split(ws.Cells(1, col).Address(True, False), "$")(0)
+End Function
+
+Private Function MaxLong(ByVal a As Long, ByVal b As Long) As Long
+    If a > b Then MaxLong = a Else MaxLong = b
+End Function
