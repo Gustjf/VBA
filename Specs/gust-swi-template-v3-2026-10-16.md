@@ -1,6 +1,6 @@
-# Gust SWI Template v2: Reusable Prompt
+# Gust SWI Template v3: Reusable Prompt
 
-Version 2, 2026-10-16. A style guide for Standard Work Instructions on any topic.
+Version 3, 2026-10-16. A style guide for Standard Work Instructions on any topic.
 
 Paste everything below into another AI. Add your content at the end: the subject, the critical task, and the pictures you have (file names and pixel sizes).
 
@@ -27,17 +27,19 @@ Write a Standard Work Instruction (SWI) as one self-contained pdfLaTeX file in T
 - `bandgreen` `#E2EFDA`: light sections and table bands.
 - `flagpeach` `#FCE4D6`: warnings and changed items.
 - `inputyellow` `#FFFFCC`: fields the reader fills in.
-- `alertorange` `#C55A11`: only on the critical-task sheet (frame, banner, markers, pointers).
+- `alertorange` `#C55A11`: only on the critical-task sheet (frame, banner, the overview's pointer box).
+- Step colors, in this order, one per pictured step (see "Colored step bullets"): `stepa` `#C55A11` orange, `stepb` `#2E75B6` blue, `stepc` `#7030A0` purple, `stepd` `#BF8F00` dark gold, `stepe` `#C00000` red.
 
 ## Building blocks (use the macros in the template)
 - **Heading:** `\heading{Title}{One-sentence subtitle}` at the top left. The title is Title Case, under about 40 characters.
 - **Station:** a green header bar (`station`), number then title, with a white `box` under it. Station titles start with a verb or name a thing ("Control panel", "Check the result"). Join stations with `flow` arrows, left to right or top to bottom.
 - **Box contents:** an italic one-line tag via `\by{...}`, then bullets (`itemize`) or numbered steps (`enumerate`). Bullets are short fragments; steps are imperative sentences.
 - **Picture:** `\node[shot] at (x,y) {\includegraphics[width=W in]{file.png}};`, anchored at its top left. Its height is H = W x (pixel height / pixel width). Write W, H and the pixel size in a comment above the sheet.
-- **Markers on a picture:** open a scope over the picture, `\begin{scope}[shift={(x,y)}, x=W in, y=-H in]`. Inside it, (0,0) is the top left of the picture and (1,1) its bottom right. Place each `\node[marker] at (fx,fy) {1};` from the pixel position: fx = px / width, fy = py / height. Place a marker in empty space beside the cell or header it points to, never over its text. Repeat the same number or letter in the text with `\num{1}` (or `\hotnum{1}` on the critical sheet).
+- **Markers on a picture:** open a scope over the picture, `\begin{scope}[shift={(x,y)}, x=W in, y=-H in]`. Inside it, (0,0) is the top left of the picture and (1,1) its bottom right. Place each `\node[marker] at (fx,fy) {1};` from the pixel position: fx = px / width, fy = py / height. Place a marker in empty space beside the cell or header it points to, never over its text. Repeat the same number or letter in the text with `\num{1}`. A step's markers take that step's color (see "Colored step bullets").
 - **Buttons and settings:** `\btn{Button name}` for buttons, `\texttt{}` for files and settings, `\val{}` for values typed exactly. `\yellow{}` and `\peach{}` highlight inline words in those colors.
 - **Reference table:** a `tabular` inside a node, `\arraystretch` about 1.4. Group the rows under full-width `\cellcolor` band rows by severity (e.g. "Stops the work", "Work can continue"). Put each symptom or message, quoted exactly, in the first column (`\ttfamily`, or bold for its key words) and the fix in the second, as an imperative sentence.
-- **Pointer:** the `point` arrow (orange) links a marker to more than one place.
+- **Colored step bullets:** station bars are always green; never color the bar itself. A step whose action or result is shown in a picture gets its number bullet in its own color, unique to that step on the sheet: `\stepnum{stepa}{3}`, then `stepb` for the next pictured step, and so on. Its markers (`\node[stepa] at ...`), frames and pointer arrows on the pictures take the same color, so the eye goes from the step straight to its place in the picture. Steps not shown in a picture (open, find, the final check) keep the plain green `\num` bullet. Never use a step color for anything else on that sheet.
+- **Pointer:** the `point` arrow links a marker to more than one place; give it the step's color (`\draw[point, stepb]`). Frame the places it points to in the same color (`\draw[line width=1.4pt, stepb] ... rectangle ...`).
 - **Title block:** `\titleblock{Short title}{n of N}` on every sheet. It shows Title, Project, Version, Rev., Date, Drawn and Sheet. Set these once in the `\titleblock` macro.
 
 ## Pictures
@@ -56,7 +58,7 @@ Write a Standard Work Instruction (SWI) as one self-contained pdfLaTeX file in T
 - Draw a 3pt `alertorange` frame on the sheet edge in place of the black one. Put a white-on-orange banner at the top right: **THE MOST IMPORTANT JOB**.
 - The title names the task and the cases it covers ("<Task>: <case A>, <case B>, <case C>"). The subtitle says the steps are the same for every case and names the example values.
 - Left column (about 4.45 in): numbered stations, one step each, 0.12 in apart, 5 to 7 steps. Put the lookup table of what differs by case in the step that needs it. The last step is the check that proves it worked, with the exact text to expect.
-- Right column: an "after" picture for each step that changes something visible. Put orange `hot` markers on it with the step's number, and orange rectangles around the places a step changes.
+- Right column: an "after" picture for each step that changes something visible. Put each step's markers on it with the step's number, and rectangles around the places a step changes, all in that step's color ("Colored step bullets").
 - Under the steps: a `flagpeach` box beginning **Do not:** that lists the mistakes that break things, in one or two lines.
 
 ## Writing
@@ -68,7 +70,7 @@ Write a Standard Work Instruction (SWI) as one self-contained pdfLaTeX file in T
 ## Template
 
 ```latex
-% <Subject> SWI: <what it covers>. Gust SWI Template v2.
+% <Subject> SWI: <what it covers>. Gust SWI Template v3.
 % Sheets: 1 at a glance, 2 <part>, 3 <part>, 4 how to check it, 5 the critical task (orange frame).
 % Pictures in <folder>/. Grid 12 x 7.5 in, scaled 4/3.
 \documentclass[10pt]{article}
@@ -94,16 +96,23 @@ Write a Standard Work Instruction (SWI) as one self-contained pdfLaTeX file in T
 \definecolor{flagpeach}{HTML}{FCE4D6}
 \definecolor{inputyellow}{HTML}{FFFFCC}
 \definecolor{alertorange}{HTML}{C55A11}
+\definecolor{stepa}{HTML}{C55A11}
+\definecolor{stepb}{HTML}{2E75B6}
+\definecolor{stepc}{HTML}{7030A0}
+\definecolor{stepd}{HTML}{BF8F00}
+\definecolor{stepe}{HTML}{C00000}
 \tikzset{
   every node/.style={font=\sffamily\small, inner sep=5pt},
   box/.style={draw, line width=0.5pt, fill=white, align=left},
   station/.style={draw, line width=0.5pt, fill=headgreen, text=white, font=\sffamily\bfseries\normalsize,
                   align=left, inner ysep=4pt, text height=1.6ex, text depth=0.45ex},
   flow/.style={-{Stealth[length=9pt, width=6.5pt]}, line width=1.2pt, line join=miter},
-  point/.style={-{Stealth[length=6pt, width=4.5pt]}, line width=0.9pt, alertorange},
+  point/.style={-{Stealth[length=6pt, width=4.5pt]}, line width=0.9pt},
   marker/.style={circle, fill=headgreen, text=white, draw=white, line width=1pt, font=\sffamily\bfseries\small,
                  inner sep=0pt, minimum size=0.25in},
-  hot/.style={marker, fill=alertorange},
+  % one colour per pictured step: the bullet, its markers, frames and arrows
+  stepa/.style={marker, fill=stepa}, stepb/.style={marker, fill=stepb}, stepc/.style={marker, fill=stepc},
+  stepd/.style={marker, fill=stepd}, stepe/.style={marker, fill=stepe},
   shot/.style={draw, line width=0.5pt, inner sep=0pt, anchor=north west},
 }
 \newcommand{\by}[1]{{\footnotesize\itshape #1}\\[3pt]}
@@ -111,7 +120,7 @@ Write a Standard Work Instruction (SWI) as one self-contained pdfLaTeX file in T
 \newcommand{\yellow}[1]{{\setlength{\fboxsep}{1pt}\colorbox{inputyellow}{#1}}}
 \newcommand{\btn}[1]{{\setlength{\fboxsep}{1.5pt}\fbox{\footnotesize\bfseries #1}}}
 \newcommand{\num}[1]{\tikz[baseline=(n.base)]\node(n)[marker, minimum size=0.2in, font=\sffamily\bfseries\footnotesize]{#1};}
-\newcommand{\hotnum}[1]{\tikz[baseline=(n.base)]\node(n)[hot, minimum size=0.2in, font=\sffamily\bfseries\footnotesize]{#1};}
+\newcommand{\stepnum}[2]{\tikz[baseline=(n.base)]\node(n)[#1, minimum size=0.2in, font=\sffamily\bfseries\footnotesize]{#2};}
 \newcommand{\val}[1]{{\ttfamily #1}}
 \newcommand{\titleblock}[2]{%
   \draw[line width=0.5pt] (5.7,0) -- (5.7,0.42) -- (12,0.42);
@@ -175,20 +184,20 @@ Write a Standard Work Instruction (SWI) as one self-contained pdfLaTeX file in T
   at (11.75,7.28) {THE MOST IMPORTANT JOB};
 \node[anchor=north west, inner sep=0pt, font=\sffamily\footnotesize] at (0.25,6.88)
   {The same steps for every case. Example values are shaded \peach{peach} in the pictures.};
-\node[station, anchor=north west, text width=4.45in] (s1) at (0.25,6.45) {\hotnum{1}\enspace <Step one>};
-\node[station, anchor=north west, text width=4.45in] (s2) at ($(s1.south west)+(0,-0.12)$) {\hotnum{2}\enspace <Step two>};
+\node[station, anchor=north west, text width=4.45in] (s1) at (0.25,6.45) {\num{1}\enspace <Step one (not pictured)>};
+\node[station, anchor=north west, text width=4.45in] (s2) at ($(s1.south west)+(0,-0.12)$) {\stepnum{stepa}{2}\enspace <Step two (pictured)>};
 \node[box, anchor=north, text width=4.45in, font=\sffamily\footnotesize] (t2) at (s2.south) {%
   \begin{tabular}{@{}p{0.5in}p{1.5in}p{1.5in}@{}}
   \textbf{<A>} & <where> & e.g.\ \val{<value>} \\
   \textbf{<B>} & <where> & e.g.\ \val{<value>} \\
   \end{tabular}};
-\node[station, anchor=north west, text width=4.45in] (s3) at ($(t2.south west)+(0,-0.12)$) {\hotnum{3}\enspace <Check it worked>};
+\node[station, anchor=north west, text width=4.45in] (s3) at ($(t2.south west)+(0,-0.12)$) {\num{3}\enspace <Check it worked>};
 \node[box, anchor=north, text width=4.45in] (t3) at (s3.south) {<What to expect, word for word.>};
 \node[anchor=north west, draw, line width=0.5pt, fill=flagpeach, text width=4.45in, align=left,
       font=\sffamily\footnotesize] at ($(t3.south west)+(0,-0.2)$) {\textbf{Do not:} <the mistakes that break it>.};
 \node[shot] at (5.15,6.0) {\includegraphics[width=6.6in]{<after-picture>.png}};
 \begin{scope}[shift={(5.15,6.0)}, x=6.6in, y=-<H>in]
-  \node[hot] at (<fx>,<fy>) {2};
+  \node[stepa] at (<fx>,<fy>) {2};
 \end{scope}
 \titleblock{<Task>}{<N> of <N>}
 \end{tikzpicture}}
