@@ -1,12 +1,14 @@
 % Size class quick reference: adding a new size class to the size class file, on one page.
 % One 11 x 17 landscape sheet (ledger, 17 x 11 in) in TikZ: sheet 5 of size-class-file-guide.tex on its own, without
 % the orange frame and banner (it is the only page), the title naming the file and the macro it belongs to.
+% Steps 1, 2 and 6 (open, find, check) are green; steps 3 to 5, the edits shown in the pictures, are orange, with
+% their markers, frames and arrows (v2).
 % The file: output/open-orders-intake-inventory/size-class-master.xlsx (Config setting SizeClassFile of the
 % Open Orders by MSA report macro, build-open-orders-report.bas v2.8). Pictures from size-class-guide/, written by
 % make_size_class_guide_shots.py (example classes shaded peach in the pictures only). Keep the steps in step with
 % sheet 5 of the guide.
 % The sheet is laid out on a 12 x 7.5 in grid and scaled by 4/3 to fill the 16 x 10 in drawing area.
-% Build: ./build.sh source/open-orders-intake-inventory/size-class-quick-reference-v1-2026-10-16.tex
+% Build: ./build.sh source/open-orders-intake-inventory/size-class-quick-reference-v2-2026-10-16.tex
 \documentclass[10pt]{article}
 \usepackage[paperwidth=17in, paperheight=11in, margin=0.5in]{geometry}
 \usepackage[T1]{fontenc}
@@ -29,13 +31,17 @@
 \definecolor{bandgreen}{HTML}{E2EFDA}
 \definecolor{flagpeach}{HTML}{FCE4D6}
 \definecolor{inputyellow}{HTML}{FFFFCC}
+\definecolor{alertorange}{HTML}{C55A11}
 \tikzset{
   every node/.style={font=\sffamily\small, inner sep=5pt},
   box/.style={draw, line width=0.5pt, fill=white, align=left},
   station/.style={draw, line width=0.5pt, fill=headgreen, text=white, font=\sffamily\bfseries\normalsize,
                   align=left, inner ysep=4pt, text height=1.6ex, text depth=0.45ex},
   flow/.style={-{Stealth[length=9pt, width=6.5pt]}, line width=1.2pt, line join=miter},
-  point/.style={-{Stealth[length=6pt, width=4.5pt]}, line width=0.9pt, headgreen},
+  point/.style={-{Stealth[length=6pt, width=4.5pt]}, line width=0.9pt, alertorange},
+  % steps 3 to 5, the edits: the attention colour
+  hotstation/.style={station, fill=alertorange},
+  hot/.style={marker, fill=alertorange},
   % a numbered marker on a picture, matched by the same number in the text beside it
   marker/.style={circle, fill=headgreen, text=white, draw=white, line width=1pt, font=\sffamily\bfseries\small,
                inner sep=0pt, minimum size=0.25in},
@@ -51,7 +57,7 @@
 \newcommand{\titleblock}[2]{%
   \draw[line width=0.5pt] (5.7,0) -- (5.7,0.42) -- (12,0.42);
   \foreach \x in {7.3, 8.95, 9.5, 9.95, 10.75, 11.45} \draw[line width=0.5pt] (\x,0) -- (\x,0.42);
-  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/Open Orders by MSA, 8.95/Macro/v2.8, 9.5/Rev./1,
+  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/Open Orders by MSA, 8.95/Macro/v2.8, 9.5/Rev./2,
                                 9.95/Date/2026-10-16, 10.75/Drawn/Gust F., 11.45/Sheet/#2} {
     \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{7}{8}\selectfont] at (\x+0.07,0.36) {\label};
     \node[anchor=south west, inner sep=0pt, font=\sffamily\bfseries\footnotesize] at (\x+0.07,0.07) {\value};
@@ -90,7 +96,7 @@
   \textbf{MX}  & Table 3 & column \textbf{E} & e.g.\ \cls{>10-15} \\
   \end{tabular}};
 
-\node[station, anchor=north west, text width=4.45in] (s3) at ($(t2.south west)+(0,-0.12)$) {\num{3}\enspace Type the class in the first empty yellow cell};
+\node[hotstation, anchor=north west, text width=4.45in] (s3) at ($(t2.south west)+(0,-0.12)$) {\num{3}\enspace Type the class in the first empty yellow cell};
 \node[box, anchor=north, text width=4.45in] (t3) at (s3.south) {%
   \begin{itemize}
   \item Spell it as the report should show it; one class per cell
@@ -99,11 +105,11 @@
         border one cell down, then type in the gap. Never insert whole rows
   \end{itemize}};
 
-\node[station, anchor=north west, text width=4.45in] (s4) at ($(t3.south west)+(0,-0.12)$) {\num{4}\enspace Check Table 4 (column G)};
+\node[hotstation, anchor=north west, text width=4.45in] (s4) at ($(t3.south west)+(0,-0.12)$) {\num{4}\enspace Check Table 4 (column G)};
 \node[box, anchor=north, text width=4.45in] (t4) at (s4.south) {%
   The new class shows in its place in the list: it is now in the drop-down.};
 
-\node[station, anchor=north west, text width=4.45in] (s5) at ($(t4.south west)+(0,-0.12)$) {\num{5}\enspace Give it to the models, on the Size Class tab};
+\node[hotstation, anchor=north west, text width=4.45in] (s5) at ($(t4.south west)+(0,-0.12)$) {\num{5}\enspace Give it to the models, on the Size Class tab};
 \node[box, anchor=north, text width=4.45in] (t5) at (s5.south) {%
   Pick the new class in column D for each model in it; a new model goes in the first empty row (Name of machine in column C, as the export spells it). Save and close.};
 
@@ -117,12 +123,12 @@
 \node[shot] at (5.15,6.0) {\includegraphics[width=6.6in]{setup-after.png}};
 \begin{scope}[shift={(5.15,6.0)}, x=6.6in, y=-3.572in]
   % step 3: the three cells typed (A11, C9, E12)
-  \node[marker] at (0.215,0.412) {3};
-  \node[marker] at (0.448,0.327) {3};
-  \node[marker] at (0.681,0.456) {3};
+  \node[hot] at (0.215,0.412) {3};
+  \node[hot] at (0.448,0.327) {3};
+  \node[hot] at (0.681,0.456) {3};
   % step 4: where they show in Table 4 (G11, G19, G24)
-  \foreach \fy in {0.412, 0.757, 0.972} \draw[line width=1.4pt, headgreen] (0.745,\fy-0.021) rectangle (0.995,\fy+0.021);
-  \node[marker] at (0.70,0.757) {4};
+  \foreach \fy in {0.412, 0.757, 0.972} \draw[line width=1.4pt, alertorange] (0.745,\fy-0.021) rectangle (0.995,\fy+0.021);
+  \node[hot] at (0.70,0.757) {4};
   \foreach \fy in {0.412, 0.757, 0.972} \draw[point] (0.70,0.757) ++(0.012,{0.02*sign(\fy-0.757)}) -- (0.743,\fy);
 \end{scope}
 
@@ -130,7 +136,7 @@
 \node[anchor=south west, inner sep=0pt, font=\sffamily\bfseries\small] at (5.15,2.03) {Size Class tab after step 5 (header and last rows)};
 \node[shot] at (5.15,1.95) {\includegraphics[width=6.6in]{size-class-new.png}};
 \begin{scope}[shift={(5.15,1.95)}, x=6.6in, y=-1.367in]
-  \node[marker] at (0.495,0.927) {5};
+  \node[hot] at (0.495,0.927) {5};
 \end{scope}
 
 % ---------------------------------------------------------------- the don'ts
