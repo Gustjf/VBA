@@ -1,0 +1,6 @@
+Feature request: Add a tab to the output file. 
+
+The purpose of this tab is to display in a chart Orders that have not yet been processed and orders that have been ordered. 
+The logic flow of this - in the "Order intake by MSA" file - Include the items in column "D" that read "Not yet processed" and "Ordered" in the output tab. Then, group the items into the categories in column H, "Product Type Abbreviation". After that, further group each of the categories with a total count of Ordered Quantity (Column G) grouped by MSA - column K. 
+
+Feature request: Add a feature to add up the totals of the visible selection for the "Order Intake" tab on the output. This should be one frozen item in the first column with the verbiage "Total sum of ordered Quantity of visible selection." This will help my manager have a number on the screen instead of filtering by MSA, then size class, and then dragging the selection over the sum column (Ordered Quantity) of column G. He will and still should filter himself, just wanted to automate the counting portion in a simple, unobtrusive way such that removes the error from highlighting the cells and reading the sum of the highlighted portions of column G. 

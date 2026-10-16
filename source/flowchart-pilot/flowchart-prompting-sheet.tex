@@ -1,0 +1,122 @@
+% Flowchart pilot: the prompting instructions sheet. Two Letter pages, exam style (plain, black and white).
+% Page 1: setup once, then the steps for every flowchart. Page 2: the exact prompt (read in from
+% flowchart-prompt.txt, the single source), what to put in the notes, the checks, the common problems.
+% Build: ./build.sh source/flowchart-pilot/flowchart-prompting-sheet.tex
+\documentclass[10pt]{article}
+\usepackage[letterpaper, top=0.75in, bottom=0.75in, left=0.85in, right=0.85in, headheight=14pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{hhline}
+\usepackage{fvextra}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage[hidelinks, pdftitle={Flowcharts with the style guide: prompting instructions}, pdfauthor={Gust F.}]{hyperref}
+\linespread{1.05}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Presentation Standard: Flowchart Pilot}
+\rhead{\small Rev.~1 \quad 2026-10-14}
+\lfoot{\small Gust F.}
+\cfoot{\small Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\titleformat{\section}{\normalsize\bfseries}{\thesection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{0.9em}{0.3em}
+\setlist[enumerate]{label=(\alph*), leftmargin=2.2em, itemsep=0.1em, topsep=0.15em, parsep=0pt}
+\setlist[itemize]{label=--, leftmargin=1.6em, itemsep=0.1em, topsep=0.15em, parsep=0pt}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\renewcommand{\arraystretch}{1.25}
+\newcommand{\menu}[1]{\textit{#1}}
+\newcommand{\gt}{\,\textgreater\,}
+\newcommand{\file}[1]{\texttt{#1}}
+\begin{document}
+
+\begin{center}
+{\Large\bfseries Making a Flowchart with the Style Guide}\\[2pt]
+{\normalsize Prompting instructions: from opening the chat to the printed page}
+\end{center}
+\vspace{2pt}\hrule height 0.8pt \vspace{6pt}
+
+\textbf{Scope.} This sheet is for anyone who has a PC with MiKTeX and the two files from the document control site: the style guide \file{flowchart-style-guide.tex} and the prompt \file{flowchart-prompt.txt}. Your work AI (Claude, Copilot, Gemini) writes the drawing file from your notes; the style guide lays it out, so the result looks like the system architecture drawing without any hand-tuning. You do the thinking about the process; the AI does the wording; the file does the rest. Start at Section~\ref{sec:setup} the first time, then Section~\ref{sec:steps} for every chart.
+
+\vspace{4pt}\hrule height 0.4pt
+
+\section{One-time setup (ten minutes, needs internet once)}\label{sec:setup}
+\begin{enumerate}
+\item Install MiKTeX from \file{miktex.org} with the default options. In the MiKTeX Console, set \menu{Settings\gt Install missing packages on-the-fly} to \emph{Yes}. TeXworks, the editor, comes with it.
+\item Make a folder for your flowcharts, e.g. \file{Documents\textbackslash Flowcharts}. Copy the two files into it. Never edit the style guide itself; the AI reads it, you keep it as issued.
+\item Open \file{flowchart-style-guide.tex} in TeXworks, make sure the drop-down at the top left says \emph{pdfLaTeX}, and press the green Typeset button (Ctrl+T). Click \emph{Install} on every package prompt. After a minute a PDF opens showing a legend of the building blocks. If it does, the PC is ready. Close TeXworks without saving.
+\end{enumerate}
+
+\section{Every flowchart, step by step}\label{sec:steps}
+\begin{enumerate}
+\item \textbf{Write your notes} (five minutes). Open \file{flowchart-prompt.txt} and fill in the lines under \emph{My process} in plain words: the steps in order, the facts for each, any decision, any file or list a step reads, when it loops back. Section~\ref{sec:notes} says what the drawing can show. Do not polish the wording; that is the AI's job.
+\item \textbf{Open a new chat} in your work AI. Attach \file{flowchart-style-guide.tex}. If the chat refuses the file type, attach a copy renamed to \file{.txt}, or open the file in Notepad, select all, and paste its text at the end of your message.
+\item \textbf{Paste the prompt}: the whole of \file{flowchart-prompt.txt}, with your notes filled in. Send it.
+\item \textbf{Save the reply as a file.} The AI answers with one code block that starts with \file{\textbackslash documentclass} and ends with \file{\textbackslash end\{document\}}. Press the copy button on the code block, open TeXworks, \menu{File\gt New}, paste, and \menu{File\gt Save As} into your folder as, say, \file{expense-claims.tex} (letters, digits and hyphens; no spaces).
+\item \textbf{Typeset} (Ctrl+T) with \emph{pdfLaTeX} selected. The PDF opens in the right-hand pane. Press Typeset again after every edit.
+\item \textbf{Check the page} against Section~\ref{sec:checks}. Red text at the bottom left means the file could not be drawn as asked; it says what to change.
+\item \textbf{Ask for changes} in the same chat (it still has the file): \emph{``Change X. Return the whole file again as one code block.''} Then repeat steps (d) to (f). For a wording change, it is faster to edit the \file{.tex} yourself: the content lines after \file{\textbackslash begin\{document\}} are plain words, and a bullet is just the text after \file{\textbackslash item}. Save and Typeset.
+\item \textbf{Print or share.} The PDF is one 11\,$\times$\,17 in landscape page. Print on 11\,$\times$\,17 at 100\,\%, or on A3 or Letter with \emph{Fit to page}. Upload the PDF to the document control site; keep the \file{.tex} next to it so the next revision starts from the file, not from scratch.
+\end{enumerate}
+
+\section{What to put in the notes, and what the drawing can show}\label{sec:notes}
+Write facts, not sentences; the AI trims them to the limits. The drawing has these parts; the AI picks the ones your notes call for:
+\begin{center}\small
+\begin{tabularx}{\linewidth}{|>{\bfseries}m{1.35in}|L|}
+\hline
+Part & What it shows and its limits \\
+\hhline{|=|=|}
+Title block & Title, one italic line of purpose, and (bottom right) project, document number, revision, date, drawn by, sheet. Give these in the notes or the fields stay blank. \\ \hline
+Key facts & Two optional columns of key facts at the top (2 to 3 bullets each), and an optional framed box top right such as \emph{Before you start} or \emph{Scope} (2 to 4 bullets). \\ \hline
+Stations & The steps, 2 to 6, left to right, numbered: a green header of 2 to 4 words and a box of 2 to 6 bullets of up to 12 words. Four or five stations fill the page best. \\ \hline
+Document stations & A station that shows files instead of bullets, for the inputs at the start or the outputs at the end: file name plus a tag such as \emph{required} or \emph{optional}. \\ \hline
+Decision gate & A diamond under a station: the question, one branch (e.g. Yes) down into an outcome box with 1 to 3 bullets, the other branch (e.g. No) on to the next station. A warning sign marks a stop. Not under the last station, not under two neighbouring stations. \\ \hline
+Side document & A file, list or system a step reads (a master list, a policy, a mapping table), drawn as a document under one station with an arrow into the station that uses it. Up to two. \\ \hline
+Loop & A return arrow from a station around the bottom of the page back into an earlier station or its side document, with one line saying when and why. Up to two. \\ \hline
+\end{tabularx}
+\end{center}
+If the process has more than six steps, group them (``Prepare'', ``Review'') or draw two charts. Keep names of people, customers and prices out of the notes unless they belong on the page: the notes become the drawing.
+
+
+\section{The prompt to paste}\label{sec:prompt}
+This is \file{flowchart-prompt.txt}; paste it from the file, not from here, so line breaks survive. Fill in the lines after \emph{My process}; delete a line that does not apply.
+\VerbatimInput[fontsize=\footnotesize, frame=single, framesep=4pt, xleftmargin=4pt, xrightmargin=4pt, breaklines=true, breakindent=1.5em]{flowchart-prompt.txt}
+
+\section{Checks before you share the page}\label{sec:checks}
+\begin{itemize}
+\item No red text at the bottom left of the page. If there is, do what it says (Section~\ref{sec:problems}).
+\item Every bullet is true and says what you meant. The AI rewrites; it must not invent. Compare with your notes.
+\item Station headings are verbs (Check Setup, Build Report); branch labels are one word; no bullet runs outside its box.
+\item The title block is complete: title, project, document number, revision, date, drawn by, sheet.
+\item Nothing on the page that should not leave the team.
+\end{itemize}
+
+\section{Common problems}\label{sec:problems}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}m{2.05in}|L|}
+\hline
+\textbf{What you see} & \textbf{What to do} \\
+\hhline{|=|=|}
+TeXworks shows errors and no PDF appears & In the console pane, find the first line starting with \texttt{!}. A missing brace, or a bare \texttt{\%} or \texttt{\textbackslash} inside a bullet, is the usual cause: fix the line yourself, or paste that error line into the chat with \emph{``Fix this and return the whole file again.''} \\ \hline
+MiKTeX asks to install a package & Click \emph{Install}. It happens on the first build only and needs internet. \\ \hline
+Red line \emph{TOO TALL} & Too much text for one page. Ask: \emph{``Shorten the bullets to fit one page and return the whole file.''} Or delete bullets yourself. \\ \hline
+Red line about a gate, side document or loop & The notes asked for a layout the style cannot draw (a gate under the last station, two gates side by side). The line says the fix; ask the chat to apply it. \\ \hline
+The reply is not one complete file: it stops early, or says ``Part 2 unchanged'' & Ask: \emph{``Return the complete file, from \textbackslash documentclass to \textbackslash end\{document\}, with Part 2 copied exactly.''} If it still will not, copy only the content lines (between \textbackslash begin\{document\} and \textbackslash end\{document\}) into a fresh copy of the style guide in that same place and typeset that. \\ \hline
+\emph{Unicode character ... not set up} & An emoji or odd symbol in a bullet. Replace it with words. \\ \hline
+The AI asks questions instead of drawing & Answer in one line and add: \emph{``Now return the whole file.''} \\ \hline
+The page looks empty & Fewer than three stations, or one bullet each. Add facts or merge charts. \\ \hline
+The PDF does not refresh & Close the PDF in any other viewer (it is locked), then Typeset again. \\ \hline
+A wrong word on the page & Edit the \file{.tex} yourself in TeXworks: find the word, change it, Typeset. \\ \hline
+\end{tabularx}
+\end{center}
+
+\textbf{Where things live.} The current style guide, prompt and this sheet are on the document control site under the presentation standard. Questions and ideas for new building blocks go to the owner of the standard. Do not paste company data into an AI that is not approved for it; the style guide itself contains no company data.
+\end{document}

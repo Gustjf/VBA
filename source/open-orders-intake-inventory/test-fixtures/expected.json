@@ -1,0 +1,2007 @@
+{
+  "generated_by": "make_test_fixtures.py",
+  "version": "2.8",
+  "columns": {
+    "oi_rows": [
+      "Size Class",
+      "MSA",
+      "MODEL_GROUP",
+      "ORDER_STATUS",
+      "ORDER_DATE",
+      "hidden"
+    ],
+    "summary": [
+      "MSA",
+      "CTL",
+      "MX",
+      "SSL"
+    ],
+    "detail_rows": [
+      "MSA",
+      "PRODUCT_TYPE",
+      "MODEL_GROUP",
+      "Month",
+      "TOTAL",
+      "hidden"
+    ],
+    "open_orders": [
+      "MSA",
+      "CTL",
+      "MX",
+      "SSL",
+      "Total"
+    ],
+    "open_orders_split": [
+      "MSA",
+      "ORDERED rows",
+      "Not yet processed rows"
+    ],
+    "classes": [
+      "Size class",
+      "Family (CTL, MX or SSL)"
+    ]
+  },
+  "runs": [
+    {
+      "name": "default",
+      "options": {
+        "InventoryMonth": "latest in file",
+        "ShowCancelled": "FALSE",
+        "ShowSSL": "FALSE",
+        "MSAColumn": "auto",
+        "SizeClassFile": "Size Class.xlsx"
+      },
+      "options_line": "Options: InventoryMonth=latest in file, ShowCancelled=FALSE, ShowSSL=FALSE, MSAColumn=auto, SizeClassFile=Size Class.xlsx",
+      "sheet_order": [
+        "File Format",
+        "Order Intake",
+        "Inventory by Month",
+        "Open Orders by MSA",
+        "Run Log"
+      ],
+      "cities": [
+        "(no MSA)",
+        "Amarillo",
+        "Brownsville",
+        "Dallas-Fort Worth [North] Metroplex"
+      ],
+      "months": [
+        "July 2026",
+        "August 2026",
+        "September 2026"
+      ],
+      "month_cell": "September 2026",
+      "oi_rows": [
+        [
+          "0<2000",
+          "Amarillo",
+          "T450",
+          "Completely processed",
+          "2026-05-19",
+          false
+        ],
+        [
+          "2000<2300",
+          "Amarillo",
+          "T595",
+          "CANCELLED",
+          "2026-09-02",
+          true
+        ],
+        [
+          "2300<2600",
+          "Amarillo",
+          "T66-2",
+          "ORDERED",
+          "2026-09-20",
+          false
+        ],
+        [
+          "2300<2600",
+          "(no MSA)",
+          "T650",
+          "ORDERED",
+          "2026-09-15",
+          false
+        ],
+        [
+          "2300<2600",
+          "Amarillo",
+          "T66-2",
+          "ORDERED",
+          "2026-09-15",
+          false
+        ],
+        [
+          "2300<2600",
+          "Amarillo",
+          "T66-2",
+          "ORDERED",
+          "2026-09-15",
+          false
+        ],
+        [
+          "2300<2600",
+          "Brownsville",
+          "T650",
+          "ORDERED",
+          "2026-09-10",
+          false
+        ],
+        [
+          "2300<2600",
+          "Amarillo",
+          "T64-2",
+          "ORDERED",
+          "2026-07-01",
+          false
+        ],
+        [
+          "2600<3000",
+          "Amarillo",
+          "T76-2",
+          "ORDERED",
+          "2026-09-09",
+          false
+        ],
+        [
+          "2600<3000",
+          "Dallas-Fort Worth [North] Metroplex",
+          "T76-2",
+          "ORDERED",
+          "2026-08-02",
+          false
+        ],
+        [
+          "2600<3000",
+          "Amarillo",
+          "S76",
+          "CANCELLED",
+          "2026-08-14",
+          true
+        ],
+        [
+          "3000<3500",
+          "Dallas-Fort Worth [North] Metroplex",
+          "T740",
+          "ORDERED",
+          "2026-08-12",
+          false
+        ],
+        [
+          "3000<3500",
+          "Dallas-Fort Worth [North] Metroplex",
+          "T740",
+          "ORDERED",
+          "TBD",
+          false
+        ],
+        [
+          "3000<3500",
+          "Dallas-Fort Worth [North] Metroplex",
+          "T740",
+          "Not yet processed",
+          "2026-08-05",
+          false
+        ],
+        [
+          "3000<3500",
+          "Amarillo",
+          "T770",
+          "INVOICED",
+          "2026-08-20",
+          false
+        ],
+        [
+          "3000<3500",
+          "Amarillo",
+          "T740",
+          "Cancelled",
+          "2026-08-11",
+          true
+        ],
+        [
+          "3500&Over",
+          "Amarillo",
+          "T86-2",
+          "ORDERED",
+          "2026-09-25",
+          false
+        ],
+        [
+          ">00-01",
+          "Amarillo",
+          "E10",
+          "ORDERED",
+          "2026-08-28",
+          false
+        ],
+        [
+          ">01-02",
+          "Amarillo",
+          "E20",
+          "ORDERED",
+          "2026-08-03",
+          false
+        ],
+        [
+          ">02-03",
+          "Dallas-Fort Worth [North] Metroplex",
+          "E26",
+          "CANCELLED",
+          "2026-08-19",
+          true
+        ],
+        [
+          ">03-04",
+          "Amarillo",
+          "e35",
+          "ORDERED",
+          "2026-09-04",
+          false
+        ],
+        [
+          ">03-04",
+          "Amarillo",
+          "E35",
+          "ORDERED",
+          "2026-07-11",
+          false
+        ],
+        [
+          ">04-05",
+          "Amarillo",
+          "E48",
+          "CANCELLED",
+          "2026-09-01",
+          true
+        ],
+        [
+          ">05-06",
+          "Dallas-Fort Worth [North] Metroplex",
+          "E60",
+          "ORDERED",
+          "2026-08-21",
+          false
+        ],
+        [
+          ">05-06",
+          "Dallas-Fort Worth [North] Metroplex",
+          "E55",
+          "INVOICED",
+          "2026-07-30",
+          false
+        ],
+        [
+          ">06-10",
+          "Amarillo",
+          "E88",
+          "INVOICED",
+          "2026-07-22",
+          false
+        ],
+        [
+          "Med Frame",
+          "Amarillo",
+          "S590",
+          "ORDERED",
+          "2026-08-05",
+          true
+        ],
+        [
+          "UNMAPPED",
+          "Amarillo",
+          "T999",
+          "ORDERED",
+          "2026-06-30",
+          false
+        ],
+        [
+          "UNMAPPED",
+          "Amarillo",
+          "E25",
+          "Not yet processed",
+          "2026-09-18",
+          false
+        ]
+      ],
+      "oi_ids": [
+        "A11",
+        "A03",
+        "A18",
+        "X02",
+        "A01",
+        "A10",
+        "B01",
+        "A17",
+        "A15",
+        "C07",
+        "A09",
+        "C01",
+        "C03",
+        "C02",
+        "A02",
+        "A19",
+        "A12",
+        "A13",
+        "A16",
+        "C05",
+        "A20",
+        "A04",
+        "A08",
+        "C06",
+        "C04",
+        "A14",
+        "A06",
+        "A07",
+        "A05"
+      ],
+      "oi_visible_total": 24,
+      "summary": [
+        [
+          "(no MSA)",
+          0,
+          0,
+          0
+        ],
+        [
+          "Amarillo",
+          6,
+          8,
+          4
+        ],
+        [
+          "Brownsville",
+          0,
+          0,
+          0
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          0,
+          0,
+          0
+        ]
+      ],
+      "detail_rows": [
+        [
+          "Amarillo",
+          "Compact Track Loaders",
+          "T66-2",
+          "September 2026",
+          3,
+          false
+        ],
+        [
+          "Amarillo",
+          "Compact Track Loaders",
+          "T770",
+          "September 2026",
+          1,
+          false
+        ],
+        [
+          "Amarillo",
+          "Compact Track Loaders",
+          "T450",
+          "September 2026",
+          2,
+          false
+        ],
+        [
+          "Amarillo",
+          "Compact Track Loaders",
+          "T66-2",
+          "August 2026",
+          6,
+          true
+        ],
+        [
+          "Amarillo",
+          "Mini Excavators",
+          "E35",
+          "September 2026",
+          2,
+          false
+        ],
+        [
+          "Amarillo",
+          "Mini Excavators",
+          "E10",
+          "September 2026",
+          5,
+          false
+        ],
+        [
+          "Amarillo",
+          "Mini Excavators",
+          "E20",
+          "September 2026",
+          1,
+          false
+        ],
+        [
+          "Amarillo",
+          "Mini Excavators",
+          "E88",
+          "August 2026",
+          2,
+          true
+        ],
+        [
+          "Amarillo",
+          "Skid-Steer Loaders",
+          "S590",
+          "September 2026",
+          4,
+          true
+        ],
+        [
+          "Amarillo",
+          "Skid-Steer Loaders",
+          "S76",
+          "August 2026",
+          1,
+          true
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          "Compact Track Loaders",
+          "T740",
+          "August 2026",
+          3,
+          true
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          "Compact Track Loaders",
+          "T740",
+          "August 2026",
+          2,
+          true
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          "Compact Track Loaders",
+          "T76-2",
+          "July 2026",
+          4,
+          true
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          "Mini Excavators",
+          "E55",
+          "August 2026",
+          2,
+          true
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          "Mini Excavators",
+          "E26",
+          "July 2026",
+          1,
+          true
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          "Skid-Steer Loaders",
+          "S650",
+          "August 2026",
+          1,
+          true
+        ]
+      ],
+      "detail_ids": [
+        "I02",
+        "I04",
+        "I08",
+        "I06",
+        "I01",
+        "I05",
+        "I10",
+        "I07",
+        "I03",
+        "I09",
+        "D01",
+        "D06",
+        "D03",
+        "D02",
+        "D05",
+        "D04"
+      ],
+      "build_files": [
+        [
+          "Order Intake file",
+          "Order Intake 2026.xlsx: 30 rows -> 28 written, 1 dropped (ATT 1), 1 blank ignored; MSA column MSA, 3 MSAs"
+        ],
+        [
+          "Order Intake file",
+          "Order Intake Brownsville.xlsx: 2 rows -> 1 written, 1 blank ignored; MSA from file name (Brownsville)"
+        ],
+        [
+          "Inventory by Month file",
+          "Inventory by Month 2026.xlsx: 17 rows -> 16 written, 1 dropped (Attachments 1); MSA column CITY, 2 MSAs"
+        ],
+        [
+          "Open Order file",
+          "Open Orders 2026.xlsx: 4 rows, MSA column MSA, 2 MSAs - not used by this report"
+        ]
+      ],
+      "open_orders": [
+        [
+          "(no MSA)",
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          "Amarillo",
+          8,
+          5,
+          1,
+          14
+        ],
+        [
+          "Brownsville",
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          4,
+          1,
+          0,
+          5
+        ],
+        [
+          "Total",
+          14,
+          6,
+          1,
+          21
+        ]
+      ],
+      "open_orders_split": [
+        [
+          "(no MSA)",
+          1,
+          0
+        ],
+        [
+          "Amarillo",
+          12,
+          1
+        ],
+        [
+          "Brownsville",
+          1,
+          0
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          4,
+          1
+        ]
+      ],
+      "open_orders_chart": {
+        "series": 4,
+        "categories": [
+          "CTL",
+          "MX"
+        ]
+      },
+      "build_open_orders": "ORDERED and Not yet processed: 20 rows, 21 units (CTL 14, MX 6, SSL 1), on the Open Orders by MSA tab",
+      "log_lines": [
+        "File Order Intake 2026.xlsx: 30 rows -> 28 written, 1 dropped (ATT 1), 1 blank ignored; MSA column MSA, 3 MSAs",
+        "File Order Intake Brownsville.xlsx: 2 rows -> 1 written, 1 blank ignored; MSA from file name (Brownsville)",
+        "File Inventory by Month 2026.xlsx: 17 rows -> 16 written, 1 dropped (Attachments 1); MSA column CITY, 2 MSAs",
+        "Size class file Size Class.xlsx: 20 usable rows, 3 warnings",
+        "Size classes: the 17 built into the macro (Size Class.xlsx has no Set-up tab)",
+        "Size class file row 21 T630: \"2000-2300\" is not a size class - row skipped",
+        "Size class file row 22 T650: listed again (first in row 20) - row 20 is used",
+        "Size class file row 24 E100: \"Over10\" is not a size class - row skipped",
+        "(no MSA): Order Intake 1 row (CTL 1, MX 0, SSL 0; 0 CANCELLED), 0 hidden by the filters",
+        "(no MSA): no inventory rows",
+        "(no MSA): Open orders 1 row (ORDERED 1, Not yet processed 0): CTL 1, MX 0, SSL 0 units",
+        "Amarillo: Order Intake 20 rows (CTL 11, MX 7, SSL 2; 4 CANCELLED), 5 hidden by the filters; UNMAPPED model groups: E25, T999",
+        "Amarillo: Inventory 10 rows; September 2026: CTL 6, MX 8, SSL 4 units",
+        "Amarillo: Open orders 13 rows (ORDERED 12, Not yet processed 1): CTL 8, MX 5, SSL 1 units",
+        "Brownsville: Order Intake 1 row (CTL 1, MX 0, SSL 0; 0 CANCELLED), 0 hidden by the filters",
+        "Brownsville: no inventory rows",
+        "Brownsville: Open orders 1 row (ORDERED 1, Not yet processed 0): CTL 1, MX 0, SSL 0 units",
+        "Dallas-Fort Worth [North] Metroplex: Order Intake 7 rows (CTL 4, MX 3, SSL 0; 1 CANCELLED), 1 hidden by the filters",
+        "Dallas-Fort Worth [North] Metroplex: Inventory 6 rows; September 2026: CTL 0, MX 0, SSL 0 units",
+        "Dallas-Fort Worth [North] Metroplex: Open orders 5 rows (ORDERED 4, Not yet processed 1): CTL 4, MX 1, SSL 0 units",
+        "File Open Orders 2026.xlsx: 4 rows, MSA column MSA, 2 MSAs - not used by this report",
+        "Order Intake 2026.xlsx ORDER_DATE: 6 text value(s) converted to dates, 1 not a date and left as is (row 25)",
+        "2 Order Intake files found, all are read: Order Intake 2026.xlsx, Order Intake Brownsville.xlsx",
+        "Order Intake 2026.xlsx: 1 row with a blank MSA - shown as (no MSA)"
+      ],
+      "classes": [
+        [
+          "0<2000",
+          "CTL"
+        ],
+        [
+          "2000<2300",
+          "CTL"
+        ],
+        [
+          "2300<2600",
+          "CTL"
+        ],
+        [
+          "2600<3000",
+          "CTL"
+        ],
+        [
+          "3000<3500",
+          "CTL"
+        ],
+        [
+          "3500&Over",
+          "CTL"
+        ],
+        [
+          ">00-01",
+          "MX"
+        ],
+        [
+          ">01-02",
+          "MX"
+        ],
+        [
+          ">02-03",
+          "MX"
+        ],
+        [
+          ">03-04",
+          "MX"
+        ],
+        [
+          ">04-05",
+          "MX"
+        ],
+        [
+          ">05-06",
+          "MX"
+        ],
+        [
+          ">06-10",
+          "MX"
+        ],
+        [
+          "EX Small",
+          "SSL"
+        ],
+        [
+          "Small Frame",
+          "SSL"
+        ],
+        [
+          "Med Frame",
+          "SSL"
+        ],
+        [
+          "Large Frame",
+          "SSL"
+        ]
+      ]
+    },
+    {
+      "name": "variant",
+      "options": {
+        "InventoryMonth": "August 2026",
+        "ShowCancelled": "TRUE",
+        "ShowSSL": "TRUE",
+        "MSAColumn": "auto",
+        "SizeClassFile": "Size Class.xlsx"
+      },
+      "options_line": "Options: InventoryMonth=August 2026, ShowCancelled=TRUE, ShowSSL=TRUE, MSAColumn=auto, SizeClassFile=Size Class.xlsx",
+      "sheet_order": [
+        "File Format",
+        "Order Intake",
+        "Inventory by Month",
+        "Open Orders by MSA",
+        "Run Log"
+      ],
+      "cities": [
+        "(no MSA)",
+        "Amarillo",
+        "Brownsville",
+        "Dallas-Fort Worth [North] Metroplex"
+      ],
+      "months": [
+        "July 2026",
+        "August 2026",
+        "September 2026"
+      ],
+      "month_cell": "August 2026",
+      "oi_rows": [
+        [
+          "0<2000",
+          "Amarillo",
+          "T450",
+          "Completely processed",
+          "2026-05-19",
+          false
+        ],
+        [
+          "2000<2300",
+          "Amarillo",
+          "T595",
+          "CANCELLED",
+          "2026-09-02",
+          false
+        ],
+        [
+          "2300<2600",
+          "Amarillo",
+          "T66-2",
+          "ORDERED",
+          "2026-09-20",
+          false
+        ],
+        [
+          "2300<2600",
+          "(no MSA)",
+          "T650",
+          "ORDERED",
+          "2026-09-15",
+          false
+        ],
+        [
+          "2300<2600",
+          "Amarillo",
+          "T66-2",
+          "ORDERED",
+          "2026-09-15",
+          false
+        ],
+        [
+          "2300<2600",
+          "Amarillo",
+          "T66-2",
+          "ORDERED",
+          "2026-09-15",
+          false
+        ],
+        [
+          "2300<2600",
+          "Brownsville",
+          "T650",
+          "ORDERED",
+          "2026-09-10",
+          false
+        ],
+        [
+          "2300<2600",
+          "Amarillo",
+          "T64-2",
+          "ORDERED",
+          "2026-07-01",
+          false
+        ],
+        [
+          "2600<3000",
+          "Amarillo",
+          "T76-2",
+          "ORDERED",
+          "2026-09-09",
+          false
+        ],
+        [
+          "2600<3000",
+          "Dallas-Fort Worth [North] Metroplex",
+          "T76-2",
+          "ORDERED",
+          "2026-08-02",
+          false
+        ],
+        [
+          "2600<3000",
+          "Amarillo",
+          "S76",
+          "CANCELLED",
+          "2026-08-14",
+          false
+        ],
+        [
+          "3000<3500",
+          "Dallas-Fort Worth [North] Metroplex",
+          "T740",
+          "ORDERED",
+          "2026-08-12",
+          false
+        ],
+        [
+          "3000<3500",
+          "Dallas-Fort Worth [North] Metroplex",
+          "T740",
+          "ORDERED",
+          "TBD",
+          false
+        ],
+        [
+          "3000<3500",
+          "Dallas-Fort Worth [North] Metroplex",
+          "T740",
+          "Not yet processed",
+          "2026-08-05",
+          false
+        ],
+        [
+          "3000<3500",
+          "Amarillo",
+          "T770",
+          "INVOICED",
+          "2026-08-20",
+          false
+        ],
+        [
+          "3000<3500",
+          "Amarillo",
+          "T740",
+          "Cancelled",
+          "2026-08-11",
+          false
+        ],
+        [
+          "3500&Over",
+          "Amarillo",
+          "T86-2",
+          "ORDERED",
+          "2026-09-25",
+          false
+        ],
+        [
+          ">00-01",
+          "Amarillo",
+          "E10",
+          "ORDERED",
+          "2026-08-28",
+          false
+        ],
+        [
+          ">01-02",
+          "Amarillo",
+          "E20",
+          "ORDERED",
+          "2026-08-03",
+          false
+        ],
+        [
+          ">02-03",
+          "Dallas-Fort Worth [North] Metroplex",
+          "E26",
+          "CANCELLED",
+          "2026-08-19",
+          false
+        ],
+        [
+          ">03-04",
+          "Amarillo",
+          "e35",
+          "ORDERED",
+          "2026-09-04",
+          false
+        ],
+        [
+          ">03-04",
+          "Amarillo",
+          "E35",
+          "ORDERED",
+          "2026-07-11",
+          false
+        ],
+        [
+          ">04-05",
+          "Amarillo",
+          "E48",
+          "CANCELLED",
+          "2026-09-01",
+          false
+        ],
+        [
+          ">05-06",
+          "Dallas-Fort Worth [North] Metroplex",
+          "E60",
+          "ORDERED",
+          "2026-08-21",
+          false
+        ],
+        [
+          ">05-06",
+          "Dallas-Fort Worth [North] Metroplex",
+          "E55",
+          "INVOICED",
+          "2026-07-30",
+          false
+        ],
+        [
+          ">06-10",
+          "Amarillo",
+          "E88",
+          "INVOICED",
+          "2026-07-22",
+          false
+        ],
+        [
+          "Med Frame",
+          "Amarillo",
+          "S590",
+          "ORDERED",
+          "2026-08-05",
+          false
+        ],
+        [
+          "UNMAPPED",
+          "Amarillo",
+          "T999",
+          "ORDERED",
+          "2026-06-30",
+          false
+        ],
+        [
+          "UNMAPPED",
+          "Amarillo",
+          "E25",
+          "Not yet processed",
+          "2026-09-18",
+          false
+        ]
+      ],
+      "oi_ids": [
+        "A11",
+        "A03",
+        "A18",
+        "X02",
+        "A01",
+        "A10",
+        "B01",
+        "A17",
+        "A15",
+        "C07",
+        "A09",
+        "C01",
+        "C03",
+        "C02",
+        "A02",
+        "A19",
+        "A12",
+        "A13",
+        "A16",
+        "C05",
+        "A20",
+        "A04",
+        "A08",
+        "C06",
+        "C04",
+        "A14",
+        "A06",
+        "A07",
+        "A05"
+      ],
+      "oi_visible_total": 30,
+      "summary": [
+        [
+          "(no MSA)",
+          0,
+          0,
+          0
+        ],
+        [
+          "Amarillo",
+          6,
+          2,
+          1
+        ],
+        [
+          "Brownsville",
+          0,
+          0,
+          0
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          5,
+          2,
+          1
+        ]
+      ],
+      "detail_rows": [
+        [
+          "Amarillo",
+          "Compact Track Loaders",
+          "T66-2",
+          "September 2026",
+          3,
+          true
+        ],
+        [
+          "Amarillo",
+          "Compact Track Loaders",
+          "T770",
+          "September 2026",
+          1,
+          true
+        ],
+        [
+          "Amarillo",
+          "Compact Track Loaders",
+          "T450",
+          "September 2026",
+          2,
+          true
+        ],
+        [
+          "Amarillo",
+          "Compact Track Loaders",
+          "T66-2",
+          "August 2026",
+          6,
+          false
+        ],
+        [
+          "Amarillo",
+          "Mini Excavators",
+          "E35",
+          "September 2026",
+          2,
+          true
+        ],
+        [
+          "Amarillo",
+          "Mini Excavators",
+          "E10",
+          "September 2026",
+          5,
+          true
+        ],
+        [
+          "Amarillo",
+          "Mini Excavators",
+          "E20",
+          "September 2026",
+          1,
+          true
+        ],
+        [
+          "Amarillo",
+          "Mini Excavators",
+          "E88",
+          "August 2026",
+          2,
+          false
+        ],
+        [
+          "Amarillo",
+          "Skid-Steer Loaders",
+          "S590",
+          "September 2026",
+          4,
+          true
+        ],
+        [
+          "Amarillo",
+          "Skid-Steer Loaders",
+          "S76",
+          "August 2026",
+          1,
+          false
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          "Compact Track Loaders",
+          "T740",
+          "August 2026",
+          3,
+          false
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          "Compact Track Loaders",
+          "T740",
+          "August 2026",
+          2,
+          false
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          "Compact Track Loaders",
+          "T76-2",
+          "July 2026",
+          4,
+          true
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          "Mini Excavators",
+          "E55",
+          "August 2026",
+          2,
+          false
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          "Mini Excavators",
+          "E26",
+          "July 2026",
+          1,
+          true
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          "Skid-Steer Loaders",
+          "S650",
+          "August 2026",
+          1,
+          false
+        ]
+      ],
+      "detail_ids": [
+        "I02",
+        "I04",
+        "I08",
+        "I06",
+        "I01",
+        "I05",
+        "I10",
+        "I07",
+        "I03",
+        "I09",
+        "D01",
+        "D06",
+        "D03",
+        "D02",
+        "D05",
+        "D04"
+      ],
+      "build_files": [
+        [
+          "Order Intake file",
+          "Order Intake 2026.xlsx: 30 rows -> 28 written, 1 dropped (ATT 1), 1 blank ignored; MSA column MSA, 3 MSAs"
+        ],
+        [
+          "Order Intake file",
+          "Order Intake Brownsville.xlsx: 2 rows -> 1 written, 1 blank ignored; MSA from file name (Brownsville)"
+        ],
+        [
+          "Inventory by Month file",
+          "Inventory by Month 2026.xlsx: 17 rows -> 16 written, 1 dropped (Attachments 1); MSA column CITY, 2 MSAs"
+        ],
+        [
+          "Open Order file",
+          "Open Orders 2026.xlsx: 4 rows, MSA column MSA, 2 MSAs - not used by this report"
+        ]
+      ],
+      "open_orders": [
+        [
+          "(no MSA)",
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          "Amarillo",
+          8,
+          5,
+          1,
+          14
+        ],
+        [
+          "Brownsville",
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          4,
+          1,
+          0,
+          5
+        ],
+        [
+          "Total",
+          14,
+          6,
+          1,
+          21
+        ]
+      ],
+      "open_orders_split": [
+        [
+          "(no MSA)",
+          1,
+          0
+        ],
+        [
+          "Amarillo",
+          12,
+          1
+        ],
+        [
+          "Brownsville",
+          1,
+          0
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          4,
+          1
+        ]
+      ],
+      "open_orders_chart": {
+        "series": 4,
+        "categories": [
+          "CTL",
+          "MX",
+          "SSL"
+        ]
+      },
+      "build_open_orders": "ORDERED and Not yet processed: 20 rows, 21 units (CTL 14, MX 6, SSL 1), on the Open Orders by MSA tab",
+      "log_lines": [
+        "File Order Intake 2026.xlsx: 30 rows -> 28 written, 1 dropped (ATT 1), 1 blank ignored; MSA column MSA, 3 MSAs",
+        "File Order Intake Brownsville.xlsx: 2 rows -> 1 written, 1 blank ignored; MSA from file name (Brownsville)",
+        "File Inventory by Month 2026.xlsx: 17 rows -> 16 written, 1 dropped (Attachments 1); MSA column CITY, 2 MSAs",
+        "Size class file Size Class.xlsx: 20 usable rows, 3 warnings",
+        "Size classes: the 17 built into the macro (Size Class.xlsx has no Set-up tab)",
+        "Size class file row 21 T630: \"2000-2300\" is not a size class - row skipped",
+        "Size class file row 22 T650: listed again (first in row 20) - row 20 is used",
+        "Size class file row 24 E100: \"Over10\" is not a size class - row skipped",
+        "(no MSA): Order Intake 1 row (CTL 1, MX 0, SSL 0; 0 CANCELLED), 0 hidden by the filters",
+        "(no MSA): no inventory rows",
+        "(no MSA): Open orders 1 row (ORDERED 1, Not yet processed 0): CTL 1, MX 0, SSL 0 units",
+        "Amarillo: Order Intake 20 rows (CTL 11, MX 7, SSL 2; 4 CANCELLED), 0 hidden by the filters; UNMAPPED model groups: E25, T999",
+        "Amarillo: Inventory 10 rows; August 2026: CTL 6, MX 2, SSL 1 units",
+        "Amarillo: Open orders 13 rows (ORDERED 12, Not yet processed 1): CTL 8, MX 5, SSL 1 units",
+        "Brownsville: Order Intake 1 row (CTL 1, MX 0, SSL 0; 0 CANCELLED), 0 hidden by the filters",
+        "Brownsville: no inventory rows",
+        "Brownsville: Open orders 1 row (ORDERED 1, Not yet processed 0): CTL 1, MX 0, SSL 0 units",
+        "Dallas-Fort Worth [North] Metroplex: Order Intake 7 rows (CTL 4, MX 3, SSL 0; 1 CANCELLED), 0 hidden by the filters",
+        "Dallas-Fort Worth [North] Metroplex: Inventory 6 rows; August 2026: CTL 5, MX 2, SSL 1 units",
+        "Dallas-Fort Worth [North] Metroplex: Open orders 5 rows (ORDERED 4, Not yet processed 1): CTL 4, MX 1, SSL 0 units",
+        "File Open Orders 2026.xlsx: 4 rows, MSA column MSA, 2 MSAs - not used by this report",
+        "Order Intake 2026.xlsx ORDER_DATE: 6 text value(s) converted to dates, 1 not a date and left as is (row 25)",
+        "2 Order Intake files found, all are read: Order Intake 2026.xlsx, Order Intake Brownsville.xlsx",
+        "Order Intake 2026.xlsx: 1 row with a blank MSA - shown as (no MSA)"
+      ],
+      "classes": [
+        [
+          "0<2000",
+          "CTL"
+        ],
+        [
+          "2000<2300",
+          "CTL"
+        ],
+        [
+          "2300<2600",
+          "CTL"
+        ],
+        [
+          "2600<3000",
+          "CTL"
+        ],
+        [
+          "3000<3500",
+          "CTL"
+        ],
+        [
+          "3500&Over",
+          "CTL"
+        ],
+        [
+          ">00-01",
+          "MX"
+        ],
+        [
+          ">01-02",
+          "MX"
+        ],
+        [
+          ">02-03",
+          "MX"
+        ],
+        [
+          ">03-04",
+          "MX"
+        ],
+        [
+          ">04-05",
+          "MX"
+        ],
+        [
+          ">05-06",
+          "MX"
+        ],
+        [
+          ">06-10",
+          "MX"
+        ],
+        [
+          "EX Small",
+          "SSL"
+        ],
+        [
+          "Small Frame",
+          "SSL"
+        ],
+        [
+          "Med Frame",
+          "SSL"
+        ],
+        [
+          "Large Frame",
+          "SSL"
+        ]
+      ]
+    },
+    {
+      "name": "setup",
+      "options": {
+        "InventoryMonth": "latest in file",
+        "ShowCancelled": "FALSE",
+        "ShowSSL": "FALSE",
+        "MSAColumn": "auto",
+        "SizeClassFile": "Size Class Set-up.xlsx"
+      },
+      "options_line": "Options: InventoryMonth=latest in file, ShowCancelled=FALSE, ShowSSL=FALSE, MSAColumn=auto, SizeClassFile=Size Class Set-up.xlsx",
+      "sheet_order": [
+        "File Format",
+        "Order Intake",
+        "Inventory by Month",
+        "Open Orders by MSA",
+        "Run Log"
+      ],
+      "cities": [
+        "(no MSA)",
+        "Amarillo",
+        "Brownsville",
+        "Dallas-Fort Worth [North] Metroplex"
+      ],
+      "months": [
+        "July 2026",
+        "August 2026",
+        "September 2026"
+      ],
+      "month_cell": "September 2026",
+      "oi_rows": [
+        [
+          "0<2000",
+          "Amarillo",
+          "T450",
+          "Completely processed",
+          "2026-05-19",
+          false
+        ],
+        [
+          "2000<2300",
+          "Amarillo",
+          "T595",
+          "CANCELLED",
+          "2026-09-02",
+          true
+        ],
+        [
+          "2300<2600",
+          "Amarillo",
+          "T66-2",
+          "ORDERED",
+          "2026-09-20",
+          false
+        ],
+        [
+          "2300<2600",
+          "(no MSA)",
+          "T650",
+          "ORDERED",
+          "2026-09-15",
+          false
+        ],
+        [
+          "2300<2600",
+          "Amarillo",
+          "T66-2",
+          "ORDERED",
+          "2026-09-15",
+          false
+        ],
+        [
+          "2300<2600",
+          "Amarillo",
+          "T66-2",
+          "ORDERED",
+          "2026-09-15",
+          false
+        ],
+        [
+          "2300<2600",
+          "Brownsville",
+          "T650",
+          "ORDERED",
+          "2026-09-10",
+          false
+        ],
+        [
+          "2300<2600",
+          "Amarillo",
+          "T64-2",
+          "ORDERED",
+          "2026-07-01",
+          false
+        ],
+        [
+          "2600<3000",
+          "Amarillo",
+          "T76-2",
+          "ORDERED",
+          "2026-09-09",
+          false
+        ],
+        [
+          "2600<3000",
+          "Dallas-Fort Worth [North] Metroplex",
+          "T76-2",
+          "ORDERED",
+          "2026-08-02",
+          false
+        ],
+        [
+          "2600<3000",
+          "Amarillo",
+          "S76",
+          "CANCELLED",
+          "2026-08-14",
+          true
+        ],
+        [
+          "3000<3500",
+          "Dallas-Fort Worth [North] Metroplex",
+          "T740",
+          "ORDERED",
+          "2026-08-12",
+          false
+        ],
+        [
+          "3000<3500",
+          "Dallas-Fort Worth [North] Metroplex",
+          "T740",
+          "ORDERED",
+          "TBD",
+          false
+        ],
+        [
+          "3000<3500",
+          "Dallas-Fort Worth [North] Metroplex",
+          "T740",
+          "Not yet processed",
+          "2026-08-05",
+          false
+        ],
+        [
+          "3000<3500",
+          "Amarillo",
+          "T770",
+          "INVOICED",
+          "2026-08-20",
+          false
+        ],
+        [
+          "3000<3500",
+          "Amarillo",
+          "T740",
+          "Cancelled",
+          "2026-08-11",
+          true
+        ],
+        [
+          "3500&Over",
+          "Amarillo",
+          "T86-2",
+          "ORDERED",
+          "2026-09-25",
+          false
+        ],
+        [
+          ">01-02",
+          "Amarillo",
+          "E20",
+          "ORDERED",
+          "2026-08-03",
+          false
+        ],
+        [
+          ">02-03",
+          "Dallas-Fort Worth [North] Metroplex",
+          "E26",
+          "CANCELLED",
+          "2026-08-19",
+          true
+        ],
+        [
+          ">03-04",
+          "Amarillo",
+          "e35",
+          "ORDERED",
+          "2026-09-04",
+          false
+        ],
+        [
+          ">03-04",
+          "Amarillo",
+          "E35",
+          "ORDERED",
+          "2026-07-11",
+          false
+        ],
+        [
+          ">04-05",
+          "Amarillo",
+          "E48",
+          "CANCELLED",
+          "2026-09-01",
+          true
+        ],
+        [
+          ">05-06",
+          "Dallas-Fort Worth [North] Metroplex",
+          "E60",
+          "ORDERED",
+          "2026-08-21",
+          false
+        ],
+        [
+          ">05-06",
+          "Dallas-Fort Worth [North] Metroplex",
+          "E55",
+          "INVOICED",
+          "2026-07-30",
+          false
+        ],
+        [
+          ">10-15",
+          "Amarillo",
+          "E88",
+          "INVOICED",
+          "2026-07-22",
+          false
+        ],
+        [
+          "Med Frame",
+          "Amarillo",
+          "S590",
+          "ORDERED",
+          "2026-08-05",
+          true
+        ],
+        [
+          "UNMAPPED",
+          "Amarillo",
+          "E10",
+          "ORDERED",
+          "2026-08-28",
+          false
+        ],
+        [
+          "UNMAPPED",
+          "Amarillo",
+          "T999",
+          "ORDERED",
+          "2026-06-30",
+          false
+        ],
+        [
+          "UNMAPPED",
+          "Amarillo",
+          "E25",
+          "Not yet processed",
+          "2026-09-18",
+          false
+        ]
+      ],
+      "oi_ids": [
+        "A11",
+        "A03",
+        "A18",
+        "X02",
+        "A01",
+        "A10",
+        "B01",
+        "A17",
+        "A15",
+        "C07",
+        "A09",
+        "C01",
+        "C03",
+        "C02",
+        "A02",
+        "A19",
+        "A12",
+        "A16",
+        "C05",
+        "A20",
+        "A04",
+        "A08",
+        "C06",
+        "C04",
+        "A14",
+        "A06",
+        "A13",
+        "A07",
+        "A05"
+      ],
+      "oi_visible_total": 24,
+      "summary": [
+        [
+          "(no MSA)",
+          0,
+          0,
+          0
+        ],
+        [
+          "Amarillo",
+          6,
+          8,
+          4
+        ],
+        [
+          "Brownsville",
+          0,
+          0,
+          0
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          0,
+          0,
+          0
+        ]
+      ],
+      "detail_rows": [
+        [
+          "Amarillo",
+          "Compact Track Loaders",
+          "T66-2",
+          "September 2026",
+          3,
+          false
+        ],
+        [
+          "Amarillo",
+          "Compact Track Loaders",
+          "T770",
+          "September 2026",
+          1,
+          false
+        ],
+        [
+          "Amarillo",
+          "Compact Track Loaders",
+          "T450",
+          "September 2026",
+          2,
+          false
+        ],
+        [
+          "Amarillo",
+          "Compact Track Loaders",
+          "T66-2",
+          "August 2026",
+          6,
+          true
+        ],
+        [
+          "Amarillo",
+          "Mini Excavators",
+          "E35",
+          "September 2026",
+          2,
+          false
+        ],
+        [
+          "Amarillo",
+          "Mini Excavators",
+          "E10",
+          "September 2026",
+          5,
+          false
+        ],
+        [
+          "Amarillo",
+          "Mini Excavators",
+          "E20",
+          "September 2026",
+          1,
+          false
+        ],
+        [
+          "Amarillo",
+          "Mini Excavators",
+          "E88",
+          "August 2026",
+          2,
+          true
+        ],
+        [
+          "Amarillo",
+          "Skid-Steer Loaders",
+          "S590",
+          "September 2026",
+          4,
+          true
+        ],
+        [
+          "Amarillo",
+          "Skid-Steer Loaders",
+          "S76",
+          "August 2026",
+          1,
+          true
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          "Compact Track Loaders",
+          "T740",
+          "August 2026",
+          3,
+          true
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          "Compact Track Loaders",
+          "T740",
+          "August 2026",
+          2,
+          true
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          "Compact Track Loaders",
+          "T76-2",
+          "July 2026",
+          4,
+          true
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          "Mini Excavators",
+          "E55",
+          "August 2026",
+          2,
+          true
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          "Mini Excavators",
+          "E26",
+          "July 2026",
+          1,
+          true
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          "Skid-Steer Loaders",
+          "S650",
+          "August 2026",
+          1,
+          true
+        ]
+      ],
+      "detail_ids": [
+        "I02",
+        "I04",
+        "I08",
+        "I06",
+        "I01",
+        "I05",
+        "I10",
+        "I07",
+        "I03",
+        "I09",
+        "D01",
+        "D06",
+        "D03",
+        "D02",
+        "D05",
+        "D04"
+      ],
+      "build_files": [
+        [
+          "Order Intake file",
+          "Order Intake 2026.xlsx: 30 rows -> 28 written, 1 dropped (ATT 1), 1 blank ignored; MSA column MSA, 3 MSAs"
+        ],
+        [
+          "Order Intake file",
+          "Order Intake Brownsville.xlsx: 2 rows -> 1 written, 1 blank ignored; MSA from file name (Brownsville)"
+        ],
+        [
+          "Inventory by Month file",
+          "Inventory by Month 2026.xlsx: 17 rows -> 16 written, 1 dropped (Attachments 1); MSA column CITY, 2 MSAs"
+        ],
+        [
+          "Open Order file",
+          "Open Orders 2026.xlsx: 4 rows, MSA column MSA, 2 MSAs - not used by this report"
+        ]
+      ],
+      "open_orders": [
+        [
+          "(no MSA)",
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          "Amarillo",
+          8,
+          5,
+          1,
+          14
+        ],
+        [
+          "Brownsville",
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          4,
+          1,
+          0,
+          5
+        ],
+        [
+          "Total",
+          14,
+          6,
+          1,
+          21
+        ]
+      ],
+      "open_orders_split": [
+        [
+          "(no MSA)",
+          1,
+          0
+        ],
+        [
+          "Amarillo",
+          12,
+          1
+        ],
+        [
+          "Brownsville",
+          1,
+          0
+        ],
+        [
+          "Dallas-Fort Worth [North] Metroplex",
+          4,
+          1
+        ]
+      ],
+      "open_orders_chart": {
+        "series": 4,
+        "categories": [
+          "CTL",
+          "MX"
+        ]
+      },
+      "build_open_orders": "ORDERED and Not yet processed: 20 rows, 21 units (CTL 14, MX 6, SSL 1), on the Open Orders by MSA tab",
+      "log_lines": [
+        "File Order Intake 2026.xlsx: 30 rows -> 28 written, 1 dropped (ATT 1), 1 blank ignored; MSA column MSA, 3 MSAs",
+        "File Order Intake Brownsville.xlsx: 2 rows -> 1 written, 1 blank ignored; MSA from file name (Brownsville)",
+        "File Inventory by Month 2026.xlsx: 17 rows -> 16 written, 1 dropped (Attachments 1); MSA column CITY, 2 MSAs",
+        "Size class file Size Class Set-up.xlsx: 19 usable rows, 6 warnings",
+        "Size classes: 18 from the Set-up tab (CTL 6, MX 7, SSL 5)",
+        "Set-up tab C9: \"2000<2300\" is listed again (first in A6) - ignored",
+        "Set-up tab C10: \"unmapped\" is not a size class name (UNMAPPED marks models not in the file) - ignored",
+        "Size class file row 11 E10: \">00-01\" is not a size class - row skipped",
+        "Size class file row 21 T630: \"2000-2300\" is not a size class - row skipped",
+        "Size class file row 22 T650: listed again (first in row 20) - row 20 is used",
+        "Size class file row 24 E100: \"Over10\" is not a size class - row skipped",
+        "(no MSA): Order Intake 1 row (CTL 1, MX 0, SSL 0; 0 CANCELLED), 0 hidden by the filters",
+        "(no MSA): no inventory rows",
+        "(no MSA): Open orders 1 row (ORDERED 1, Not yet processed 0): CTL 1, MX 0, SSL 0 units",
+        "Amarillo: Order Intake 20 rows (CTL 11, MX 7, SSL 2; 4 CANCELLED), 5 hidden by the filters; UNMAPPED model groups: E25, T999, E10",
+        "Amarillo: Inventory 10 rows; September 2026: CTL 6, MX 8, SSL 4 units",
+        "Amarillo: Open orders 13 rows (ORDERED 12, Not yet processed 1): CTL 8, MX 5, SSL 1 units",
+        "Brownsville: Order Intake 1 row (CTL 1, MX 0, SSL 0; 0 CANCELLED), 0 hidden by the filters",
+        "Brownsville: no inventory rows",
+        "Brownsville: Open orders 1 row (ORDERED 1, Not yet processed 0): CTL 1, MX 0, SSL 0 units",
+        "Dallas-Fort Worth [North] Metroplex: Order Intake 7 rows (CTL 4, MX 3, SSL 0; 1 CANCELLED), 1 hidden by the filters",
+        "Dallas-Fort Worth [North] Metroplex: Inventory 6 rows; September 2026: CTL 0, MX 0, SSL 0 units",
+        "Dallas-Fort Worth [North] Metroplex: Open orders 5 rows (ORDERED 4, Not yet processed 1): CTL 4, MX 1, SSL 0 units",
+        "File Open Orders 2026.xlsx: 4 rows, MSA column MSA, 2 MSAs - not used by this report",
+        "Order Intake 2026.xlsx ORDER_DATE: 6 text value(s) converted to dates, 1 not a date and left as is (row 25)",
+        "2 Order Intake files found, all are read: Order Intake 2026.xlsx, Order Intake Brownsville.xlsx",
+        "Order Intake 2026.xlsx: 1 row with a blank MSA - shown as (no MSA)"
+      ],
+      "classes": [
+        [
+          "0<2000",
+          "CTL"
+        ],
+        [
+          "2000<2300",
+          "CTL"
+        ],
+        [
+          "2300<2600",
+          "CTL"
+        ],
+        [
+          "2600<3000",
+          "CTL"
+        ],
+        [
+          "3000<3500",
+          "CTL"
+        ],
+        [
+          "3500&Over",
+          "CTL"
+        ],
+        [
+          ">01-02",
+          "MX"
+        ],
+        [
+          ">02-03",
+          "MX"
+        ],
+        [
+          ">03-04",
+          "MX"
+        ],
+        [
+          ">04-05",
+          "MX"
+        ],
+        [
+          ">05-06",
+          "MX"
+        ],
+        [
+          ">06-10",
+          "MX"
+        ],
+        [
+          ">10-15",
+          "MX"
+        ],
+        [
+          "EX Small",
+          "SSL"
+        ],
+        [
+          "Small Frame",
+          "SSL"
+        ],
+        [
+          "Med Frame",
+          "SSL"
+        ],
+        [
+          "Large Frame",
+          "SSL"
+        ],
+        [
+          "XL Frame",
+          "SSL"
+        ]
+      ]
+    }
+  ]
+}

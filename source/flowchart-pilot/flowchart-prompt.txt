@@ -1,0 +1,19 @@
+Draw a one-page process flowchart as a LaTeX file, using the attached house-style file flowchart-style-guide.tex.
+
+Read Part 1 of that file (the comment lines at the top) and follow it exactly. In short:
+1. Reply with one complete .tex file in one code block, from \documentclass to \end{document}. Nothing before it; after it at most two lines of notes.
+2. Copy Part 2 of the file (everything from \documentclass to \begin{document}) exactly as it is. Do not shorten, reorder or improve it. Do not add packages, \node, \draw, coordinates or sizes.
+3. Write only the content lines between \begin{document} and \end{document}, using only the commands Part 1 lists: \ChartTitle, \ChartSubtitle, \Summary, \KeyBox, \Station, \DocStation, \Gate, \SideDocument, \Loop and the title block fields.
+4. Keep the limits: 2 to 6 stations, 2 to 6 bullets per station, up to 12 words per bullet, headings of 2 to 4 words. Facts, not prose. No emoji. Write a percent sign as \%.
+5. A gate goes under a station that is not the last one; no gates under neighbouring stations; a side document and the station it feeds have no gate.
+6. If my notes are unclear, choose the most sensible reading and say so in one line after the code block. Do not ask me questions first.
+
+My process:
+Title:
+What it is for and who reads it:
+Steps in order (3 to 6), with the facts for each step:
+Decision point, if any (after which step, the question, what happens on each answer):
+Files, lists or systems a step reads or produces, if any:
+When the process loops back, if ever:
+Things to know before you start, if any:
+Title block (project, document number, revision, date, drawn by):

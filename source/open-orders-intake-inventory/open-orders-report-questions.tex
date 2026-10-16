@@ -1,0 +1,151 @@
+\documentclass[11pt]{article}
+\usepackage[letterpaper, top=0.7in, bottom=0.7in, left=1in, right=1in, headheight=14pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{hhline}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage[hidelinks, pdftitle={Open Orders Report: Questions for the Report Owner}, pdfauthor={Gust F.}]{hyperref}
+
+\linespread{1.05}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Strategy}
+\fancyhead[R]{\small Rev.~4 \quad 2026-10-13}
+\fancyfoot[L]{\small Gust F.}
+\fancyfoot[C]{\small Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\titleformat{\section}{\normalsize\bfseries}{\thesection.}{0.6em}{}
+\titlespacing*{\section}{0pt}{0.9em}{0.3em}
+\setlist[enumerate]{leftmargin=2.2em, itemsep=0.1em, topsep=0.15em, label=(\alph*), ref=\alph*}
+\setlist[itemize]{leftmargin=2.2em, itemsep=0.1em, topsep=0.15em, label=--}
+\captionsetup[table]{font=small, labelfont=bf, labelsep=period, skip=0.4em, position=top, hypcap=false}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+\newcommand{\menu}[1]{\textit{#1}}
+\newcommand{\gt}{~>\ }
+\renewcommand{\tabularxcolumn}[1]{m{#1}}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+
+% Question numbers run on across tables; the answer cell keeps room to write.
+\newcounter{q}
+\newcommand{\q}{\refstepcounter{q}\theq}
+\newcommand{\ans}{\rule{0pt}{2.2em}}
+% A critical question: the next step waits on it.
+\newcommand{\qc}{\refstepcounter{q}\textbf{\theq*}}
+\newcommand{\qhead}{%
+  \hline
+  \bfseries No. & \bfseries Question & \bfseries Answer \\
+  \hhline{|=|=|=|}}
+% No center environment inside: tabularx must see \end{questions} as its end.
+% The minipage (called as a command, so it is not the current environment)
+% keeps the caption on the same page as its table.
+\newenvironment{questions}[1]{%
+  \par\vspace{\topsep}\noindent\minipage{\linewidth}\centering\small
+  \captionof{table}{#1}
+  \renewcommand{\arraystretch}{1.15}
+  \tabularx{\linewidth}{|>{\centering\arraybackslash}m{0.35in}|L|m{1.9in}|}
+  \qhead}{%
+  \endtabularx\endminipage\par\vspace{\topsep}}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries Open Orders Report: Questions for the Report Owner}\\[0.35em]
+  {\normalsize Questions for the next steps, and the answers so far}
+\end{center}
+
+\vspace{-0.4em}
+\noindent\rule{\linewidth}{0.8pt}
+
+\vspace{0.2em}
+\textbf{Instructions.} Rev.~4 adds the questions behind the next three steps: the size class list, the report itself and the PowerPoint deck. Ask the owner of the size class slide (Section~1), the person who runs the report (Section~2) and the manager (Section~3). Questions marked \textbf{*} are critical: the step waits on them. Until a question is answered, the default in brackets applies. The answers from the 2026-10-12 call are in Section~4; question numbers carry on from them, and question~3 keeps its number.
+
+\vspace{-0.2em}
+\noindent\rule{\linewidth}{0.4pt}
+
+\section{Size class list (owner of the size class slide)}
+\setcounter{q}{6}
+\begin{questions}{Size class list: the next step builds it from the slide with Copilot prompt P11.}
+  \qc & Which deck and slide hold the current size class list, and who updates it when a model is added? (The starter list, \texttt{size-class-master.xlsx}.) & \ans \\
+  \hline
+  \qc & A loader exactly on a class edge (2,000, 2,300, 2,600, 3,000 or 3,500 lb): which class? A mini excavator exactly on a tonne edge (E40 = 4.0 t): which class? (Loaders: the higher class, so 2,300 lb is 2300<2600. Excavators: the lower class, so E40 is >03-04.) & \ans \\
+  \hline
+  \qc & Which capacity figure decides the class: the North American rated operating capacity or the metric (ISO) one, with or without an extra counterweight, which model year? It settles the models the sources disagree on: S86-2, S64, S64-2, T550, S530, S550, S570, T770, S770, T7X, T870, T190. (North American figure, standard counterweight, current model; the classes in the starter list.) & \ans \\
+  \hline
+  \q & Does a model with a suffix take the class of the base model (E17Z and E17, T76-2 and ``T76 R-Series'')? (Yes; each spelling Snowflake uses gets its own row.) & \ans \\
+  \hline
+  \q & Do the large excavators E63, E85, E145 and E165 follow the tonnes rule (the number after E divided by 10)? (Yes: E63 and E85 are >06-10, E145 and E165 Over10.) & \ans \\
+  \hline
+  \q & Keep discontinued models (T190, T200, T250, T320, S205, S300) in the list? (Kept, so older orders still find a class.) & \ans \\
+  \hline
+\end{questions}
+
+\section{The report (the person who runs it)}
+\begin{questions}{The report: what is still open from the call, and what the first Excel test run needs.}
+  \textbf{3} & Is the Open Order export used for anything in the report, or on a slide (for example an open-orders slide)? If so, for what (a column, a count, a check against Order Intake)? (Read and logged only.) & \ans \\
+  \hline
+  \qc & Can I have the latest real exports (Order Intake, Inventory by Month, Open Order) for the first Excel test run, and who runs the Snowflake queries that make them? (Tested on the anonymised Austin sample only.) & \ans \\
+  \hline
+\end{questions}
+
+\section{PowerPoint deck (the manager)}
+\begin{questions}{PowerPoint: Copilot prompt P12 describes last year's deck for Claude once questions 14 and 18 are answered.}
+  \qc & Can I have last year's deck, and which of its slides are built from this report? (None assumed; nothing is automated.) & \ans \\
+  \hline
+  \qc & For each of those slides: what figure (units ordered, open orders, units in inventory), grouped how (MSA, size class, CTL / MX / SSL), for which month, and is there a comparison with last year? (One inventory month, no comparison; a comparison needs last year's exports too.) & \ans \\
+  \hline
+  \q & Must the charts stay editable PowerPoint charts on the company template? One slide per MSA, or one summary for all? (Editable charts, updated in place on last year's deck; one summary.) & \ans \\
+  \hline
+  \q & Who writes the commentary on the slides; may an AI draft it for review? (Written by hand.) & \ans \\
+  \hline
+  \qc & What does IT allow: may an Excel macro update PowerPoint, and may report data (dealer names, customer numbers) go to an outside AI such as Claude? (The macro updates the deck on the PC; only slide descriptions without figures leave the company.) & \ans \\
+  \hline
+\end{questions}
+
+\section{Answered on the 2026-10-12 call}
+\begin{center}
+\small
+\captionof{table}{Answers from the 2026-10-12 call and the follow-up, and what the macro does with them.}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}m{1.2in}|L|L|}
+  \hline
+  \bfseries Topic & \bfseries Answer & \bfseries What the macro does \\
+  \hhline{|=|=|=|}
+  Exports, MSAs & One set of three exports for all MSAs, MSA column. & Reads all files; MSA from that column. \\
+  \hline
+  MSA column & Called MSA in all exports; it is an MSA, not a city. & Says MSA; \texttt{MSAColumn} can stay blank. \\
+  \hline
+  Cancelled orders & Keep them, filtered out by default. & Kept; hidden by the status filter. \\
+  \hline
+  Skid-steer loaders & Include them, filtered off by default. & Kept; hidden by the type filters. \\
+  \hline
+  Size classes & A separate master list; flag boundary models. & Reads \texttt{SizeClassFile}; boundaries marked. \\
+  \hline
+  Order in a class & Whatever suits the values. & Status, then newest date, then MSA. \\
+  \hline
+  Status order & ORDERED, Not yet processed, INVOICED, Completely processed, other, CANCELLED is fine. & Sorts in that order. \\
+  \hline
+  After a build & Nothing is added by hand. & No extra columns or totals. \\
+  \hline
+  Inventory month & Many months; a date anywhere in a month counts for that month. & Every month kept; a drop-down picks the month counted. \\
+  \hline
+  CTL= and MX= & Sum of TOTAL for the month, by MSA (the inventory level). & Units-by-MSA table, inventory tab. \\
+  \hline
+  Inventory columns & Keep organization name and customer number for now. & Both on the inventory tab, after TOTAL. \\
+  \hline
+  Size class file & Keep it local and point the builder at it. & \texttt{SizeClassFile}, set by \menu{Choose size class file...} \\
+  \hline
+\end{tabularx}
+\end{center}
+
+\end{document}

@@ -1,0 +1,357 @@
+\documentclass[10pt]{article}
+\usepackage[paperwidth=17in, paperheight=11in, margin=0.5in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{calc}
+\usepackage{etoolbox}
+\usepackage{pifont}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, calc, shapes.geometric}
+\usepackage[hidelinks]{hyperref}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\definecolor{headgreen}{HTML}{548235}
+\definecolor{flagpeach}{HTML}{FCE4D6}
+\DeclareUnicodeCharacter{2192}{\textrightarrow}
+\DeclareUnicodeCharacter{2190}{\textleftarrow}
+\DeclareUnicodeCharacter{2713}{\ding{51}}
+\DeclareUnicodeCharacter{2714}{\ding{51}}
+\DeclareUnicodeCharacter{2717}{\ding{55}}
+\DeclareUnicodeCharacter{2718}{\ding{55}}
+\DeclareUnicodeCharacter{2022}{\textbullet}
+\DeclareUnicodeCharacter{2265}{\ensuremath{\geq}}
+\DeclareUnicodeCharacter{2264}{\ensuremath{\leq}}
+\DeclareUnicodeCharacter{2260}{\ensuremath{\neq}}
+\DeclareUnicodeCharacter{2212}{\textendash}
+\DeclareUnicodeCharacter{00D7}{\texttimes}
+\DeclareUnicodeCharacter{00B1}{\textpm}
+\DeclareUnicodeCharacter{00A0}{~}
+\DeclareUnicodeCharacter{2003}{\quad}
+\DeclareUnicodeCharacter{20AC}{\texteuro}
+\tikzset{
+  every node/.style={font=\sffamily\small, inner sep=5pt},
+  box/.style={draw, line width=0.5pt, fill=white, align=left},
+  flow/.style={-{Stealth[length=9pt, width=6.5pt]}, line width=1.2pt, line join=miter},
+  gate/.style={draw, line width=0.8pt, diamond, aspect=2, inner sep=4pt, font=\sffamily\bfseries\small, align=center},
+  note/.style={font=\sffamily\footnotesize, inner sep=2pt},
+  branch/.style={font=\sffamily\bfseries\small, inner sep=3pt}}
+\newcommand{\flag}[1]{{\setlength{\fboxsep}{1pt}\colorbox{flagpeach}{\textbf{#1}}}}
+\newcommand{\code}[1]{{\footnotesize\texttt{#1}}}
+\makeatletter
+% bullets inside boxes: hanging-indent paragraphs (bullet at 0.5em, text at 0.85em, 1.5pt between items)
+\newif\iffc@first
+\newcommand{\fc@bullet}{\iffc@first\fc@firstfalse\else\par\vskip 1.5pt\fi
+  \hangindent=0.85em \hangafter=1 \noindent\hskip 0.85em\llap{\textbullet\hskip 0.35em}\ignorespaces}
+\newcommand{\fc@para}[2]{\iffc@first\fc@firstfalse\else\par\vskip 2pt\fi\noindent{#1#2\par}}
+\newcommand{\lead}[1]{\fc@para{\bfseries}{#1}}
+\newcommand{\plain}[1]{\fc@para{}{#1}}
+\newcommand{\remark}[1]{\fc@para{\itshape\fontsize{7.5}{9}\selectfont}{#1}}
+% ---- content is recorded by the commands below and drawn at \end{document}
+\newcount\fc@n \newcount\fc@ng \newcount\fc@nd \newcount\fc@nl \newcount\fc@i \newcount\fc@j \newcount\fc@k
+\newlength{\fc@len}\newlength{\fc@lenb}
+\def\fc@title{}\def\fc@subtitle{}\def\fc@sumL{}\def\fc@sumR{}\def\fc@keyhead{}\def\fc@keyitems{}
+\def\fc@project{}\def\fc@docno{}\def\fc@rev{1}\def\fc@drawn{}\def\fc@sheet{1 of 1}
+\def\fc@date{\the\year-\ifnum\month<10 0\fi\the\month-\ifnum\day<10 0\fi\the\day}
+\newcommand{\ChartTitle}[1]{\def\fc@title{#1}\hypersetup{pdftitle={#1}}}
+\newcommand{\ChartSubtitle}[1]{\def\fc@subtitle{#1}}
+\newcommand{\Summary}[2]{\def\fc@sumL{#1}\def\fc@sumR{#2}}
+\newcommand{\KeyBox}[2]{\def\fc@keyhead{#1}\def\fc@keyitems{#2}}
+\newcommand{\ChartProject}[1]{\def\fc@project{#1}}
+\newcommand{\ChartDocNo}[1]{\def\fc@docno{#1}}
+\newcommand{\ChartRev}[1]{\def\fc@rev{#1}}
+\newcommand{\ChartDate}[1]{\def\fc@date{#1}}
+\newcommand{\ChartDrawnBy}[1]{\def\fc@drawn{#1}}
+\newcommand{\ChartSheet}[1]{\def\fc@sheet{#1}}
+\newcommand{\Station}[2]{\global\advance\fc@n 1
+  \csgdef{fc@sh\the\fc@n}{#1}\csgdef{fc@sb\the\fc@n}{#2}\csgdef{fc@sk\the\fc@n}{0}}
+\newcommand{\DocStation}[3]{\global\advance\fc@n 1
+  \csgdef{fc@sh\the\fc@n}{#1}\csgdef{fc@sl\the\fc@n}{#2}\csgdef{fc@sb\the\fc@n}{#3}\csgdef{fc@sk\the\fc@n}{1}}
+\NewDocumentCommand{\Gate}{s m m m m m m}{\global\advance\fc@ng 1
+  \csgdef{fc@gk\the\fc@ng}{#2}\csgdef{fc@gq\the\fc@ng}{#3}\csgdef{fc@gd\the\fc@ng}{#4}\csgdef{fc@go\the\fc@ng}{#5}
+  \csgdef{fc@gh\the\fc@ng}{#6}\csgdef{fc@gb\the\fc@ng}{#7}\IfBooleanTF{#1}{\csgdef{fc@gw\the\fc@ng}{1}}{\csgdef{fc@gw\the\fc@ng}{0}}}
+\newcommand{\SideDocument}[4]{\global\advance\fc@nd 1
+  \csgdef{fc@du\the\fc@nd}{#1}\csgdef{fc@df\the\fc@nd}{#2}\csgdef{fc@dh\the\fc@nd}{#3}\csgdef{fc@db\the\fc@nd}{#4}}
+\newcommand{\Loop}[3]{\global\advance\fc@nl 1
+  \csgdef{fc@lf\the\fc@nl}{#1}\csgdef{fc@lt\the\fc@nl}{#2}\csgdef{fc@ll\the\fc@nl}{#3}}
+\def\doc#1#2{}% only meaningful inside \DocStation; redefined there
+% ---- helpers
+\newcommand{\fc@items}[1]{\ifblank{#1}{}{\begingroup\let\item\fc@bullet\fc@firsttrue\parindent=0pt \parskip=0pt #1\par\endgroup}}
+\newcommand{\fc@stamp}[1]{\listxadd{\fc@stamps}{#1}}\def\fc@stamps{}
+\newcommand{\fc@measure}[3]{% #1 width (in, number), #2 font, #3 content -> \fc@len (total height)
+  \settototalheight{\fc@len}{\parbox{#1in}{\raggedright #2 #3}}}
+\newcommand{\fc@toin}[2]{\pgfmathsetmacro{#1}{(#2)/72.27}}% dimension register -> inches
+\newcommand{\fc@max}[2]{\pgfmathsetmacro{#1}{max(#1,#2)}}
+\newcommand{\fc@min}[2]{\pgfmathsetmacro{#1}{min(#1,#2)}}
+\def\fc@docsym#1#2#3{\draw[line width=0.5pt, fill=white] (#1,#2) -- (#1+#3,#2) -- (#1+#3,#2-0.36)
+  .. controls (#1+#3*0.74,#2-0.5) and (#1+#3*0.29,#2-0.26) .. (#1,#2-0.42) -- cycle;}
+\def\fc@countdoc#1#2{\global\advance\fc@k 1}
+\def\fc@drawdoc#1#2{\fc@docsym{\dx}{\dy}{\dw}
+  \node[anchor=north west, align=left, inner sep=0pt, text width=\dwt in] at (\dx+0.07,\dy-0.06)
+    {{\footnotesize\texttt{#1}}\ifblank{#2}{}{\\[-1pt]{\fontsize{7.5}{9}\selectfont #2}}};
+  \pgfmathsetmacro{\dy}{\dy-0.5}}
+\def\fc@addstamp#1{\ifdefempty{\fc@stamptext}{\gdef\fc@stamptext{#1}}{\gappto\fc@stamptext{\\#1}}}
+\def\fc@safecatcodes{\catcode`\_=12 \catcode`\&=12 \catcode`\#=12 \catcode`\$=12 \catcode`\^=12 }
+% ---- layout: every size in inches on a drawing of W x H units, scaled to 16 x 10 in
+\def\fc@layout{%
+  \pgfmathsetmacro{\fcW}{12*\fcR}\pgfmathsetmacro{\fcH}{7.5*\fcR}%
+  % columns
+  \pgfmathsetmacro{\fcw}{min((\fcW-0.5-0.5*(\the\fc@n-1))/\the\fc@n, 2.75)}%
+  \pgfmathsetmacro{\fcxz}{0.25+(\fcW-0.5-\the\fc@n*\fcw-0.5*(\the\fc@n-1))/2}%
+  \pgfmathsetmacro{\fcwt}{\fcw-10/72.27}%
+  \fc@i=0 \loop\ifnum\fc@i<\fc@n \advance\fc@i 1
+    \pgfmathsetmacro{\fc@tmp}{\fcxz+(\fc@i-1)*(\fcw+0.5)}\csxdef{fc@xL\the\fc@i}{\fc@tmp}%
+    \pgfmathsetmacro{\fc@tmp}{\fc@tmp+\fcw/2}\csxdef{fc@xC\the\fc@i}{\fc@tmp}%
+  \repeat
+  % header and body heights: the tallest of the row sets both, so every box lines up
+  \def\fchh{0.3}\def\fcbh{0.55}%
+  \fc@i=0 \loop\ifnum\fc@i<\fc@n \advance\fc@i 1
+    \pgfmathsetmacro{\fc@tmp}{\fcw-0.2}%
+    \fc@measure{\fc@tmp}{\sffamily\bfseries\normalsize\centering}{\the\fc@i\quad\csuse{fc@sh\the\fc@i}}%
+    \fc@toin{\fc@tmp}{\fc@len+8pt}\fc@max{\fchh}{\fc@tmp}%
+    \ifnum\csuse{fc@sk\the\fc@i}=1
+      \fc@measure{\fcwt}{\sffamily\small}{\csuse{fc@sl\the\fc@i}}\fc@toin{\fc@tmp}{\fc@len}%
+      \csxdef{fc@slh\the\fc@i}{\fc@tmp}%
+      \fc@k=0 \let\doc\fc@countdoc\setbox0\hbox{\csuse{fc@sb\the\fc@i}}%
+      \csxdef{fc@sn\the\fc@i}{\the\fc@k}%
+      \pgfmathsetmacro{\fc@tmp}{\fc@tmp+10/72.27+0.14+\the\fc@k*0.5}%
+    \else
+      \fc@measure{\fcwt}{\sffamily\small}{\fc@items{\csuse{fc@sb\the\fc@i}}}\fc@toin{\fc@tmp}{\fc@len+17pt}%
+    \fi
+    \fc@max{\fcbh}{\fc@tmp}%
+  \repeat
+  \pgfmathsetmacro{\fcrowh}{\fchh+\fcbh}%
+  % the top zone: title, subtitle, summary columns, key box
+  \pgfmathsetmacro{\fctop}{\fcH-0.25}%
+  \pgfmathsetmacro{\fcsubY}{\fctop-0.37}%
+  \ifdefempty{\fc@subtitle}{\pgfmathsetmacro{\fcsumY}{\fcsubY}}{\pgfmathsetmacro{\fcsumY}{\fcsubY-0.16}}%
+  \pgfmathsetmacro{\fczone}{\fcsubY-0.05}%
+  \ifdefempty{\fc@sumL}{}{%
+    \fc@measure{2.6}{\sffamily\footnotesize}{\fc@items{\fc@sumL}}\fc@toin{\fc@tmp}{\fc@len}%
+    \pgfmathsetmacro{\fc@tmp}{\fcsumY-\fc@tmp}\fc@min{\fczone}{\fc@tmp}}%
+  \ifdefempty{\fc@sumR}{}{%
+    \fc@measure{3.3}{\sffamily\footnotesize}{\fc@items{\fc@sumR}}\fc@toin{\fc@tmp}{\fc@len}%
+    \pgfmathsetmacro{\fc@tmp}{\fcsumY-\fc@tmp}\fc@min{\fczone}{\fc@tmp}}%
+  \pgfmathsetmacro{\fckw}{\fcW-0.25-6.4}\pgfmathsetmacro{\fckwt}{\fckw-10/72.27}%
+  \ifdefempty{\fc@keyhead}{\def\fckh{0}}{%
+    \fc@measure{\fckwt}{\sffamily\footnotesize}{\textbf{\small\fc@keyhead}\\[2pt]\fc@items{\fc@keyitems}}%
+    \fc@toin{\fckh}{\fc@len+11pt}\pgfmathsetmacro{\fc@tmp}{\fctop-\fckh}\fc@min{\fczone}{\fc@tmp}}%
+  \pgfmathsetmacro{\fcrowtop}{\fczone-0.4-\fcshift}%
+  \pgfmathsetmacro{\fcrowbot}{\fcrowtop-\fcrowh}%
+  % gates: diamond size from the question, outcome box under it
+  \def\fclow{\fcrowbot}\def\fcgates{0}\pgfmathsetmacro{\fcow}{\fcw+0.3}\pgfmathsetmacro{\fcowt}{\fcow-10/72.27}%
+  \fc@i=0 \loop\ifnum\fc@i<\fc@ng \advance\fc@i 1
+    \def\fcgates{1}%
+    \settowidth{\fc@len}{\sffamily\bfseries\small\csuse{fc@gq\the\fc@i}}%
+    \ifdim\fc@len>1.15in \setlength{\fc@len}{1.15in}\fi
+    \fc@toin{\fc@tmp}{\fc@len+1pt}\csxdef{fc@gtw\the\fc@i}{\fc@tmp}%
+    \fc@measure{\fc@tmp}{\sffamily\bfseries\small\centering}{\csuse{fc@gq\the\fc@i}}\fc@toin{\fc@tmpb}{\fc@len}%
+    \pgfmathsetmacro{\fc@a}{\fc@tmp/2+4/72.27+2*(\fc@tmpb/2+4/72.27)}\csxdef{fc@ga\the\fc@i}{\fc@a}%
+    \pgfmathsetmacro{\fc@b}{\fc@a/2}\csxdef{fc@ghb\the\fc@i}{\fc@b}%
+    \pgfmathsetmacro{\fc@tmp}{\fcrowbot-0.45-\fc@b}\csxdef{fc@gy\the\fc@i}{\fc@tmp}%
+    \pgfmathsetmacro{\fc@tmp}{\fc@tmp-\fc@b-0.45}\csxdef{fc@oy\the\fc@i}{\fc@tmp}%
+    \ifnum\csuse{fc@gw\the\fc@i}=1 \pgfmathsetmacro{\fc@hw}{\fcow-0.55}\else\pgfmathsetmacro{\fc@hw}{\fcow-0.18}\fi
+    \fc@measure{\fc@hw}{\sffamily\bfseries\normalsize}{\csuse{fc@gh\the\fc@i}}\fc@toin{\fc@hh}{\fc@len}\fc@max{\fc@hh}{0.19}%
+    \csxdef{fc@ohh\the\fc@i}{\fc@hh}%
+    \fc@measure{\fcowt}{\sffamily\small}{\fc@items{\csuse{fc@gb\the\fc@i}}}\fc@toin{\fc@tmpb}{\fc@len+10pt}%
+    \pgfmathsetmacro{\fc@tmpb}{0.12+\fc@hh+\fc@tmpb}\csxdef{fc@oh\the\fc@i}{\fc@tmpb}%
+    \pgfmathsetmacro{\fc@tmp}{\fc@tmp-\fc@tmpb}\fc@min{\fclow}{\fc@tmp}%
+  \repeat
+  \ifnum\fcgates=1 \pgfmathsetmacro{\fcroute}{\fclow-0.25}\fi
+  % side documents
+  \fc@i=0 \loop\ifnum\fc@i<\fc@nd \advance\fc@i 1
+    \pgfmathsetmacro{\fc@tmp}{\fcw-0.16}%
+    \fc@measure{\fc@tmp}{\sffamily\small}{\textbf{\csuse{fc@dh\the\fc@i}}\\[2pt]\fc@items{\csuse{fc@db\the\fc@i}}}%
+    \fc@toin{\fc@tmp}{\fc@len+22pt}\fc@max{\fc@tmp}{0.7}%
+    % does a gate lie between the document's station and the station it feeds? then route below the outcome boxes
+    \edef\fc@u{\csuse{fc@du\the\fc@i}}\edef\fc@f{\csuse{fc@df\the\fc@i}}\def\fc@cross{0}%
+    {\fc@j=0 \loop\ifnum\fc@j<\fc@ng \advance\fc@j 1
+      \edef\fc@kk{\csuse{fc@gk\the\fc@j}}%
+      \pgfmathtruncatemacro{\fc@t}{(\fc@kk-\fc@u)*(\fc@kk-\fc@f)<0 ? 1 : 0}%
+      \ifnum\fc@t=1 \gdef\fc@cross{1}\fi
+    \repeat}%
+    \ifnum\fc@cross=1
+      \pgfmathsetmacro{\fc@top}{min(\fcrowbot-0.55,\fcroute-0.25+\fc@tmp)}\csxdef{fc@dt\the\fc@i}{\fc@top}%
+      \pgfmathsetmacro{\fc@bot}{\fc@top-\fc@tmp}\csxdef{fc@dbot\the\fc@i}{\fc@bot}%
+      \csxdef{fc@dr\the\fc@i}{\fcroute}%
+    \else
+      \pgfmathsetmacro{\fc@top}{\fcrowbot-0.55}\csxdef{fc@dt\the\fc@i}{\fc@top}%
+      \pgfmathsetmacro{\fc@bot}{\fc@top-\fc@tmp}\csxdef{fc@dbot\the\fc@i}{\fc@bot}%
+      \pgfmathsetmacro{\fc@tmp}{\fc@bot+0.3}\csxdef{fc@dr\the\fc@i}{\fc@tmp}%
+    \fi
+    \pgfmathsetmacro{\fc@tmp}{\fc@bot-0.1}\fc@min{\fclow}{\fc@tmp}%
+  \repeat
+  % loops: lanes below everything
+  \def\fcbottom{\fclow}%
+  \fc@i=0 \loop\ifnum\fc@i<\fc@nl \advance\fc@i 1
+    \pgfmathsetmacro{\fc@tmp}{\fclow-0.45-(\fc@i-1)*0.4}\csxdef{fc@ly\the\fc@i}{\fc@tmp}\def\fcbottom{\fc@tmp}%
+  \repeat
+  \pgfmathsetmacro{\fcslack}{\fcbottom-0.65}%
+}
+% ---- draw
+\def\fc@draw{%
+  \ifnum\fc@n<2 \fc@stamp{Add at least two \string\Station\ blocks}\fi
+  \ifnum\fc@n>6 \fc@stamp{At most six stations: merge or drop some}\fi
+  \ifdefempty{\fc@title}{\fc@stamp{MISSING: \string\ChartTitle}\def\fc@title{\textcolor{red}{MISSING TITLE}}}{}%
+  \ifnum\fc@n<1 \global\advance\fc@n 1 \csgdef{fc@sh1}{Station}\csgdef{fc@sb1}{\item Add stations}\csgdef{fc@sk1}{0}\fi
+  \def\fcR{1}\def\fcshift{0}\fc@layout
+  \ifdim\fcslack pt<0pt
+    \pgfmathsetmacro{\fcR}{min(1.45,(7.5-\fcslack)/7.5*1.02)}\fc@layout
+    \ifdim\fcslack pt<0pt \pgfmathsetmacro{\fcR}{min(1.45,\fcR*(7.5*\fcR-\fcslack)/(7.5*\fcR)*1.02)}\fc@layout\fi
+    \ifdim\fcslack pt<0pt \fc@stamp{TOO TALL: shorten the bullets or drop a station}\fi
+  \fi
+  \ifdim\fcslack pt>0pt \pgfmathsetmacro{\fcshift}{min(\fcslack/2,0.9)}\fc@layout\fi
+  \settowidth{\fc@len}{\sffamily\bfseries\footnotesize\fc@title}\fc@toin{\fctw}{\fc@len+12pt}\fc@max{\fctw}{2.6}%
+  \pgfmathsetmacro{\fcscale}{1.333333/\fcR}%
+  \noindent\scalebox{\fcscale}{%
+  \begin{tikzpicture}[x=1in, y=1in]
+  \useasboundingbox (0,0) rectangle (\fcW,\fcH);
+  \draw[line width=0.8pt] (0,0) rectangle (\fcW,\fcH);
+  % title zone
+  \node[anchor=north west, inner sep=0pt, font=\sffamily\bfseries\fontsize{14}{16}\selectfont] at (0.25,\fctop) {\fc@title};
+  \ifdefempty{\fc@subtitle}{}{\node[anchor=north west, inner sep=0pt, font=\sffamily\footnotesize\itshape] at (0.25,\fcsubY) {\fc@subtitle};}
+  \ifdefempty{\fc@sumL}{}{\node[anchor=north west, align=left, inner sep=0pt, text width=2.6in, font=\sffamily\footnotesize] at (0.25,\fcsumY) {\fc@items{\fc@sumL}};}
+  \ifdefempty{\fc@sumR}{}{\node[anchor=north west, align=left, inner sep=0pt, text width=3.3in, font=\sffamily\footnotesize] at (2.95,\fcsumY) {\fc@items{\fc@sumR}};}
+  \ifdefempty{\fc@keyhead}{}{\node[box, anchor=north west, text width=\fckwt in, font=\sffamily\footnotesize] at (6.4,\fctop) {\textbf{\small\fc@keyhead}\\[2pt]\fc@items{\fc@keyitems}};}
+  % stations
+  \foreach \i in {1,...,\the\fc@n} {
+    \edef\xL{\csuse{fc@xL\i}}\pgfmathsetmacro{\xR}{\xL+\fcw}\pgfmathsetmacro{\yb}{\fcrowtop-\fchh}\pgfmathsetmacro{\yc}{\fcrowtop-\fchh/2}
+    \pgfmathsetmacro{\ybb}{\yb-\fcbh}
+    \draw[line width=0.5pt, fill=headgreen] (\xL,\fcrowtop) rectangle (\xR,\yb);
+    \pgfmathsetmacro{\hw}{\fcw-0.2}
+    \node[text=white, font=\sffamily\bfseries\normalsize, inner sep=0pt, text width=\hw in, align=center] at (\xL+\fcw/2,\yc) {\i\quad\csuse{fc@sh\i}};
+    \draw[box] (\xL,\yb) rectangle (\xR,\ybb);
+    \ifnum\csuse{fc@sk\i}=1
+      \node[anchor=north west, inner sep=5pt, text width=\fcwt in, align=left] at (\xL,\yb) {\csuse{fc@sl\i}};
+      \pgfmathsetmacro{\dw}{\fcw-0.34}\pgfmathsetmacro{\dwt}{\dw-0.14}\pgfmathsetmacro{\dx}{\xL+0.17}
+      \pgfmathsetmacro{\dy}{\yb-10/72.27-\csuse{fc@slh\i}-0.1}
+      \let\doc\fc@drawdoc
+      \csuse{fc@sb\i}
+    \else
+      \node[anchor=north west, inner sep=5pt, text width=\fcwt in, align=left] at (\xL,\yb) {\fc@items{\csuse{fc@sb\i}}};
+    \fi
+    \ifnum\i<\fc@n \draw[flow] (\xR,\yc) -- (\xR+0.5,\yc); \fi
+  }
+  % gates
+  \ifnum\fc@ng>0 \foreach \g in {1,...,\the\fc@ng} {
+    \edef\k{\csuse{fc@gk\g}}
+    \ifnum\k<1 \fc@stamp{Gate \g: station number \k\ does not exist}\else\ifnum\k>\fc@n \fc@stamp{Gate \g: station number \k\ does not exist}\else
+    \ifnum\k=\fc@n \fc@stamp{Gate under the last station: move it to an earlier station or add a final station}\fi
+    \edef\gx{\csuse{fc@xC\k}}\edef\gy{\csuse{fc@gy\g}}\edef\ga{\csuse{fc@ga\g}}\edef\gb{\csuse{fc@ghb\g}}
+    \edef\oy{\csuse{fc@oy\g}}\edef\oh{\csuse{fc@oh\g}}\edef\ohh{\csuse{fc@ohh\g}}\pgfmathsetmacro{\oit}{\oy-0.1-\ohh}
+    \draw[flow] (\gx,\fcrowbot) -- (\gx,\gy+\gb);
+    \edef\gtw{\csuse{fc@gtw\g}}
+    \node[gate, text width=\gtw in] at (\gx,\gy) {\csuse{fc@gq\g}};
+    \draw[flow] (\gx,\gy-\gb) -- (\gx,\oy) node[midway, right, branch] {\csuse{fc@gd\g}};
+    \draw[box] (\gx-\fcow/2,\oy) rectangle (\gx+\fcow/2,\oy-\oh);
+    \ifnum\csuse{fc@gw\g}=1
+      \draw[line width=0.8pt, fill=yellow!85, rounded corners=1pt] (\gx-\fcow/2+0.08,\oy-0.3) -- ++(0.3,0) -- ++(-0.15,0.26) -- cycle;
+      \node[font=\sffamily\bfseries\small, inner sep=0pt] at (\gx-\fcow/2+0.23,\oy-0.2) {!};
+      \pgfmathsetmacro{\ohw}{\fcow-0.55}
+      \node[anchor=north west, font=\sffamily\bfseries\normalsize, inner sep=0pt, text width=\ohw in, align=left] at (\gx-\fcow/2+0.45,\oy-0.09) {\csuse{fc@gh\g}};
+    \else
+      \pgfmathsetmacro{\ohw}{\fcow-0.18}
+      \node[anchor=north west, font=\sffamily\bfseries\normalsize, inner sep=0pt, text width=\ohw in, align=left] at (\gx-\fcow/2+0.08,\oy-0.09) {\csuse{fc@gh\g}};
+    \fi
+    \node[anchor=north west, inner sep=5pt, text width=\fcowt in, align=left] at (\gx-\fcow/2,\oit) {\fc@items{\csuse{fc@gb\g}}};
+    \ifnum\k<\fc@n
+      \pgfmathtruncatemacro{\kk}{\k+1}\edef\nx{\csuse{fc@xC\kk}}
+      \draw[line width=1.2pt] (\gx+\ga,\gy) -- (\nx,\gy) node[pos=0.5, above, branch] {\csuse{fc@go\g}};
+      \ifcsdef{fc@fed\kk}{\fill (\nx,\gy) circle (2.6pt);}{\draw[flow] (\nx,\gy) -- (\nx,\fcrowbot);}
+    \fi
+    \fi\fi
+  }\fi
+  % side documents
+  \ifnum\fc@nd>0 \foreach \d in {1,...,\the\fc@nd} {
+    \edef\u{\csuse{fc@du\d}}\edef\f{\csuse{fc@df\d}}
+    \ifnum\u<1 \fc@stamp{Side document \d: station number \u\ does not exist}\else\ifnum\u>\fc@n \fc@stamp{Side document \d: station number \u\ does not exist}\else
+    \ifnum\f<1 \fc@stamp{Side document \d: station number \f\ does not exist}\else\ifnum\f>\fc@n \fc@stamp{Side document \d: station number \f\ does not exist}\else
+    \edef\xL{\csuse{fc@xL\u}}\pgfmathsetmacro{\xR}{\xL+\fcw}\edef\xC{\csuse{fc@xC\u}}
+    \edef\dt{\csuse{fc@dt\d}}\edef\db{\csuse{fc@dbot\d}}\edef\dr{\csuse{fc@dr\d}}\pgfmathsetmacro{\dwt}{\fcw-0.16}
+    \pgfmathsetmacro{\dfoot}{\db-0.039}\csxdef{fc@under\u}{\dfoot}
+    \draw[line width=0.5pt, fill=white] (\xL,\dt) -- (\xR,\dt) -- (\xR,\db)
+      .. controls (\xL+0.65*\fcw,\db-0.16) and (\xL+0.35*\fcw,\db+0.08) .. (\xL,\db-0.07) -- cycle;
+    \node[anchor=north west, align=left, inner sep=0pt, text width=\dwt in] at (\xL+0.08,\dt-0.08) {\textbf{\csuse{fc@dh\d}}\\[2pt]\fc@items{\csuse{fc@db\d}}};
+    \edef\fx{\csuse{fc@xC\f}}
+    \ifnum\f>\u \draw[flow] (\xR,\dr) -| (\fx,\fcrowbot); \fi
+    \ifnum\f<\u \draw[flow] (\xL,\dr) -| (\fx,\fcrowbot); \fi
+    \ifnum\f=\u \draw[flow] (\xC,\dt) -- (\xC,\fcrowbot); \fi
+    \fi\fi\fi\fi
+  }\fi
+  % loops
+  \ifnum\fc@nl>0 \foreach \l in {1,...,\the\fc@nl} {
+    \edef\f{\csuse{fc@lf\l}}\edef\t{\csuse{fc@lt\l}}\edef\ly{\csuse{fc@ly\l}}
+    \ifnum\f<1 \fc@stamp{Loop \l: station number \f\ does not exist}\else\ifnum\f>\fc@n \fc@stamp{Loop \l: station number \f\ does not exist}\else
+    \ifnum\t<1 \fc@stamp{Loop \l: station number \t\ does not exist}\else\ifnum\t>\fc@n \fc@stamp{Loop \l: station number \t\ does not exist}\else
+    \edef\fx{\csuse{fc@xC\f}}\edef\tx{\csuse{fc@xC\t}}
+    \ifcsdef{fc@busy\f}{\pgfmathsetmacro{\fx}{\fx+\fcw/4}}{}
+    \ifcsdef{fc@under\t}{\edef\ey{\csuse{fc@under\t}}}{\edef\ey{\fcrowbot}\ifcsdef{fc@busy\t}{\pgfmathsetmacro{\tx}{\tx-\fcw/4}}{}}
+    \draw[flow] (\fx,\fcrowbot) |- (\tx,\ly) -- (\tx,\ey);
+    \node[anchor=south, note] at ({(\fx+\tx)/2},\ly+0.03) {\csuse{fc@ll\l}};
+    \fi\fi\fi\fi
+  }\fi
+  % title block, one row in the bottom right corner
+  \pgfmathsetmacro{\tbx}{\fcW-5.05-\fctw}
+  \pgfmathsetmacro{\tba}{\fcW-5.05}\pgfmathsetmacro{\tbb}{\tba+1.4}\pgfmathsetmacro{\tbc}{\tbb+0.9}
+  \pgfmathsetmacro{\tbd}{\tbc+0.45}\pgfmathsetmacro{\tbe}{\tbd+0.85}\pgfmathsetmacro{\tbf}{\tbe+0.9}
+  \draw[line width=0.5pt] (\tbx,0) -- (\tbx,0.42) -- (\fcW,0.42);
+  \foreach \x in {\tba,\tbb,\tbc,\tbd,\tbe,\tbf} \draw[line width=0.5pt] (\x,0) -- (\x,0.42);
+  \foreach \x/\lab/\val in {\tbx/Title/\fc@title, \tba/Project/\fc@project, \tbb/Doc no./\fc@docno, \tbc/Rev./\fc@rev,
+                            \tbd/Date/\fc@date, \tbe/Drawn/\fc@drawn, \tbf/Sheet/\fc@sheet} {
+    \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{7}{8}\selectfont] at (\x+0.07,0.36) {\lab};
+    \node[anchor=south west, inner sep=0pt, font=\sffamily\bfseries\footnotesize] at (\x+0.07,0.07) {\val};
+  }
+  % stamps: red lines bottom left when something could not be drawn as asked
+  \gdef\fc@stamptext{}\forlistloop{\fc@addstamp}{\fc@stamps}
+  \ifdefempty{\fc@stamptext}{}{\node[anchor=south west, inner sep=0pt, text=red, font=\sffamily\bfseries\footnotesize, text width=3.9in, align=left] at (0.3,0.1) {\fc@stamptext};}
+  \end{tikzpicture}}%
+}
+\def\fc@checks{% layout rules a weak layout cannot draw; each becomes a red stamp
+  \fc@i=0 \loop\ifnum\fc@i<\fc@ng \advance\fc@i 1
+    \edef\k{\csuse{fc@gk\the\fc@i}}\csgdef{fc@gated\k}{1}\pgfmathtruncatemacro{\fc@tmp}{\k+1}\csgdef{fc@busy\fc@tmp}{1}%
+    {\fc@j=\fc@i \loop\ifnum\fc@j<\fc@ng \advance\fc@j 1
+      \edef\kk{\csuse{fc@gk\the\fc@j}}\pgfmathtruncatemacro{\fc@tmp}{abs(\k-\kk)}%
+      \ifnum\fc@tmp<2 \fc@stamp{Gates under stations \k\ and \kk: keep at least one station between gates}\fi
+    \repeat}
+  \repeat
+  \fc@i=0 \loop\ifnum\fc@i<\fc@nd \advance\fc@i 1
+    \edef\u{\csuse{fc@du\the\fc@i}}\edef\f{\csuse{fc@df\the\fc@i}}%
+    \csgdef{fc@fed\f}{1}\csgdef{fc@hasdoc\u}{1}\csgdef{fc@busy\f}{1}%
+    \ifcsdef{fc@gated\u}{\fc@stamp{Side document under station \u, which has a gate: put it under another station}}{}%
+    \ifcsdef{fc@gated\f}{\fc@stamp{Side document feeds station \f, which has a gate: feed another station}}{}%
+    \pgfmathtruncatemacro{\fc@tmp}{\u-1}\ifcsdef{fc@gated\fc@tmp}{\fc@stamp{Side document under station \u, right after a gate: put it under another station}}{}%
+  \repeat
+  \fc@i=0 \loop\ifnum\fc@i<\fc@nl \advance\fc@i 1
+    \edef\f{\csuse{fc@lf\the\fc@i}}\edef\t{\csuse{fc@lt\the\fc@i}}%
+    \ifcsdef{fc@gated\f}{\fc@stamp{Loop from station \f, which has a gate: start the loop at another station}}{}%
+    \ifcsdef{fc@hasdoc\f}{\fc@stamp{Loop from station \f, which has a side document under it: start it elsewhere}}{}%
+    \ifcsdef{fc@gated\t}{\fc@stamp{Loop into station \t, which has a gate: end the loop at another station}}{}%
+  \repeat
+}
+\AtEndDocument{\fc@checks\fc@draw}
+\makeatother
+\begin{document}
+\makeatletter\fc@safecatcodes\makeatother
+\ChartTitle{Make a Peanut Butter and Jelly Sandwich}
+\ChartSubtitle{Step-by-step process for assembling a classic PB\&J from start to finish.}
+\KeyBox{Before You Start}{\item Two slices of bread
+  \item Peanut butter and jelly or jam
+  \item A knife and a plate or cutting board}
+\Station{Gather Ingredients}{\item Set bread on the plate or cutting board
+  \item Set out peanut butter, jelly or jam, and the knife}
+\Station{Decide Spread Amount}{\item Choose a thin layer or a thick one
+  \item Your choice sets how much peanut butter and jelly you use}
+\Station{Spread Peanut Butter}{\item Use the knife to coat one slice of bread
+  \item Spread evenly from edge to edge}
+\Station{Spread the Jelly}{\item Coat the second slice the same way
+  \item Press the two slices together, spreads facing each other}
+\Station{Cut and Serve}{\item Slice diagonally or straight across
+  \item Eat right away or wrap for later}
+\ChartDate{2026-10-15}
+\ChartRev{1}
+\ChartSheet{1 of 1}
+\end{document}

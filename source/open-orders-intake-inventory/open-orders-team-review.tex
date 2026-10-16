@@ -1,0 +1,306 @@
+% Open Orders by MSA report builder (macro v2.8): the deck for the 1 hr 30 min team review.
+% Three 11 x 17 landscape sheets (ledger, 17 x 11 in) drawn in TikZ, in the house style of open-orders-macro-flow.tex:
+%   Sheet 1 "Agenda": a 90-minute timeline. Part 1, current system review (30 min): sheets 2 and 3, 5 min each,
+%   then a live build from Lexi's exports (20 min). Part 2, planning for the future (60 min, open): where the data
+%   needs to go and the PowerPoint questions (questions 3, 7, 14 to 16 and 18 of open-orders-report-questions.tex).
+%   The same Part 2 questions are printed to write on in open-orders-meeting-questions.tex; keep the two in step.
+%   Sheet 2 "Design Process": the five steps in the order they were done (map, Copilot, design, generative AI, prove it).
+%   Sheet 3: open-orders-macro-flow.tex itself, input with docmute (one source; its title block shows \flowsheet).
+% Facts come from the .bas and .py files in this folder, output/.../macro-instructions.md (validation) and
+% business-case.md; "10 to 15 prompts on each file" is the owner's own figure.
+% Each sheet is laid out on a 12 x 7.5 in grid and scaled by 4/3 to fill the 16 x 10 in drawing area.
+% Build: ./build.sh source/open-orders-intake-inventory/open-orders-team-review.tex
+\documentclass[10pt]{article}
+\usepackage[paperwidth=17in, paperheight=11in, margin=0.5in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, calc, fit, shapes.geometric, intersections}
+\usepackage{docmute}
+\usepackage[hidelinks, pdftitle={Open Orders by MSA: Team Review}, pdfauthor={Gust F.}]{hyperref}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\setlist[itemize]{label=\textbullet, leftmargin=0.85em, labelsep=0.35em, itemsep=1.5pt, parsep=0pt,
+                  topsep=0pt, partopsep=0pt}
+\definecolor{headgreen}{HTML}{548235}
+\definecolor{bandgreen}{HTML}{E2EFDA}
+\definecolor{flagpeach}{HTML}{FCE4D6}
+\tikzset{
+  every node/.style={font=\sffamily\small, inner sep=5pt},
+  box/.style={draw, line width=0.5pt, fill=white, align=left},
+  station/.style={draw, line width=0.5pt, fill=headgreen, text=white, font=\sffamily\bfseries\normalsize,
+                  align=center, inner ysep=4pt, text height=1.6ex, text depth=0.45ex},
+  flow/.style={-{Stealth[length=9pt, width=6.5pt]}, line width=1.2pt, line join=miter},
+  link/.style={-{Stealth[length=6pt, width=4.5pt]}, line width=0.6pt, dash pattern=on 3pt off 2pt},
+  note/.style={font=\sffamily\footnotesize, inner sep=2pt},
+  % used by sheet 3, the build-flow drawing
+  gate/.style={draw, line width=0.8pt, diamond, aspect=2, inner sep=4pt, font=\sffamily\bfseries\small},
+  branch/.style={font=\sffamily\bfseries\small, inner sep=3pt},
+  % flowchart document symbol: 1.55 x 0.42 in, wavy foot, anchored at its top left corner
+  doc/.pic={\draw[line width=0.5pt, fill=white] (0,0) -- (1.55,0) -- (1.55,-0.36)
+              .. controls (1.15,-0.5) and (0.45,-0.26) .. (0,-0.42) -- cycle;}
+}
+\newcommand{\by}[1]{{\footnotesize\itshape #1}\\[3pt]}
+\newcommand{\lines}[1]{{\fontsize{7.5}{9}\selectfont #1 lines}}
+\newcommand{\peach}[1]{{\setlength{\fboxsep}{1pt}\colorbox{flagpeach}{\textbf{#1}}}}
+\newcommand{\badge}[1]{{\setlength{\fboxsep}{2pt}\colorbox{headgreen}{\textcolor{white}{\bfseries #1}}}}
+\newcommand{\flowsheet}{3 of 3}
+% miniatures of sheets 2 and 3 for the agenda, drawn in each sheet's own 12 x 7.5 coordinates (use in a scaled scope)
+\newcommand{\thumbframe}{%
+  \draw[line width=0.5pt, fill=white] (0,0) rectangle (12,7.5);
+  \fill (0.25,7.0) rectangle (2.6,7.25);}
+\newcommand{\thumbdesign}{%
+  \thumbframe
+  \foreach \a/\b/\c in {0.25/2.74/3.94, 2.98/5.47/4.49, 5.71/9.05/2.76, 9.29/11.73/5.17} {
+    \draw[line width=0.3pt] (\a,6.3) rectangle (\b,\c); \fill[headgreen] (\a,6.02) rectangle (\b,6.3);}
+  \draw[line width=0.3pt] (0.25,2.62) rectangle (8.59,0.59); \fill[headgreen] (0.25,2.34) rectangle (8.59,2.62);
+  \draw[line width=0.3pt] (0.46,2.55) rectangle (2.33,1.97); \draw[line width=0.3pt] (2.98,2.55) rectangle (4.84,1.97);
+  \draw[line width=0.3pt] (9.29,2.15) rectangle (11.73,1.1);
+  \draw[line width=0.3pt] (5.7,0) -- (5.7,0.42) -- (12,0.42);}
+\newcommand{\thumbflow}{%
+  \thumbframe
+  \foreach \a/\b/\c in {0.26/2.16/3.32, 2.66/4.54/4.93, 5.04/6.9/4.25, 7.4/9.35/3.7, 9.86/11.75/3.64} {
+    \draw[line width=0.3pt] (\a,5.8) rectangle (\b,\c); \fill[headgreen] (\a,5.52) rectangle (\b,5.8);}
+  \draw[line width=0.3pt] (5.95,4.25) -- (5.95,3.59) (5.42,3.34) -- (5.95,3.59) -- (6.48,3.34) -- (5.95,3.09) -- cycle;
+  \draw[line width=0.3pt] (5.95,3.09) -- (5.95,2.55) (4.88,2.55) rectangle (7.02,1.71);
+  \draw[line width=0.3pt] (6.48,3.34) -- (7.96,3.34) (2.14,1.6) -| (7.96,3.7);
+  \draw[line width=0.3pt] (0.26,2.08) rectangle (2.14,1.12);
+  \draw[line width=0.3pt] (10.83,3.64) |- (1.2,0.85) -- (1.2,1.12);
+  \draw[line width=0.3pt] (6.91,0) -- (6.91,0.42) -- (12,0.42);}
+% title block, one row in the bottom right corner: #1 title, #2 sheet
+\newcommand{\titleblock}[2]{%
+  \draw[line width=0.5pt] (5.7,0) -- (5.7,0.42) -- (12,0.42);
+  \foreach \x in {7.3, 8.95, 9.5, 9.95, 10.75, 11.45} \draw[line width=0.5pt] (\x,0) -- (\x,0.42);
+  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/Open Orders by MSA, 8.95/Macro/v2.8, 9.5/Rev./13,
+                                9.95/Date/2026-10-15, 10.75/Drawn/Gust F., 11.45/Sheet/#2} {
+    \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{7}{8}\selectfont] at (\x+0.07,0.36) {\label};
+    \node[anchor=south west, inner sep=0pt, font=\sffamily\bfseries\footnotesize] at (\x+0.07,0.07) {\value};
+  }}
+
+\begin{document}
+% ============================================================================ sheet 1: Agenda
+% timeline: 90 minutes from x = 0.5 to x = 11.5 (11/90 in a minute): 0:05 at 1.1111, 0:10 at 1.7222, 0:30 at 4.1667
+\noindent
+\scalebox{1.333333}{%
+\begin{tikzpicture}[x=1in, y=1in]
+\useasboundingbox (0,0) rectangle (12,7.5);
+\draw[line width=0.8pt] (0,0) rectangle (12,7.5);
+
+\node[anchor=north west, inner sep=0pt, font=\sffamily\bfseries\fontsize{14}{16}\selectfont]
+  at (0.25,7.25) {Agenda};
+\node[anchor=north west, inner sep=0pt, font=\sffamily\footnotesize] at (0.25,6.88)
+  {Open Orders by MSA report builder: team review, 1 hr 30 min.};
+
+
+% ---------------------------------------------------------------- the two halves
+\draw[line width=0.5pt, fill=headgreen] (0.5,6.0) rectangle (4.1267,6.32);
+\draw[line width=0.5pt, fill=headgreen] (4.2067,6.0) rectangle (11.5,6.32);
+\node[anchor=west, text=white, font=\sffamily\bfseries\normalsize] at (0.5,6.16) {Part 1\quad Current System Review};
+\node[anchor=east, text=white, font=\sffamily\bfseries\normalsize] at (4.1267,6.16) {30 min};
+\node[anchor=west, text=white, font=\sffamily\bfseries\normalsize] at (4.2067,6.16) {Part 2\quad Planning for the Future};
+\node[anchor=east, text=white, font=\sffamily\bfseries\normalsize] at (11.5,6.16) {60 min};
+
+% ---------------------------------------------------------------- the timeline, to scale
+\foreach \a/\b/\t in {0.5/1.1111/{Design\\Process}, 1.1111/1.7222/{User\\Manual}} {
+  \draw[line width=0.5pt, fill=white] (\a,5.3) rectangle (\b,5.86);
+  \node[align=center, font=\sffamily\bfseries\footnotesize, inner sep=0pt] at ({(\a+\b)/2},5.58) {\t};
+}
+\draw[line width=0.5pt, fill=headgreen] (1.7222,5.3) rectangle (4.1667,5.86);
+\node[text=white, font=\sffamily\bfseries\normalsize, inner sep=0pt] at (2.9444,5.58) {Live Build};
+\draw[line width=0.5pt, fill=bandgreen] (4.1667,5.3) rectangle (11.5,5.86);
+\node[font=\sffamily\bfseries\normalsize, inner sep=0pt] at (7.8333,5.58) {Open Discussion: where the data needs to go};
+\foreach \x/\t in {0.5/0:00, 1.1111/0:05, 1.7222/0:10, 4.1667/0:30, 11.5/1:30} {
+  \draw[line width=0.5pt] (\x,5.3) -- (\x,5.18);
+  \node[anchor=north, font=\sffamily\bfseries\footnotesize, inner sep=0pt] at (\x,5.13) {\t};
+}
+% end of part 1
+\draw[line width=0.5pt, dash pattern=on 4pt off 3pt] (4.1667,4.95) -- (4.1667,0.85);
+
+% ---------------------------------------------------------------- part 1: the two sheets, 5 min each
+\foreach \c/\pic/\sheet/\what in {1.1111/\thumbdesign/2/{How it was made\\VBA <=> Python},
+                                  2.3333/\thumbflow/3/{One run, step by step\\The UNMAPPED loop}} {
+  \begin{scope}[shift={(\c-0.55,4.06)}, scale=0.091667, x=1in, y=1in]
+    \pic
+  \end{scope}
+  \node[anchor=north, align=center, text width=1.15in, inner sep=0pt, font=\sffamily\footnotesize] at (\c,3.95)
+    {\textbf{Sheet \sheet}\\[3pt] \what};
+}
+
+% ---------------------------------------------------------------- part 1: the live build, 20 min
+\node[box, anchor=north, text width=0.98in, inner sep=4pt, font=\sffamily\footnotesize] (lb) at (3.5556,4.75)
+  {\textbf{From Lexi's exports}\\[3pt]
+  \begin{enumerate}[label=\badge{\arabic*}, leftmargin=1.45em, labelsep=0.35em, itemsep=3pt, topsep=0pt, parsep=0pt]
+  \item Exports into one folder
+  \item Check setup
+  \item Build report
+  \item Walk the four tabs
+  \end{enumerate}\vspace{3pt}
+  {\itshape Questions as we go}};
+
+% the four tabs, drawn as sheet tabs
+\node[anchor=north west, inner sep=0pt, font=\sffamily\bfseries\small] at (0.5,2.55) {What the build gives us: four tabs};
+\draw[line width=0.8pt] (0.5,2.22) -- (4.0,2.22);
+\foreach \i/\t/\n in {0/{File\\Format}/{The rules,\\in writing},
+                      1/{Order\\Intake}/{All MSAs\\on one tab},
+                      2/{Inventory\\by Month}/{Units by\\MSA; pick\\the month},
+                      3/{Run\\Log}/{Every file\\read, with\\row counts}} {
+  \pgfmathsetmacro{\xa}{0.5+\i*0.875}
+  \draw[line width=0.5pt, fill=white] (\xa,2.22) -- (\xa+0.08,1.76) -- (\xa+0.795,1.76) -- (\xa+0.875,2.22);
+  \node[align=center, font=\sffamily\bfseries\footnotesize, inner sep=0pt] at (\xa+0.4375,1.99) {\t};
+  \node[anchor=north, align=center, font=\sffamily\footnotesize, inner sep=0pt] at (\xa+0.4375,1.64) {\n};
+}
+
+% ---------------------------------------------------------------- part 2: where the data goes, 60 min open
+\node[anchor=north west, inner sep=0pt, font=\sffamily\bfseries\large] at (4.6,4.75) {Where does the data need to go?};
+\pic at (4.65,4.2) {doc};
+\node[anchor=north west, align=left, inner sep=0pt] at (4.75,4.12) {\textbf{Report workbook}\\[-1pt]{\footnotesize four tabs, all MSAs}};
+\foreach \d in {0.12,0.06,0} \draw[line width=0.5pt, fill=white] (9.75+\d,4.27+\d) rectangle (11.35+\d,3.42+\d);
+\node[align=center, inner sep=0pt] at (10.55,3.845) {\textbf{PowerPoint deck}\\[1pt]{\footnotesize which slides?}};
+\draw[flow, dash pattern=on 5pt off 3pt] (6.28,3.98) -- (9.68,3.98);
+\node[circle, fill=black, text=white, font=\sffamily\bfseries\small, inner sep=0pt, minimum size=0.24in] at (7.98,3.98) {?};
+
+\node[anchor=north west, align=left, text width=3.2in, inner sep=0pt] at (8.3,2.9) {\textbf{The deck}\\[3pt]
+  \begin{itemize}
+  \item Which slides come from this report?
+  \item What figures need to be included? 
+  \item Is the MSA analysis missing anything that needs to go into the deck?
+  \item Editable charts on the template? One slide per MSA, or one summary?
+  \end{itemize}};
+\node[anchor=north west, align=left, text width=3.2in, inner sep=0pt] at (4.6,2.9) {\textbf{The data}\\[3pt]
+  \begin{itemize}
+  \item Is the Open Order export needed from snowflake?
+  \item Where does the size class main file live? 
+  \end{itemize}};
+\node[anchor=north west, draw, line width=0.5pt, fill=bandgreen, text width=6.7in, align=left] at (4.6,1.5)
+  {\textbf{We leave with:} the slide list, each slide's required data, open questions assigned owners. };
+
+\titleblock{Agenda}{1 of 3}
+\end{tikzpicture}}
+
+\newpage
+% ============================================================================ sheet 2: Design Process
+\noindent
+\scalebox{1.333333}{%
+\begin{tikzpicture}[x=1in, y=1in]
+\useasboundingbox (0,0) rectangle (12,7.5);
+\draw[line width=0.8pt] (0,0) rectangle (12,7.5);
+
+\node[anchor=north west, inner sep=0pt, font=\sffamily\bfseries\fontsize{14}{16}\selectfont]
+  at (0.25,7.25) {Design Process};
+\node[anchor=north west, inner sep=0pt, font=\sffamily\footnotesize] at (0.25,6.88)
+  {How the Open Orders by MSA report builder was made, in the order it was done.};
+\node[anchor=north west, inner sep=0pt, font=\sffamily\footnotesize\itshape] at (0.25,6.7)
+  {Designed by hand. Repetitive code written with generative AI. Checked by two separate builds that must agree.};
+
+% ---------------------------------------------------------------- step 1
+\node[station, anchor=north west, text width=2.35in] (h1) at (0.25,6.3) {1\quad Map Inputs and Outputs};
+\node[box, anchor=north, text width=2.35in] (b1) at (h1.south) {\by{Done by hand}
+  \textbf{In}\\[1pt]
+  \begin{itemize}
+  \item Snowflake exports: Order Intake, Inventory by Month, Open Order
+  \item The size class workbook
+  \end{itemize}\vspace{3pt}
+  \textbf{Out}\\[1pt]
+  \begin{itemize}
+  \item File Format, Order Intake, Inventory by Month, Run Log
+  \end{itemize}\vspace{3pt}
+  \textbf{Rules written down first}\\[1pt]
+  \begin{itemize}
+  \item What is filtered, hidden, sorted and counted
+  \item Those rules became the File Format tab
+  \end{itemize}};
+
+% ---------------------------------------------------------------- step 2
+\node[station, anchor=north west, text width=2.35in] (h2) at (2.979,6.3) {2\quad Analyze the Input Files};
+\node[box, anchor=north, text width=2.35in] (b2) at (h2.south) {\by{Done by hand, with Copilot}
+  \begin{itemize}
+  \item 10 to 15 short prompts on each file
+  \item Read the headers, MSA spellings, order statuses, inventory months and model groups
+  \item Each prompt: a fixed reply format, most with a row-count check
+  \item What the real exports look like, checked against what the macro expects
+  \end{itemize}};
+
+% ---------------------------------------------------------------- step 3
+\node[station, anchor=north west, text width=3.2in] (h3) at (5.708,6.3) {3\quad Design Before Code};
+\node[box, anchor=north, text width=3.2in] (b3) at (h3.south) {\by{Done by hand}
+  \textbf{Architecture}\\[1pt]
+  \begin{itemize}
+  \item Two builds of the same rules: VBA for the team, Python as the reference to check it against
+  \end{itemize}\vspace{3pt}
+  \textbf{Macro}\\[1pt]
+  \begin{itemize}
+  \item Load, check setup, apply rules, build
+  \item The setup check stops the run before anything is created
+  \item Config sheet: nine settings, five buttons; nobody edits code
+  \end{itemize}\vspace{3pt}
+  \textbf{Test harness}\\[1pt]
+  \begin{itemize}
+  \item A data contract every report is checked against
+  \item Report checker, VBA import check, comparison with the hand-built tab
+  \end{itemize}\vspace{3pt}
+  \textbf{Test data, built to break it}\\[1pt]
+  \begin{itemize}
+  \item Traps from the real exports and known Excel pitfalls: CANCELLED spelled two ways, {\footnotesize\texttt{" mx "}} with spaces,
+        dates stored as text, an unknown model, an old report and a lock file in the folder
+  \item Expected answers checked against hand-computed results
+  \end{itemize}};
+
+% ---------------------------------------------------------------- step 4
+\node[station, anchor=north west, text width=2.3in] (h4) at (9.287,6.3) {4\quad Fill In the Boilerplate};
+\node[box, anchor=north, text width=2.3in] (b4) at (h4.south) {\by{Generative AI, reviewed by hand}
+  \begin{itemize}
+  \item The repetitive code inside each part: file reading, formatting, print setup, logging
+  \item Every result checked against the rules and the tests
+  \end{itemize}};
+
+\draw[flow] (h1.east) -- (h2.west);
+\draw[flow] (h2.east) -- (h3.west);
+\draw[flow] (h3.east) -- (h4.west);
+
+% ---------------------------------------------------------------- step 5: prove it, the widest box
+\node[station, anchor=north west, text width=8.2in] (h5) at (0.25,2.62) {5\quad Prove It Out};
+\coordinate (b5sw) at ($(h5.south west)+(0,-1.75)$);
+\draw[line width=0.5pt] (h5.south west) rectangle (b5sw -| h5.south east);
+\draw[flow] (b4.south) |- (h5.east);
+
+% the two builds and the equals sign
+\node[box, anchor=north west, text width=1.75in, align=center] (vba) at ($(h5.south west)+(0.2,-0.2)$)
+  {\textbf{VBA macro}\\[2pt] {\footnotesize\texttt{build-open-orders-report.bas}}\\[1pt] \lines{2,836}};
+\node[box, anchor=north west, text width=1.75in, align=center] (py) at ($(vba.north east)+(0.62,0)$)
+  {\textbf{Python reference}\\[2pt] {\footnotesize\texttt{build\_report\_reference.py}}\\[1pt] \lines{940}};
+\node[font=\sffamily\bfseries\fontsize{30}{30}\selectfont, inner sep=0pt] at ($(vba.east)!0.5!(py.west)$) {=};
+\node[anchor=north west, align=left, text width=4.3in, inner sep=0pt] at ($(vba.south west)+(0,-0.18)$)
+  {Same inputs and the same rules, written separately in two languages. Both build identical reports:
+  every value, hidden row, evaluated summary formula and Run Log line
+  ({\footnotesize\texttt{check\_report.py --compare}}, 19 checks, on three builds).};
+
+% the other evidence
+\node[anchor=north west, align=left, text width=3.4in, inner sep=0pt] at ($(h5.south west)+(4.85,-0.2)$)
+  {\begin{itemize}
+  \item \textbf{Test data:} every expected answer hit (22 and 22 checks); Austin sample: 15 of 15 checks
+  \item \textbf{Hand-built Austin tab:} 170 of 170 order rows and 29 of 29 inventory rows, in the same
+        size-class order (small TOTAL differences from the anonymised sample)
+  \item \textbf{Found by the tests and fixed:} an {\footnotesize\texttt{IIf}} that ran both branches; state
+        left over from an earlier run; a blank list separator that stripped the commas from a formula
+  \end{itemize}};
+
+% ---------------------------------------------------------------- next, under step 4
+\node[box, anchor=north west, text width=2.3in] (nx) at (9.287,2.15) {\textbf{Next}\\[2pt]
+  \begin{itemize}
+  \item First build in the team's own Excel (25-minute test protocol)
+  \item The team's own size class list replaces the starter list
+  \item The report feeds the PowerPoint deck
+  \end{itemize}};
+
+\titleblock{Design Process}{2 of 3}
+\end{tikzpicture}}
+
+\newpage
+% ============================================================================ sheet 3: the build flow, from its own source
+\input{open-orders-macro-flow.tex}%
+\end{document}

@@ -1,0 +1,107 @@
+\documentclass[11pt]{article}
+\usepackage[letterpaper, top=0.8in, bottom=0.8in, left=1in, right=1in, headheight=14pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{hhline}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage[hidelinks, pdftitle={Excel Macros for Doosan Bobcat ESG Reporting}, pdfauthor={Gust F.}]{hyperref}
+
+\linespread{1.05}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Strategy}
+\fancyhead[R]{\small Rev.~1 \quad 2026-10-09}
+\fancyfoot[L]{\small Gust F.}
+\fancyfoot[C]{\small Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\titleformat{\section}{\normalsize\bfseries}{\thesection.}{0.6em}{}
+\titlespacing*{\section}{0pt}{0.9em}{0.3em}
+\setlist[enumerate]{leftmargin=2.2em, itemsep=0.1em, topsep=0.15em, label=(\alph*), ref=\alph*}
+\setlist[itemize]{leftmargin=2.2em, itemsep=0.1em, topsep=0.15em, label=--}
+\captionsetup[table]{font=small, labelfont=bf, labelsep=period, skip=0.4em, position=top, hypcap=false}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+\newcommand{\menu}[1]{\textit{#1}}
+\newcommand{\gt}{~>\ }
+\renewcommand{\tabularxcolumn}[1]{m{#1}}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries Excel Macros for Doosan Bobcat ESG Reporting}\\[0.35em]
+  {\normalsize Installation and Operation of the Energy, Fleet Fuel, and Greenhouse/ESG Report Macros}
+\end{center}
+
+\vspace{-0.4em}
+\noindent\rule{\linewidth}{0.8pt}
+
+\vspace{0.2em}
+\textbf{Scope.} This procedure applies to the three VBA reporting macros in Table~\ref{tab:macros}. Each macro reads a
+raw data export, totals it, and writes a formatted report. The source data is kept intact.
+Install once for everyday use (see Section~\ref{sec:personal}), or embed in the report workbook for traceability (see Section~\ref{sec:attach}).
+
+\vspace{-0.2em}
+\noindent\rule{\linewidth}{0.4pt}
+
+\section{Install to the Personal Macro Workbook}\label{sec:personal}
+\begin{enumerate}
+  \item Create the Personal Macro Workbook if needed: select \menu{View\gt Macros\gt Record Macro}, set
+        \menu{Store macro in} to \menu{Personal Macro Workbook}, click \menu{OK}, then click \menu{Stop Recording}.
+  \item Press Alt+F11 and select \menu{VBAProject (PERSONAL.XLSB)} in the Project Explorer.
+  \item Select \menu{File\gt Import File} and choose the macro module (\texttt{.bas}).\label{step:import}
+  \item Remove any older module with the same macro names, or Excel reports an ambiguous name.
+  \item Save, close Excel, and click \menu{Save} when prompted for the Personal Macro Workbook.
+\end{enumerate}
+
+\section{Attach to a Specific Workbook for Traceability}\label{sec:attach}
+\begin{enumerate}
+  \item Save the report workbook as an Excel Macro-Enabled Workbook (\texttt{.xlsm}).
+  \item Select that workbook's \menu{VBAProject} and import the module as in Section~\ref{sec:personal}(\ref{step:import}).
+  \item Add a button (\menu{Developer\gt Insert\gt Button}) and assign the appropriate macro from Table~\ref{tab:macros}.
+  \item Archive the \texttt{.xlsm} each period to keep the data, macro version, and run record together.
+\end{enumerate}
+
+\section{Run a Report}
+\begin{enumerate}
+  \item Open the source export.
+  \item Press Alt+F8 and select the proper macro from Table~\ref{tab:macros}.
+  \item Read the completion message; a warning icon means some rows require review.
+  \item Review the exception area in the Excel sheets to check for potential errors.
+\end{enumerate}
+
+\begin{center}
+\small
+\captionof{table}{Macro names, functions, and outputs.}\label{tab:macros}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|>{\footnotesize\ttfamily\raggedright\arraybackslash}m{1.75in}|*{3}{L|}}
+  \hline
+  \multicolumn{1}{|l|}{\bfseries Macro (Alt+F8)} & \bfseries Function & \bfseries Output sheet & \bfseries Exception area \\
+  \hhline{|=|=|=|=|}
+  GenerateEnergyReport & Monthly gas and electricity by site & Gas Monthly Report; Electricity Report & Notes block below each report \\
+  \hline
+  GenerateFleetFuelReport & Fleet diesel and gasoline gallons & Fleet Fuel Report & Rows Needing Review list \\
+  \hline
+  GenerateGreenhouseReport & Monthly diesel, propane, and water & output data & output exceptions sheet \\
+  \hline
+\end{tabularx}
+\end{center}
+
+\section{Built-In Safeguards}
+\begin{itemize}
+  \item Finds columns by header name and validates all data before any output is written.
+  \item Accounts for every row; flags unknown sites, duplicates, and negative values instead of guessing.
+  \item Leaves the source sheet unchanged and restores Excel settings on every exit, including errors.
+\end{itemize}
+
+\end{document}

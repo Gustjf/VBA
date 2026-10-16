@@ -1,0 +1,17 @@
+{
+  "latex-workshop.latex.recipes": [
+    { "name": "build.sh (source -> output)", "tools": ["build-sh"] }
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      "name": "build-sh",
+      "command": "bash",
+      "args": ["%WORKSPACE_FOLDER%/build.sh", "%DOC_EXT%"]
+    }
+  ],
+  "latex-workshop.latex.recipe.default": "first",
+  "latex-workshop.latex.autoBuild.run": "onSave",
+  "latex-workshop.latex.outDir": "%WORKSPACE_FOLDER%/.preview/%RELATIVE_DIR%",
+  "latex-workshop.view.pdf.viewer": "tab",
+  "latex-workshop.latex.autoClean.run": "never"
+}
