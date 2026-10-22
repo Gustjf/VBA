@@ -90,7 +90,7 @@
 \newcommand{\titleblock}[2]{%
   \draw[line width=0.5pt] (5.7,0) -- (5.7,0.42) -- (12,0.42);
   \foreach \x in {7.3, 8.95, 9.5, 9.95, 10.75, 11.45} \draw[line width=0.5pt] (\x,0) -- (\x,0.42);
-  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./5,
+  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./6,
                                 9.95/Date/2026-10-22, 10.75/Drawn/Gust F., 11.45/Sheet/#2} {
     \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{7}{8}\selectfont] at (\x+0.07,0.36) {\label};
     \node[anchor=south west, inner sep=0pt, font=\sffamily\bfseries\footnotesize] at (\x+0.07,0.07) {\value};
@@ -289,48 +289,49 @@
 \nav{3}
 % ---- where the files live
 \node[station, anchor=north west, text width=3.06in] (hw) at (0.25,6.4) {Where the files live};
-\node[box, anchor=north, text width=3.06in] (wa) at (hw.south) {\fixh{0.86in}{%
+\node[box, anchor=north, text width=3.06in] (wa) at (hw.south) {\fixh{1.02in}{%
   \textbf{\num{A}\enspace SharePoint document folder}\\[1pt]{\footnotesize\itshape The controlled library}\\[3pt]
   {\footnotesize\val{QMS-0NN.pdf}\enspace the published document\\
   \val{QMS-0NN\_source.zip}\enspace kept for the next edit\\
   Document control: reviewer, review cycle, reminders}}};
-\node[box, anchor=north west, text width=3.06in] (wb) at ($(wa.south west)+(0,-0.1)$) {\fixh{0.95in}{%
+\node[box, anchor=north west, text width=3.06in] (wb) at ($(wa.south west)+(0,-0.08)$) {\fixh{0.95in}{%
   \textbf{\num{B}\enspace Each user's PC}\\[1pt]{\footnotesize\itshape The app and its working files; no documents}\\[3pt]
   {\footnotesize\val{QMS Editor.exe}\\
   \val{\%LOCALAPPDATA\%\textbackslash QMS-Editor}\enspace settings, PDF engine\\
   \val{\%LOCALAPPDATA\%\textbackslash QMS-TeX}\enspace package cache, once per PC (100--150 MB)}}};
-\node[box, anchor=north west, text width=3.06in] (wc) at ($(wb.south west)+(0,-0.1)$) {\fixh{0.82in}{%
+\node[box, anchor=north west, text width=3.06in] (wc) at ($(wb.south west)+(0,-0.08)$) {\fixh{0.82in}{%
   \textbf{\num{C}\enspace Gust's OneDrive \val{TeX} folder}\\[1pt]{\footnotesize\itshape Build and backup}\\[3pt]
   {\footnotesize App source code and one-click build\\
   \val{source\textbackslash QMS documents (.tex)}\enspace converted documents\\
   Word originals and the first editor, kept as backup}}};
-% ---- the desktop shell holds the app: screens, then the PDF build (page design into the PDF engine),
-% ---- then the core engine, which hands the files back to SharePoint
+% ---- the desktop shell holds the app: screens, the core engine (which hands the files back to SharePoint),
+% ---- and below it the PDF build (page design into the PDF engine), which flows up into the core engine
 \node[station, anchor=north west, text width=3.86in] (ha) at (4.15,6.4)
   {Desktop shell\hfill{\mdseries\footnotesize\itshape Rust, Tauri 2}};
 \node[anchor=north west, inner sep=0pt, font=\sffamily\footnotesize\itshape] (cap) at ($(ha.south west)+(0.12,-0.1)$)
   {Files, zips, job-title lookup, SharePoint sign-in};
 \node[layer, text width=3.62in] (S) at ($(cap.south west)+(0,-0.1)$)
   {\layerbody{Screens}{HTML, CSS, JavaScript in Edge WebView2}{Setup wizard, Home, editor, Finish dialog}};
-\node[layer, text width=3.38in] (PD) at ($(S.south west)+(0.12,-0.28)$)
+\node[layer, text width=3.62in] (CE) at ($(S.south west)+(0,-0.1)$)
+  {\layerbody{Core engine}{JavaScript (\val{core.js})}{Writes and reads \val{.tex}, runs the checks, sizes tables}};
+\node[layer, text width=3.38in] (PD) at ($(CE.south west)+(0.12,-0.44)$)
   {\layerbody{Page design}{\val{doosanqms.cls}, \val{turtle.tex}, template}{Layout, branding, header, footer, turtle diagram}};
 \node[layer, text width=3.38in] (PE) at ($(PD.south west)+(0,-0.24)$)
   {\layerbody{PDF engine}{Tectonic 0.15 (XeTeX), built in}{Compiles the \val{.tex} with the page design into the PDF}};
-\draw[line width=0.5pt, draw=headgreen, rounded corners=3pt] ($(S.south west)+(0,-0.14)$) rectangle ($(PE.south east)+(0.12,-0.12)$);
+\draw[line width=0.5pt, draw=headgreen, rounded corners=3pt] ($(CE.south west)+(0,-0.32)$) rectangle ($(PE.south east)+(0.12,-0.14)$);
 \node[anchor=west, fill=white, inner xsep=3pt, inner ysep=0pt, text=headgreen, font=\sffamily\bfseries\scriptsize]
-  at ($(S.south west)+(0.12,-0.14)$) {PDF BUILD};
-\node[layer, text width=3.62in] (CE) at ($(PE.south west)+(-0.12,-0.36)$)
-  {\layerbody{Core engine}{JavaScript (\val{core.js})}{Writes and reads \val{.tex}, runs the checks, sizes tables}};
-\draw[line width=0.5pt] (ha.south west) rectangle ($(CE.south east)+(0.12,-0.12)$);
-% page design into the PDF engine, the PDF build into the core engine
+  at ($(PE.south west)+(0,-0.14)$) {PDF BUILD};
+\draw[line width=0.5pt] (ha.south west) rectangle ($(PE.south east)+(0.24,-0.28)$);
+% page design into the PDF engine, the PDF build up into the core engine
 \draw[flow] (PD.south) -- (PE.north);
-\draw[flow] ($(PE.south)+(0,-0.12)$) -- (CE.north);
-\node[anchor=north west, inner sep=0pt, text width=4.0in, font=\sffamily\footnotesize] at ($(ha.south west |- CE.south)+(0,-0.22)$)
+\draw[flow] ($(CE.south)+(0,-0.32)$) -- (CE.south);
+\node[anchor=north west, inner sep=0pt, text width=4.0in, font=\sffamily\footnotesize] at ($(ha.south west |- PE.south)+(0,-0.36)$)
   {\textit{Runs entirely on the PC; it reaches only SharePoint and the company directory.}};
-% in from SharePoint to the screens; out from the core engine back to SharePoint
+% in from SharePoint to the screens; out from the core engine straight back to SharePoint
 \draw[flow] (3.48,0 |- S.west) -- node[above, font=\sffamily\scriptsize, inner sep=2pt] {User Input} (S.west);
-\draw[flow] (CE.west) -| (4.05,5.2) -- (3.48,5.2);
-\node[anchor=south west, font=\sffamily\scriptsize, inner sep=2pt, align=left] at (3.5,5.21) {.PDF \&\\source files};
+\coordinate (out) at ($(CE.north west)+(0,-0.15)$);
+\draw[flow] (out) -- (3.48,0 |- out);
+\node[anchor=south west, font=\sffamily\scriptsize, inner sep=2pt, align=left] at ($(3.5,0 |- out)+(0,0.01)$) {.PDF \&\\source files};
 % ---- inside a source zip
 \node[station, anchor=north west, text width=3.06in] (hz) at (8.55,6.4) {Inside a source zip};
 \draw[line width=0.5pt] (8.55,6.04) rectangle (11.75,2.98);
