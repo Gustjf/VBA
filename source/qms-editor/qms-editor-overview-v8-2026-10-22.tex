@@ -90,7 +90,7 @@
 \newcommand{\titleblock}[2]{%
   \draw[line width=0.5pt] (5.7,0) -- (5.7,0.42) -- (12,0.42);
   \foreach \x in {7.3, 8.95, 9.5, 9.95, 10.75, 11.45} \draw[line width=0.5pt] (\x,0) -- (\x,0.42);
-  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./7,
+  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./8,
                                 9.95/Date/2026-10-22, 10.75/Drawn/Gust F., 11.45/Sheet/#2} {
     \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{7}{8}\selectfont] at (\x+0.07,0.36) {\label};
     \node[anchor=south west, inner sep=0pt, font=\sffamily\bfseries\footnotesize] at (\x+0.07,0.07) {\value};
@@ -330,10 +330,11 @@
 % in from SharePoint to the screens; out from the core engine straight back to SharePoint.
 % Labels centred in the gap between the SharePoint card (right edge 3.45) and the desktop shell (left edge 4.15).
 \draw[flow] (3.48,0 |- S.west) -- (S.west);
-\node[anchor=south, font=\sffamily\scriptsize, inner sep=0pt] at ($(3.8,0 |- S.west)+(0,0.07)$) {User Input};
+\node[anchor=south, font=\sffamily\scriptsize, inner sep=0pt] at ($(3.8,0 |- S.west)+(0,0.07)$) {Input};
 \coordinate (out) at ($(CE.north west)+(0,-0.15)$);
 \draw[flow] (out) -- (3.48,0 |- out);
-\node[anchor=south, font=\sffamily\scriptsize, inner sep=0pt, align=center] at ($(3.8,0 |- out)+(0,0.07)$) {.PDF \&\\source files};
+\node[anchor=north, font=\sffamily\scriptsize, inner sep=0pt, align=center] at ($(3.8,0 |- out)+(0,-0.07)$)
+  {Final .PDF \&\\updated\\source files\\(.zip)};
 % ---- inside a source zip
 \node[station, anchor=north west, text width=3.06in] (hz) at (8.55,6.4) {Inside a source zip};
 \draw[line width=0.5pt] (8.55,6.04) rectangle (11.75,2.98);
