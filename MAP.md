@@ -68,7 +68,7 @@ The files you read, print, paste or open in a browser.
 
 | Path | Type | Description |
 |------|------|-------------|
-| `output/qms-editor/qms-editor-overview-v1-2026-10-22.pdf` | output | Four-sheet 11 x 17 landscape management overview of the QMS Editor 2.0 (Gust SWI Template v3 style): 1 design process and how it was proven (QMS-022 proof of concept), 2 system architecture (where the files live, app layers, inside a source zip and a `.tex`), 3 user guide (setup, load, edit, finish, hand off; ways in and out; what the editor takes care of), 4 value to Doosan Bobcat (cost, consistency, scale, next steps, open point). |
+| `output/qms-editor/qms-editor-overview-v2-2026-10-22.pdf` | output | Four-sheet 11 x 17 landscape management overview of the QMS Editor 2.0 (Gust SWI Template v3 style): 1 design process and how it was proven (QMS-022 proof of concept), 2 system architecture (where the files live, app layers, inside a source zip and a `.tex`), 3 user guide (setup, load, edit, finish, hand off; ways in and out; what the editor takes care of), 4 value to Doosan Bobcat (cost, consistency, scale, next steps). |
 
 ### Standalone macros (repo root)
 
@@ -149,7 +149,7 @@ Sources, scripts, tests, data and build briefs. You rarely open these by hand; a
 | Path | Type | Description |
 |------|------|-------------|
 | `source/qms-editor/qms-editor-architecture-notes-v1-2026-10-22.md` | notes | The owner's QMS Editor 2.0 system architecture export (inputs, outputs, layers, components, tools, tests, requirements, QMS-022, folder layout); the facts behind the overview. |
-| `source/qms-editor/qms-editor-overview-v1-2026-10-22.tex` | source | LaTeX (TikZ) source of the QMS Editor overview PDF, Rev. 1. |
+| `source/qms-editor/qms-editor-overview-v2-2026-10-22.tex` | source | LaTeX (TikZ) source of the QMS Editor overview PDF, Rev. 2 (past-tense design steps, requirements from Gary R., checkmark result, page design feeding the PDF engine, open point removed, five next steps). |
 
 ### Repo plumbing
 
