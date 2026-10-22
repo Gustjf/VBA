@@ -1,5 +1,6 @@
-% QMS Editor overview for management: design process, architecture, user guide, value. Gust SWI Template v3.
-% Sheets: 1 design process, 2 system architecture, 3 user guide, 4 value to Doosan Bobcat.
+% QMS Editor overview for management: agenda, design process, architecture, user guide, value. Gust SWI Template v3.
+% Sheets: 1 agenda (1 hr 30 min review, in the pattern of the Open Orders team-review agenda), 2 design process,
+% 3 system architecture, 4 user guide, 5 value to Doosan Bobcat. The agenda's miniatures follow sheets 2 to 5; keep in step.
 % No pictures: every drawing is TikZ. Grid 12 x 7.5 in, scaled 4/3. Facts from the QMS Editor 2.0 architecture notes.
 \documentclass[10pt]{article}
 \usepackage[paperwidth=17in, paperheight=11in, margin=0.5in]{geometry}
@@ -50,10 +51,44 @@
 \newcommand{\fixh}[2]{\begin{minipage}[t][#1][t]{\linewidth}#2\end{minipage}}
 % big figure at the top of a box
 \newcommand{\stat}[2]{{\color{headgreen}\bfseries\fontsize{26}{28}\selectfont #1}\\[2pt]{\footnotesize\itshape #2\par}\vspace{8pt}}
+\newcommand{\badge}[1]{{\setlength{\fboxsep}{2pt}\colorbox{headgreen}{\textcolor{white}{\bfseries #1}}}}
+% miniatures of sheets 2 to 5 for the agenda, drawn in each sheet's own 12 x 7.5 coordinates (use in a scaled scope)
+\newcommand{\thumbframe}{%
+  \draw[line width=0.5pt, fill=white] (0,0) rectangle (12,7.5);
+  \fill (0.25,7.0) rectangle (3.4,7.25);
+  \draw[line width=0.3pt] (5.7,0) -- (5.7,0.42) -- (12,0.42);}
+\newcommand{\thumbbox}[4]{% x1, y top, x2, y bottom: a box with its green bar
+  \draw[line width=0.3pt] (#1,#2) rectangle (#3,#4); \fill[headgreen] (#1,#2-0.3) rectangle (#3,#2);}
+\newcommand{\thumbdesign}{%
+  \thumbframe
+  \foreach \a in {0.25, 2.61, 4.97, 7.33, 9.69} \thumbbox{\a}{6.4}{\a+2.06}{3.84};
+  \thumbbox{0.25}{3.6}{7.39}{1.3} \thumbbox{7.75}{3.6}{11.75}{1.3}}
+\newcommand{\thumbarch}{%
+  \thumbframe
+  \thumbbox{0.25}{6.4}{3.45}{2.75}
+  \foreach \i in {0,...,4} \draw[line width=0.3pt, fill=bandgreen] (4.15,{6.02-0.6*\i}) rectangle (8.15,{5.5-0.6*\i});
+  \fill[headgreen] (4.15,6.1) rectangle (8.15,6.4);
+  \thumbbox{8.55}{6.4}{11.75}{2.98}
+  \thumbbox{0.25}{2.6}{5.39}{0.6} \thumbbox{5.75}{2.6}{11.75}{0.6}}
+\newcommand{\thumbguide}{%
+  \thumbframe
+  \foreach \a in {0.25, 2.61, 4.97, 7.33, 9.69} \thumbbox{\a}{6.4}{\a+2.06}{4.41};
+  \thumbbox{0.25}{3.95}{6.94}{1.85} \thumbbox{7.36}{3.95}{11.75}{1.7}}
+\newcommand{\thumbvalue}{%
+  \thumbframe
+  \foreach \a in {0.25, 4.2, 8.15} {\thumbbox{\a}{6.4}{\a+3.6}{3.81} \fill[headgreen] (\a+0.15,5.95) rectangle (\a+1.0,5.45);}
+  \thumbbox{0.25}{3.45}{11.75}{1.71}}
+% a document page with a folded corner, 0.56 x 0.72 in, anchored at its top left
+\newcommand{\docicon}[2]{% x, y
+  \draw[line width=0.5pt, fill=white] (#1,#2) -- (#1+0.42,#2) -- (#1+0.56,#2-0.14) -- (#1+0.56,#2-0.72) -- (#1,#2-0.72) -- cycle;
+  \draw[line width=0.5pt] (#1+0.42,#2) -- (#1+0.42,#2-0.14) -- (#1+0.56,#2-0.14);
+  \fill[headgreen] (#1+0.07,#2-0.08) rectangle (#1+0.36,#2-0.15);
+  \draw[line width=0.5pt] (#1+0.28,#2-0.36) circle (0.08);
+  \foreach \y in {0.54, 0.6} \draw[line width=0.4pt] (#1+0.07,#2-\y) -- (#1+0.49,#2-\y);}
 \newcommand{\titleblock}[2]{%
   \draw[line width=0.5pt] (5.7,0) -- (5.7,0.42) -- (12,0.42);
   \foreach \x in {7.3, 8.95, 9.5, 9.95, 10.75, 11.45} \draw[line width=0.5pt] (\x,0) -- (\x,0.42);
-  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./2,
+  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./3,
                                 9.95/Date/2026-10-22, 10.75/Drawn/Gust F., 11.45/Sheet/#2} {
     \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{7}{8}\selectfont] at (\x+0.07,0.36) {\label};
     \node[anchor=south west, inner sep=0pt, font=\sffamily\bfseries\footnotesize] at (\x+0.07,0.07) {\value};
@@ -65,10 +100,103 @@
 \newcommand{\navitem}[3]{\ifnum#1=#2{\color{headgreen}\bfseries #3}\else #3\fi}
 \newcommand{\nav}[1]{%
   \node[anchor=north east, inner sep=0pt, font=\sffamily\footnotesize] at (11.75,7.22)
-    {\navitem{#1}{1}{1\enspace Design Process}\qquad\navitem{#1}{2}{2\enspace Architecture}\qquad
-     \navitem{#1}{3}{3\enspace User Guide}\qquad\navitem{#1}{4}{4\enspace Value}};}
+    {\navitem{#1}{1}{1\enspace Agenda}\qquad\navitem{#1}{2}{2\enspace Design Process}\qquad
+     \navitem{#1}{3}{3\enspace Architecture}\qquad\navitem{#1}{4}{4\enspace User Guide}\qquad
+     \navitem{#1}{5}{5\enspace Value}};}
 
 \begin{document}
+% ================================================================ sheet 1: agenda
+% timeline: 90 minutes from x = 0.5 to x = 11.5 (11/90 in a minute): 0:05 at 1.1111, 0:15 at 2.3333, 0:20 at 2.9444,
+% 0:40 at 5.3889, 1:10 at 9.0556; QMS-001 to QMS-005 take 6 min (0.7333 in) each from 0:40
+\noindent\scalebox{1.333333}{%
+\begin{tikzpicture}[x=1in, y=1in]
+\useasboundingbox (0,0) rectangle (12,7.5);
+\draw[line width=0.8pt] (0,0) rectangle (12,7.5);
+\heading{Agenda}{QMS Editor review: the editor, then the six documents built with it. 1 hr 30 min.}
+\nav{1}
+% ---- the three parts
+\foreach \a/\b/\t/\m in {0.5/2.9044/{Part 1\quad The Editor}/20 min,
+                         2.9844/9.0156/{Part 2\quad The Documents}/50 min,
+                         9.0956/11.5/{Part 3\quad Next Steps}/20 min} {
+  \draw[line width=0.5pt, fill=headgreen] (\a,6.0) rectangle (\b,6.32);
+  \node[anchor=west, text=white, font=\sffamily\bfseries\normalsize, text height=1.6ex, text depth=0.45ex] at (\a,6.16) {\t};
+  \node[anchor=east, text=white, font=\sffamily\bfseries\normalsize, text height=1.6ex, text depth=0.45ex] at (\b,6.16) {\m};
+}
+% ---- the timeline, to scale
+\foreach \a/\b/\t in {0.5/1.1111/{Design\\Process}, 1.1111/2.3333/{Architecture}, 2.3333/2.9444/{User\\Guide},
+                      5.3889/6.1222/{QMS-001}, 6.1222/6.8556/{QMS-002}, 6.8556/7.5889/{QMS-003},
+                      7.5889/8.3222/{QMS-004}, 8.3222/9.0556/{QMS-005}} {
+  \draw[line width=0.5pt, fill=white] (\a,5.3) rectangle (\b,5.86);
+  \node[align=center, font=\sffamily\bfseries\footnotesize, inner sep=0pt] at ({(\a+\b)/2},5.58) {\t};
+}
+\draw[line width=0.5pt, fill=headgreen] (2.9444,5.3) rectangle (5.3889,5.86);
+\node[text=white, font=\sffamily\bfseries\normalsize, inner sep=0pt] at (4.1667,5.58) {QMS-022: First Prototype};
+\draw[line width=0.5pt, fill=bandgreen] (9.0556,5.3) rectangle (11.5,5.86);
+\node[font=\sffamily\bfseries\normalsize, inner sep=0pt] at (10.2778,5.58) {Value and Next Steps};
+\foreach \x/\t in {0.5/0:00, 1.1111/0:05, 2.3333/0:15, 2.9444/0:20, 5.3889/0:40, 9.0556/1:10, 11.5/1:30} {
+  \draw[line width=0.5pt] (\x,5.3) -- (\x,5.18);
+  \node[anchor=north, font=\sffamily\bfseries\footnotesize, inner sep=0pt] at (\x,5.13) {\t};
+}
+\foreach \x in {6.1222, 6.8556, 7.5889, 8.3222} \draw[line width=0.5pt] (\x,5.3) -- (\x,5.22);
+% ends of parts 1 and 2
+\foreach \x in {2.9444, 9.0556} \draw[line width=0.5pt, dash pattern=on 4pt off 3pt] (\x,4.95) -- (\x,1.72);
+% ---- part 1: sheets 2 to 4
+\foreach \i/\pic/\sheet/\name/\m in {0/\thumbdesign/2/{Design Process}/5 min, 1/\thumbarch/3/{Architecture}/10 min,
+                                     2/\thumbguide/4/{User Guide}/5 min} {
+  \begin{scope}[shift={(0.5,{4.75-0.85*\i-0.625})}, scale=0.083333, x=1in, y=1in]
+    \pic
+  \end{scope}
+  \node[anchor=north west, align=left, inner sep=0pt, font=\sffamily\footnotesize] at (1.62,{4.72-0.85*\i})
+    {\textbf{Sheet \sheet}\\[2pt] \name\\[2pt] {\itshape\m}};
+}
+% ---- part 2: QMS-022, the centerpiece
+\node[anchor=north west, draw=headgreen, line width=1.6pt, fill=white, text width=2.05in, align=left, inner sep=7pt]
+  (cp) at (3.12,4.8) {%
+  \badge{Centerpiece}\enspace{\footnotesize\itshape the first prototype}\\[6pt]
+  {\bfseries\fontsize{20}{22}\selectfont QMS-022}\\[2pt]
+  {\footnotesize ECN Factory Implementation Process}\\[8pt]
+  \textbf{Before and after}\hfill{\footnotesize\itshape 8 min}\\[2pt]
+  {\footnotesize The Word original next to the new PDF, with the process maps in Appendix A and B}\\[8pt]
+  \textbf{Live edit}\hfill{\footnotesize\itshape 12 min}\\[3pt]
+  {\footnotesize\begin{enumerate}[label=\badge{\arabic*}, leftmargin=1.45em, labelsep=0.35em, itemsep=3pt, topsep=0pt, parsep=0pt]
+  \item Open \val{QMS-022\_source.zip}
+  \item Change a field
+  \item \btn{Build preview}
+  \item \btn{Finish \& create files}
+  \end{enumerate}}\par\vspace{6pt}
+  {\footnotesize\itshape Questions as we go}};
+% ---- part 2: QMS-001 to QMS-005
+\node[anchor=north west, inner sep=0pt, font=\sffamily\bfseries\large] at (5.5,4.8) {QMS-001 to QMS-005};
+\node[anchor=north west, inner sep=0pt, font=\sffamily\footnotesize\itshape] at (5.5,4.48) {6 min each};
+\foreach \i in {1,...,5} {
+  \pgfmathsetmacro{\xa}{5.3889+(\i-1)*0.7333+0.0867}
+  \docicon{\xa}{4.15}
+}
+\node[anchor=north west, align=left, text width=3.35in, inner sep=0pt] at (5.5,3.15) {\textbf{For each document}\\[3pt]
+  \begin{itemize}
+  \item Page through the PDF next to its Word original
+  \item Note content corrections for the document owner
+  \item Same template, checks and Revision History as QMS-022
+  \end{itemize}};
+% ---- part 3: sheet 5 and the discussion
+\begin{scope}[shift={(9.25,{4.75-0.625})}, scale=0.083333, x=1in, y=1in]
+  \thumbvalue
+\end{scope}
+\node[anchor=north west, align=left, inner sep=0pt, font=\sffamily\footnotesize] at (10.37,4.72)
+  {\textbf{Sheet 5}\\[2pt] Value to\\Doosan Bobcat\\[2pt] {\itshape 5 min}};
+\node[anchor=north west, align=left, text width=2.2in, inner sep=0pt] at (9.25,3.75) {\textbf{Open discussion}\enspace{\footnotesize\itshape 15 min}\\[3pt]
+  \begin{itemize}
+  \item Questions on the editor and the six documents
+  \item Agree the next steps on sheet 5, with an owner for each
+  \end{itemize}};
+% ---- outcome
+\node[anchor=north west, draw, line width=0.5pt, fill=bandgreen, text width=10.82in, align=left] at (0.5,1.5)
+  {\textbf{We leave with:} approval of the QMS-022 format, a plan to review and approve the remaining documents,
+  and an owner for each next step.};
+\titleblock{Agenda}{1 of 5}
+\end{tikzpicture}}
+
+\newpage
 % ================================================================ sheet 1: design process
 % five stations 1.92 in text width (2.06 in overall), 0.3 in arrow gaps, x = 0.25, 2.61, 4.97, 7.33, 9.69
 \noindent\scalebox{1.333333}{%
@@ -77,7 +205,7 @@
 \draw[line width=0.8pt] (0,0) rectangle (12,7.5);
 \heading{QMS Editor: Design Process}{Planned against written requirements, built in stages, and tested on
   every document before it was handed over.}
-\nav{1}
+\nav{2}
 \node[station, anchor=north west, text width=1.92in] (h1) at (0.25,6.4) {1\quad Defined the requirements};
 \node[box, anchor=north, text width=1.92in] (b1) at (h1.south) {\fixh{2.12in}{\by{Before any code}
   \begin{itemize}
@@ -145,7 +273,7 @@
   \item Spelling error in the original corrected (``Notificaiton'')
   \item First Revision History row in the new format, dated 22 Oct 2026
   \end{itemize}}};
-\titleblock{Design Process}{1 of 4}
+\titleblock{Design Process}{2 of 5}
 \end{tikzpicture}}
 
 \newpage
@@ -157,7 +285,7 @@
 \draw[line width=0.8pt] (0,0) rectangle (12,7.5);
 \heading{System Architecture}{Documents live in SharePoint. The app on the PC reads a \val{.tex} and writes a
   finished PDF and a source zip.}
-\nav{2}
+\nav{3}
 % ---- where the files live
 \node[station, anchor=north west, text width=3.06in] (hw) at (0.25,6.4) {Where the files live};
 \node[box, anchor=north, text width=3.06in] (wa) at (hw.south) {\fixh{0.86in}{%
@@ -237,7 +365,7 @@
 \draw[flow] (m2) -- (m5); \draw[flow] (m5) -- (m6);
 \node[anchor=south west, inner sep=0pt, font=\sffamily\scriptsize\itshape] at (5.9,0.7)
   {The preview takes the same path: what the user previews is what gets published.};
-\titleblock{Architecture}{2 of 4}
+\titleblock{Architecture}{3 of 5}
 \end{tikzpicture}}
 
 \newpage
@@ -248,7 +376,7 @@
 \draw[line width=0.8pt] (0,0) rectangle (12,7.5);
 \heading{User Guide}{Five steps from a SharePoint file to a published PDF. The user edits content in a form;
   the app does the layout, the checks and the bookkeeping.}
-\nav{3}
+\nav{4}
 \node[station, anchor=north west, text width=1.92in] (h1) at (0.25,6.4) {1\quad Set up};
 \node[box, anchor=north, text width=1.92in] (b1) at (h1.south) {\fixh{1.55in}{\by{Wizard on first start, once per PC}
   \begin{enumerate}
@@ -309,7 +437,7 @@
   \item \textbf{Fast feedback.} \btn{Build preview} shows the PDF in a few seconds and jumps to the page being edited.
   \item \textbf{Simple entry.} The turtle diagram is one line per bullet; tables are rows of cards, with column widths sized to the text.
   \end{itemize}}};
-\titleblock{User Guide}{3 of 4}
+\titleblock{User Guide}{4 of 5}
 \end{tikzpicture}}
 
 \newpage
@@ -321,7 +449,7 @@
 \draw[line width=0.8pt] (0,0) rectangle (12,7.5);
 \heading{Value to Doosan Bobcat}{Every finished document is a standard, branded PDF, produced with tools the
   company already owns or that are free.}
-\nav{4}
+\nav{5}
 \node[station, anchor=north west, text width=3.46in] (h1) at (0.25,6.4) {Cost};
 \node[box, anchor=north, text width=3.46in] (b1) at (h1.south) {\fixh{2.15in}{%
   \stat{\$0}{licence cost to roll out, and per document created}
@@ -359,6 +487,6 @@
   \item Publish each document through SharePoint document control.
   \item Continue to maintain \val{QMS Editor.exe} and the documents after each ISO audit.
   \end{enumerate}}};
-\titleblock{Value}{4 of 4}
+\titleblock{Value}{5 of 5}
 \end{tikzpicture}}
 \end{document}
