@@ -85,10 +85,12 @@
   \fill[headgreen] (#1+0.07,#2-0.08) rectangle (#1+0.36,#2-0.15);
   \draw[line width=0.5pt] (#1+0.28,#2-0.36) circle (0.08);
   \foreach \y in {0.54, 0.6} \draw[line width=0.4pt] (#1+0.07,#2-\y) -- (#1+0.49,#2-\y);}
+% a layer of the app: bold name, technology on the right, role underneath
+\newcommand{\layerbody}[3]{\textbf{#1}\hfill{\footnotesize\itshape #2}\\[2pt]{\footnotesize #3}}
 \newcommand{\titleblock}[2]{%
   \draw[line width=0.5pt] (5.7,0) -- (5.7,0.42) -- (12,0.42);
   \foreach \x in {7.3, 8.95, 9.5, 9.95, 10.75, 11.45} \draw[line width=0.5pt] (\x,0) -- (\x,0.42);
-  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./4,
+  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./5,
                                 9.95/Date/2026-10-22, 10.75/Drawn/Gust F., 11.45/Sheet/#2} {
     \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{7}{8}\selectfont] at (\x+0.07,0.36) {\label};
     \node[anchor=south west, inner sep=0pt, font=\sffamily\bfseries\footnotesize] at (\x+0.07,0.07) {\value};
@@ -302,24 +304,33 @@
   {\footnotesize App source code and one-click build\\
   \val{source\textbackslash QMS documents (.tex)}\enspace converted documents\\
   Word originals and the first editor, kept as backup}}};
-% ---- inside the app
-\node[station, anchor=north west, text width=3.86in] (ha) at (4.15,6.4) {Inside \val{QMS Editor.exe}};
-\foreach \i/\name/\tech/\role in {
-   1/Screens/{HTML, CSS, JavaScript in Edge WebView2}/{Setup wizard, Home, editor, Finish dialog},
-   2/Core engine/{JavaScript (\val{core.js})}/{Writes and reads \val{.tex}, runs the checks, sizes tables},
-   3/Desktop shell/{Rust, Tauri 2}/{Files, zips, job-title lookup, SharePoint sign-in},
-   4/PDF engine/{Tectonic 0.15 (XeTeX), built in}/{Compiles the \val{.tex} with the page design into the PDF},
-   5/Page design/{\val{doosanqms.cls}, \val{turtle.tex}, template}/{Layout, branding, header, footer, turtle diagram}} {
-  \node[layer, text width=3.86in] (L\i) at (4.15,{6.4-0.38-(\i-1)*0.6}) {%
-    \textbf{\name}\hfill{\footnotesize\itshape\tech}\\[2pt]{\footnotesize\role}};
-}
-\node[anchor=north west, inner sep=0pt, text width=4.0in, font=\sffamily\footnotesize] at (4.15,3.08)
+% ---- the desktop shell holds the app: screens, then the PDF build (page design into the PDF engine),
+% ---- then the core engine, which hands the files back to SharePoint
+\node[station, anchor=north west, text width=3.86in] (ha) at (4.15,6.4)
+  {Desktop shell\hfill{\mdseries\footnotesize\itshape Rust, Tauri 2}};
+\node[anchor=north west, inner sep=0pt, font=\sffamily\footnotesize\itshape] (cap) at ($(ha.south west)+(0.12,-0.1)$)
+  {Files, zips, job-title lookup, SharePoint sign-in};
+\node[layer, text width=3.62in] (S) at ($(cap.south west)+(0,-0.1)$)
+  {\layerbody{Screens}{HTML, CSS, JavaScript in Edge WebView2}{Setup wizard, Home, editor, Finish dialog}};
+\node[layer, text width=3.38in] (PD) at ($(S.south west)+(0.12,-0.28)$)
+  {\layerbody{Page design}{\val{doosanqms.cls}, \val{turtle.tex}, template}{Layout, branding, header, footer, turtle diagram}};
+\node[layer, text width=3.38in] (PE) at ($(PD.south west)+(0,-0.24)$)
+  {\layerbody{PDF engine}{Tectonic 0.15 (XeTeX), built in}{Compiles the \val{.tex} with the page design into the PDF}};
+\draw[line width=0.5pt, draw=headgreen, rounded corners=3pt] ($(S.south west)+(0,-0.14)$) rectangle ($(PE.south east)+(0.12,-0.12)$);
+\node[anchor=west, fill=white, inner xsep=3pt, inner ysep=0pt, text=headgreen, font=\sffamily\bfseries\scriptsize]
+  at ($(S.south west)+(0.12,-0.14)$) {PDF BUILD};
+\node[layer, text width=3.62in] (CE) at ($(PE.south west)+(-0.12,-0.36)$)
+  {\layerbody{Core engine}{JavaScript (\val{core.js})}{Writes and reads \val{.tex}, runs the checks, sizes tables}};
+\draw[line width=0.5pt] (ha.south west) rectangle ($(CE.south east)+(0.12,-0.12)$);
+% page design into the PDF engine, the PDF build into the core engine
+\draw[flow] (PD.south) -- (PE.north);
+\draw[flow] ($(PE.south)+(0,-0.12)$) -- (CE.north);
+\node[anchor=north west, inner sep=0pt, text width=4.0in, font=\sffamily\footnotesize] at ($(ha.south west |- CE.south)+(0,-0.22)$)
   {\textit{Runs entirely on the PC; it reaches only SharePoint and the company directory.}};
-% in and out between SharePoint and the app
-\draw[flow] (3.48,5.78) -- node[above, font=\sffamily\scriptsize, inner sep=2pt] {User Input} (4.12,5.78);
-\draw[flow] (4.12,5.38) -- node[below, font=\sffamily\scriptsize, inner sep=2pt, align=center] {.PDF \&\\source files} (3.48,5.38);
-% the page design is an input to the PDF engine
-\draw[flow] (L5.east) -- ++(0.2,0) |- (L4.east);
+% in from SharePoint to the screens; out from the core engine back to SharePoint
+\draw[flow] (3.48,0 |- S.west) -- node[above, font=\sffamily\scriptsize, inner sep=2pt] {User Input} (S.west);
+\draw[flow] (CE.west) -| (4.05,5.2) -- (3.48,5.2);
+\node[anchor=south west, font=\sffamily\scriptsize, inner sep=2pt, align=left] at (3.5,5.21) {.PDF \&\\source files};
 % ---- inside a source zip
 \node[station, anchor=north west, text width=3.06in] (hz) at (8.55,6.4) {Inside a source zip};
 \draw[line width=0.5pt] (8.55,6.04) rectangle (11.75,2.98);

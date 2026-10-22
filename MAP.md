@@ -68,7 +68,7 @@ The files you read, print, paste or open in a browser.
 
 | Path | Type | Description |
 |------|------|-------------|
-| `output/qms-editor/qms-editor-overview-v4-2026-10-22.pdf` | output | Five-sheet 11 x 17 landscape deck for the owner's 1 hr 30 min QMS Editor 2.0 review (Gust SWI Template v3 style). Rev. 4. Sheet 1 "Agenda" in the pattern of the Open Orders team-review agenda: a 90-minute timeline to scale, Part 1 the editor (20 min: sheets 2 to 4 with miniatures), Part 2 the documents (50 min: QMS-022 as the centerpiece and first prototype, before and after plus a live edit, then QMS-001 to QMS-005 at 6 min each), Part 3 next steps (20 min: sheet 5 and open discussion), and what we leave with. Sheets 2 to 5: design process and how it was proven (QMS-022 proof of concept), system architecture, user guide, value to Doosan Bobcat with next steps.
+| `output/qms-editor/qms-editor-overview-v5-2026-10-22.pdf` | output | Five-sheet 11 x 17 landscape deck for the owner's 1 hr 30 min QMS Editor 2.0 review (Gust SWI Template v3 style). Rev. 5. Sheet 1 "Agenda" in the pattern of the Open Orders team-review agenda: a 90-minute timeline to scale, Part 1 the editor (20 min: sheets 2 to 4 with miniatures), Part 2 the documents (50 min: QMS-022 as the centerpiece and first prototype, before and after plus a live edit, then QMS-001 to QMS-005 at 6 min each), Part 3 next steps (20 min: sheet 5 and open discussion), and what we leave with. Sheets 2 to 5: design process and how it was proven (QMS-022 proof of concept), system architecture (the app drawn as the Desktop shell holding Screens, a PDF build group where the page design flows into the PDF engine, and the Core engine, which returns the PDF and source files to SharePoint), user guide, value to Doosan Bobcat with next steps.
 
 ### Standalone macros (repo root)
 
@@ -149,7 +149,7 @@ Sources, scripts, tests, data and build briefs. You rarely open these by hand; a
 | Path | Type | Description |
 |------|------|-------------|
 | `source/qms-editor/qms-editor-architecture-notes-v1-2026-10-22.md` | notes | The owner's QMS Editor 2.0 system architecture export (inputs, outputs, layers, components, tools, tests, requirements, QMS-022, folder layout); the facts behind the overview. |
-| `source/qms-editor/qms-editor-overview-v4-2026-10-22.tex` | source | LaTeX (TikZ) source of the QMS Editor overview PDF, Rev. 4: agenda sheet in front (its miniatures follow sheets 2 to 5; keep in step); sheets renumbered 1 to 5. |
+| `source/qms-editor/qms-editor-overview-v5-2026-10-22.tex` | source | LaTeX (TikZ) source of the QMS Editor overview PDF, Rev. 5: agenda sheet in front (its miniatures follow sheets 2 to 5; keep in step); sheets renumbered 1 to 5. |
 
 ### Repo plumbing
 
