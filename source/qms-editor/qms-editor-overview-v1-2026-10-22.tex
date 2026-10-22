@@ -1,0 +1,363 @@
+% QMS Editor overview for management: design process, architecture, user guide, value. Gust SWI Template v3.
+% Sheets: 1 design process, 2 system architecture, 3 user guide, 4 value to Doosan Bobcat.
+% No pictures: every drawing is TikZ. Grid 12 x 7.5 in, scaled 4/3. Facts from the QMS Editor 2.0 architecture notes.
+\documentclass[10pt]{article}
+\usepackage[paperwidth=17in, paperheight=11in, margin=0.5in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage[table]{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, calc, fit}
+\usepackage[hidelinks, pdftitle={QMS Editor: Design, Architecture and Use}, pdfauthor={Gust F.}]{hyperref}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\setlist[itemize]{label=\textbullet, leftmargin=0.85em, labelsep=0.35em, itemsep=2.5pt, parsep=0pt,
+                  topsep=0pt, partopsep=0pt}
+\setlist[enumerate]{leftmargin=1.2em, labelsep=0.35em, itemsep=2.5pt, parsep=0pt, topsep=0pt, partopsep=0pt}
+\definecolor{headgreen}{HTML}{548235}
+\definecolor{bandgreen}{HTML}{E2EFDA}
+\definecolor{flagpeach}{HTML}{FCE4D6}
+\definecolor{inputyellow}{HTML}{FFFFCC}
+\definecolor{alertorange}{HTML}{C55A11}
+\tikzset{
+  every node/.style={font=\sffamily\small, inner sep=5pt},
+  box/.style={draw, line width=0.5pt, fill=white, align=left},
+  station/.style={draw, line width=0.5pt, fill=headgreen, text=white, font=\sffamily\bfseries\normalsize,
+                  align=left, inner ysep=4pt, text height=1.6ex, text depth=0.45ex},
+  flow/.style={-{Stealth[length=9pt, width=6.5pt]}, line width=1.2pt, line join=miter},
+  point/.style={-{Stealth[length=6pt, width=4.5pt]}, line width=0.9pt},
+  marker/.style={circle, fill=headgreen, text=white, draw=white, line width=1pt, font=\sffamily\bfseries\small,
+                 inner sep=0pt, minimum size=0.25in},
+  shot/.style={draw, line width=0.5pt, inner sep=0pt, anchor=north west},
+  layer/.style={draw=headgreen, line width=0.5pt, fill=bandgreen, align=left, anchor=north west},
+  chip/.style={draw, line width=0.5pt, fill=white, align=center, font=\sffamily\footnotesize,
+               minimum height=0.42in, inner sep=4pt},
+  outchip/.style={chip, fill=bandgreen, font=\sffamily\bfseries\footnotesize},
+}
+\newcommand{\by}[1]{{\footnotesize\itshape #1\par}\vspace{5pt}}
+\newcommand{\peach}[1]{{\setlength{\fboxsep}{1pt}\colorbox{flagpeach}{\textbf{#1}}}}
+\newcommand{\btn}[1]{{\setlength{\fboxsep}{1.5pt}\fbox{\footnotesize\bfseries #1}}}
+\newcommand{\num}[1]{\tikz[baseline=(n.base)]\node(n)[marker, minimum size=0.2in, font=\sffamily\bfseries\footnotesize]{#1};}
+\newcommand{\val}[1]{{\ttfamily #1}}
+% fixed-height box body, so the boxes in a row line up
+\newcommand{\fixh}[2]{\begin{minipage}[t][#1][t]{\linewidth}#2\end{minipage}}
+% big figure at the top of a box
+\newcommand{\stat}[2]{{\color{headgreen}\bfseries\fontsize{26}{28}\selectfont #1}\\[2pt]{\footnotesize\itshape #2\par}\vspace{8pt}}
+\newcommand{\titleblock}[2]{%
+  \draw[line width=0.5pt] (5.7,0) -- (5.7,0.42) -- (12,0.42);
+  \foreach \x in {7.3, 8.95, 9.5, 9.95, 10.75, 11.45} \draw[line width=0.5pt] (\x,0) -- (\x,0.42);
+  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./1,
+                                9.95/Date/2026-10-22, 10.75/Drawn/Gust F., 11.45/Sheet/#2} {
+    \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{7}{8}\selectfont] at (\x+0.07,0.36) {\label};
+    \node[anchor=south west, inner sep=0pt, font=\sffamily\bfseries\footnotesize] at (\x+0.07,0.07) {\value};
+  }}
+\newcommand{\heading}[2]{%
+  \node[anchor=north west, inner sep=0pt, font=\sffamily\bfseries\fontsize{14}{16}\selectfont] at (0.25,7.25) {#1};
+  \node[anchor=north west, inner sep=0pt, font=\sffamily\footnotesize] at (0.25,6.88) {#2};}
+% the four sheets at the top right, the current one in green
+\newcommand{\navitem}[3]{\ifnum#1=#2{\color{headgreen}\bfseries #3}\else #3\fi}
+\newcommand{\nav}[1]{%
+  \node[anchor=north east, inner sep=0pt, font=\sffamily\footnotesize] at (11.75,7.22)
+    {\navitem{#1}{1}{1\enspace Design Process}\qquad\navitem{#1}{2}{2\enspace Architecture}\qquad
+     \navitem{#1}{3}{3\enspace User Guide}\qquad\navitem{#1}{4}{4\enspace Value}};}
+
+\begin{document}
+% ================================================================ sheet 1: design process
+% five stations 1.92 in text width (2.06 in overall), 0.3 in arrow gaps, x = 0.25, 2.61, 4.97, 7.33, 9.69
+\noindent\scalebox{1.333333}{%
+\begin{tikzpicture}[x=1in, y=1in]
+\useasboundingbox (0,0) rectangle (12,7.5);
+\draw[line width=0.8pt] (0,0) rectangle (12,7.5);
+\heading{QMS Editor: Design Process}{Planned against written requirements, built in stages, and tested on
+  every document before it was handed over.}
+\nav{1}
+\node[station, anchor=north west, text width=1.92in] (h1) at (0.25,6.4) {1\quad Set the requirements};
+\node[box, anchor=north, text width=1.92in] (b1) at (h1.south) {\fixh{1.62in}{\by{Before any code}
+  \begin{itemize}
+  \item Four design requirements and 13 detailed requirements from the project brief
+  \item Users are not technical: no LaTeX, no Word formatting
+  \item Documents and review stay in SharePoint
+  \end{itemize}}};
+\node[station, anchor=north west, text width=1.92in] (h2) at (2.61,6.4) {2\quad Study the documents};
+\node[box, anchor=north, text width=1.92in] (b2) at (h2.south) {\fixh{1.62in}{\by{All North America QMS documents}
+  \begin{itemize}
+  \item Reviewed the Word originals one by one
+  \item 28 of 30 follow the QMS-022 pattern
+  \item So one template, one page design and one set of rules can serve all of them
+  \end{itemize}}};
+\node[station, anchor=north west, text width=1.92in] (h3) at (4.97,6.4) {3\quad Choose the platform};
+\node[box, anchor=north, text width=1.92in] (b3) at (h3.south) {\fixh{1.62in}{\by{Criteria for a company PC}
+  \begin{itemize}
+  \item No installer, no administrator rights
+  \item One file to hand to anyone
+  \item PDF engine inside the app, so every PC prints the same
+  \item Free, open-licence parts only
+  \end{itemize}}};
+\node[station, anchor=north west, text width=1.92in] (h4) at (7.33,6.4) {4\quad Build and verify};
+\node[box, anchor=north, text width=1.92in] (b4) at (h4.south) {\fixh{1.62in}{\by{Prototype first, then the product}
+  \begin{itemize}
+  \item Prototype: an HTML editor with a Python builder and checker
+  \item Rebuilt as a Windows desktop app
+  \item New engine held to the prototype's output, character for character
+  \end{itemize}}};
+\node[station, anchor=north west, text width=1.92in] (h5) at (9.69,6.4) {5\quad Refine with feedback};
+\node[box, anchor=north, text width=1.92in] (b5) at (h5.south) {\fixh{1.62in}{\by{Changes after review of version 1}
+  \begin{itemize}
+  \item Document library removed; the app became a focused \val{.tex} editor
+  \item Turtle diagram redrawn: symmetric, straight arrows
+  \item ``Reviewed by'' removed, Job Title added
+  \item Long lists made scrollable
+  \end{itemize}}};
+\foreach \a/\b in {h1/h2, h2/h3, h3/h4, h4/h5} \draw[flow] (\a.east) -- (\b.west);
+% ---- how it was proven
+\node[station, anchor=north west, text width=7.0in] (hp) at (0.25,3.95) {How it was proven};
+\node[box, anchor=north, text width=7.0in, font=\sffamily\footnotesize] (bp) at (hp.south) {%
+  \setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{1.62}%
+  \begin{tabular}{@{}>{\bfseries}p{1.15in}p{3.55in}p{2.0in}@{}}
+  \rowcolor{bandgreen} Test & What it checks & Result \\
+  Output match   & New \val{.tex} writer against the original Python builder, every document & 32 of 32 identical \\
+  Check match    & Errors and warnings against the original checker & 32 of 32, plus 16 of 16 broken on purpose \\
+  Round trip     & Write a document to \val{.tex}, read it back, compare & 32 of 32 exact \\
+  Older files    & Files from the first editor read back and print the same & 30 of 30 print identically \\
+  End to end     & Setup, load, edit, preview, finish, save, upload to SharePoint & All checks pass \\
+  Screen sizes   & Long Input and Output lists reachable at three screen sizes & Pass; fails on the old version \\
+  Pictures       & PNG, JPG, PDF and SVG pictures reach the PDF & Pass \\
+  Code reviews   & Independent review of the desktop code and SharePoint sign-in & Issues found and fixed \\
+  On a work PC   & Real build, PDF engine, job-title lookup, turtle look & Confirmed \\
+  \end{tabular}};
+% ---- proof of concept
+\node[station, anchor=north west, text width=3.86in] (hq) at (7.75,3.95) {Proof of concept: QMS-022};
+\node[box, anchor=north, text width=3.86in] (bq) at (hq.south) {\fixh{2.3in}{%
+  \by{ECN Factory Implementation Process}
+  {\color{headgreen}\bfseries\fontsize{26}{28}\selectfont 0\,/\,0}\\[2pt]
+  {\footnotesize\itshape errors\,/\,warnings; reopens exactly\par}\vspace{8pt}
+  \begin{itemize}
+  \item Converted to the new format and checked against the Word original
+  \item Both process maps captured from the original at 300 dpi, not redrawn; connector lines keep their routes
+  \item Spelling error in the original corrected (``Notificaiton'')
+  \item First Revision History row in the new format, dated 22 Oct 2026
+  \end{itemize}}};
+\titleblock{Design Process}{1 of 4}
+\end{tikzpicture}}
+
+\newpage
+% ================================================================ sheet 2: system architecture
+% columns: places 0.25 to 3.45, app 4.15 to 8.15, zip 8.55 to 11.75; lower row from y 2.85
+\noindent\scalebox{1.333333}{%
+\begin{tikzpicture}[x=1in, y=1in]
+\useasboundingbox (0,0) rectangle (12,7.5);
+\draw[line width=0.8pt] (0,0) rectangle (12,7.5);
+\heading{System Architecture}{Documents live in SharePoint. The app on the PC reads a \val{.tex} and writes a
+  finished PDF and a source zip.}
+\nav{2}
+% ---- where the files live
+\node[station, anchor=north west, text width=3.06in] (hw) at (0.25,6.4) {Where the files live};
+\node[box, anchor=north, text width=3.06in] (wa) at (hw.south) {\fixh{0.86in}{%
+  \textbf{\num{A}\enspace SharePoint document folder}\\[1pt]{\footnotesize\itshape The controlled library}\\[3pt]
+  {\footnotesize\val{QMS-0NN.pdf}\enspace the published document\\
+  \val{QMS-0NN\_source.zip}\enspace kept for the next edit\\
+  Document control: reviewer, review cycle, reminders}}};
+\node[box, anchor=north west, text width=3.06in] (wb) at ($(wa.south west)+(0,-0.1)$) {\fixh{0.95in}{%
+  \textbf{\num{B}\enspace Each user's PC}\\[1pt]{\footnotesize\itshape The app and its working files; no documents}\\[3pt]
+  {\footnotesize\val{QMS Editor.exe}\\
+  \val{\%LOCALAPPDATA\%\textbackslash QMS-Editor}\enspace settings, PDF engine\\
+  \val{\%LOCALAPPDATA\%\textbackslash QMS-TeX}\enspace package cache, once per PC (100--150 MB)}}};
+\node[box, anchor=north west, text width=3.06in] (wc) at ($(wb.south west)+(0,-0.1)$) {\fixh{0.82in}{%
+  \textbf{\num{C}\enspace Owner's OneDrive \val{TeX} folder}\\[1pt]{\footnotesize\itshape Build and backup}\\[3pt]
+  {\footnotesize App source code and one-click build\\
+  \val{source\textbackslash QMS documents (.tex)}\enspace converted documents\\
+  Word originals and the first editor, kept as backup}}};
+% ---- inside the app
+\node[station, anchor=north west, text width=3.86in] (ha) at (4.15,6.4) {Inside \val{QMS Editor.exe}};
+\foreach \i/\name/\tech/\role in {
+   1/Screens/{HTML, CSS, JavaScript in Edge WebView2}/{Setup wizard, Home, editor, Finish dialog},
+   2/Core engine/{JavaScript (\val{core.js})}/{Writes and reads \val{.tex}, runs the checks, sizes tables},
+   3/Desktop shell/{Rust, Tauri 2}/{Files, zips, job-title lookup, SharePoint sign-in},
+   4/PDF engine/{Tectonic 0.15 (XeTeX), built in}/{Compiles the \val{.tex} into the PDF},
+   5/Page design/{\val{doosanqms.cls}, \val{turtle.tex}, template}/{Layout, branding, header, footer, turtle diagram}} {
+  \node[layer, text width=3.86in] at (4.15,{6.4-0.38-(\i-1)*0.6}) {%
+    \textbf{\name}\hfill{\footnotesize\itshape\tech}\\[2pt]{\footnotesize\role}};
+}
+\node[anchor=north west, inner sep=0pt, text width=4.0in, font=\sffamily\footnotesize] at (4.15,3.08)
+  {\textit{Runs entirely on the PC; it reaches only SharePoint and the company directory.}};
+% in and out between SharePoint and the app
+\draw[flow] (3.48,5.78) -- node[above, font=\sffamily\scriptsize, inner sep=2pt] {in} (4.12,5.78);
+\draw[flow] (4.12,5.38) -- node[below, font=\sffamily\scriptsize, inner sep=2pt] {out} (3.48,5.38);
+% ---- inside a source zip
+\node[station, anchor=north west, text width=3.06in] (hz) at (8.55,6.4) {Inside a source zip};
+\draw[line width=0.5pt] (8.55,6.04) rectangle (11.75,2.98);
+\node[anchor=north west, inner sep=0pt, font=\sffamily\bfseries\footnotesize] (zr) at (8.7,5.9) {\val{\bfseries QMS-0NN\_source.zip}};
+\foreach \i/\file/\what in {
+   1/QMS-0NN.tex/{The document: text and data},
+   2/maps\textbackslash/{Process-map pictures (PNG, JPG, PDF)},
+   3/doosanqms.cls/{Page layout and branding},
+   4/turtle.tex/{Turtle diagram},
+   5/brand\textbackslash doosan-bobcat-logo.png/{Header logo}} {
+  \draw[line width=0.5pt, headgreen] (8.82,{5.72-(\i-1)*0.4}) -- (8.82,{5.6-(\i-1)*0.4}) -- (8.98,{5.6-(\i-1)*0.4});
+  \node[anchor=west, inner sep=0pt, font=\sffamily\footnotesize] at (9.04,{5.6-(\i-1)*0.4}) {\val{\file}};
+  \node[anchor=west, inner sep=0pt, font=\sffamily\scriptsize\itshape] at (9.04,{5.44-(\i-1)*0.4}) {\what};
+}
+\draw[line width=0.5pt, headgreen] (8.82,5.72) -- (8.82,4.0);
+\node[anchor=north west, inner sep=0pt, text width=2.9in, font=\sffamily\footnotesize] at (8.7,3.55)
+  {Everything needed to rebuild the PDF, in one file. Open it next time to keep editing.};
+% ---- inside a .tex
+\node[station, anchor=north west, text width=5.0in] (ht) at (0.25,2.6) {Inside a \val{.tex} file};
+\draw[line width=0.5pt] (0.25,2.24) rectangle (5.39,0.6);
+\node[draw=headgreen, line width=0.5pt, fill=bandgreen, anchor=north west, text width=2.05in, minimum height=0.62in,
+      font=\ttfamily\scriptsize, align=left] (t1) at (0.4,2.05)
+  {\textbackslash documentclass\{doosanqms\}\\ \ldots\\ \textbackslash end\{document\}};
+\node[draw=headgreen, line width=0.5pt, dashed, fill=white, anchor=north west, text width=2.05in, minimum height=0.62in,
+      font=\ttfamily\scriptsize, align=left] (t2) at ($(t1.south west)+(0,-0.12)$)
+  {\%QMS-DATA-BEGIN\\ \% the document's data\\ \%QMS-DATA-END};
+\node[anchor=west, text width=2.55in, font=\sffamily\footnotesize, align=left] at ($(t1.east)+(0.12,0)$)
+  {\textbf{The document.} Any TeX engine builds the PDF from it.};
+\node[anchor=west, text width=2.55in, font=\sffamily\footnotesize, align=left] at ($(t2.east)+(0.12,0)$)
+  {\textbf{The data, as comments.} TeX ignores it; the app reads it back exactly, so nothing is lost between edits.
+   Older files without it are read from the TeX.};
+% ---- how the PDF and zip are made
+\node[station, anchor=north west, text width=5.86in] (hm) at (5.75,2.6) {How the PDF and zip are made};
+\draw[line width=0.5pt] (5.75,2.24) rectangle (11.75,0.6);
+\node[chip, anchor=west, text width=0.95in] (m1) at (5.9,1.8) {Form data};
+\node[chip, anchor=west, text width=1.15in] (m2) at (7.2,1.8) {\val{core.js} writes the \val{.tex}};
+\node[chip, anchor=west, text width=1.0in] (m3) at (8.7,1.8) {Tectonic compiles};
+\node[outchip, anchor=west, text width=1.15in] (m4) at (10.05,1.8) {\val{\bfseries QMS-0NN.pdf}};
+\node[chip, anchor=west, text width=1.9in] (m5) at (7.2,1.1) {Zip the \val{.tex}, maps and design files};
+\node[outchip, anchor=west, text width=1.15in] (m6) at (10.05,1.1) {\val{\bfseries QMS-0NN\_source.zip}};
+\draw[flow] (m1) -- (m2); \draw[flow] (m2) -- (m3); \draw[flow] (m3) -- (m4);
+\draw[flow] (m2) -- (m5); \draw[flow] (m5) -- (m6);
+\node[anchor=south west, inner sep=0pt, font=\sffamily\scriptsize\itshape] at (5.9,0.7)
+  {The preview takes the same path: what the user previews is what gets published.};
+\titleblock{Architecture}{2 of 4}
+\end{tikzpicture}}
+
+\newpage
+% ================================================================ sheet 3: user guide
+\noindent\scalebox{1.333333}{%
+\begin{tikzpicture}[x=1in, y=1in]
+\useasboundingbox (0,0) rectangle (12,7.5);
+\draw[line width=0.8pt] (0,0) rectangle (12,7.5);
+\heading{User Guide}{Five steps from a SharePoint file to a published PDF. The user edits content in a form;
+  the app does the layout, the checks and the bookkeeping.}
+\nav{3}
+\node[station, anchor=north west, text width=1.92in] (h1) at (0.25,6.4) {1\quad Set up};
+\node[box, anchor=north, text width=1.92in] (b1) at (h1.south) {\fixh{1.55in}{\by{Wizard on first start, once per PC}
+  \begin{enumerate}
+  \item Welcome
+  \item Name and job title, filled from the company directory
+  \item PDF engine
+  \item SharePoint folder
+  \item Done
+  \end{enumerate}}};
+\node[station, anchor=north west, text width=1.92in] (h2) at (2.61,6.4) {2\quad Load};
+\node[box, anchor=north, text width=1.92in] (b2) at (h2.south) {\fixh{1.55in}{\by{Three ways in (table below)}
+  \begin{itemize}
+  \item The file lands in the Input list
+  \item Load several documents in one session
+  \item Click \btn{Edit} to open one
+  \end{itemize}}};
+\node[station, anchor=north west, text width=1.92in] (h3) at (4.97,6.4) {3\quad Edit};
+\node[box, anchor=north, text width=1.92in] (b3) at (h3.south) {\fixh{1.55in}{\by{A form in the same order as the PDF}
+  \begin{itemize}
+  \item Header, Purpose, Turtle diagram, Sections and tables, Appendices, Revision History
+  \item Outline on the left, form in the middle, PDF preview on the right
+  \end{itemize}}};
+\node[station, anchor=north west, text width=1.92in] (h4) at (7.33,6.4) {4\quad Finish};
+\node[box, anchor=north, text width=1.92in] (b4) at (h4.south) {\fixh{1.55in}{\by{\btn{Finish \& create files}}
+  \begin{itemize}
+  \item Adds the Revision History row: Rev.\ Date, Revised by, Job Title, Summary of Changes
+  \item Sets the header Rev Date
+  \item Creates the PDF and source zip
+  \end{itemize}}};
+\node[station, anchor=north west, text width=1.92in] (h5) at (9.69,6.4) {5\quad Hand off};
+\node[box, anchor=north, text width=1.92in] (b5) at (h5.south) {\fixh{1.55in}{\by{From the Output list}
+  \begin{itemize}
+  \item Save both files to the PC, or upload both to SharePoint
+  \item Review then runs in SharePoint document control, outside the app
+  \end{itemize}}};
+\foreach \a/\b in {h1/h2, h2/h3, h3/h4, h4/h5} \draw[flow] (\a.east) -- (\b.west);
+% ---- ways in and out
+\node[station, anchor=north west, text width=6.55in] (hi) at (0.25,3.95) {Ways in and out};
+\node[box, anchor=north, text width=6.55in, font=\sffamily\footnotesize] (bi) at (hi.south) {%
+  \setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{1.7}%
+  \begin{tabular}{@{}p{2.35in}p{4.05in}@{}}
+  \rowcolor{bandgreen}\multicolumn{2}{@{}l@{}}{\bfseries\enspace Load} \\
+  \btn{Upload Current Document (.tex)} & Pick or drag in a \val{.tex}, or a \val{\_source.zip} to bring its pictures too \\
+  \btn{Pick from the SharePoint folder} & Lists the folder's \val{.tex} and \val{\_source.zip} files; the user signs in with their own Microsoft account \\
+  \btn{Create a new document} & Enter the document ID, title and owner; starts from the standard template \\
+  \btn{Choose picture\ldots} & Adds a process map or figure from Visio, PowerPoint and similar: PNG, JPG, PDF or SVG \\
+  \rowcolor{bandgreen}\multicolumn{2}{@{}l@{}}{\bfseries\enspace Save} \\
+  \btn{Save to this PC} & The PDF and the source zip to a folder the user picks \\
+  \btn{Upload to SharePoint} & Both files to the document folder; asks before replacing an existing file \\
+  \end{tabular}};
+% ---- what the editor takes care of
+\node[station, anchor=north west, text width=4.25in] (he) at (7.36,3.95) {What the editor takes care of};
+\node[box, anchor=north, text width=4.25in] (be) at (he.south) {\fixh{2.05in}{%
+  \by{The user supplies content; the rest is automatic}
+  \begin{itemize}[itemsep=7pt]
+  \item \textbf{Layout.} Fonts, branding, spacing and page breaks are fixed by the page design; the user cannot drift from the standard.
+  \item \textbf{Error checking.} Errors and warnings in plain English, shown at the field while the user types.
+  \item \textbf{Fast feedback.} \btn{Build preview} shows the PDF in a few seconds and jumps to the page being edited.
+  \item \textbf{Simple entry.} The turtle diagram is one line per bullet; tables are rows of cards, with column widths sized to the text.
+  \end{itemize}}};
+\titleblock{User Guide}{3 of 4}
+\end{tikzpicture}}
+
+\newpage
+% ================================================================ sheet 4: value to Doosan Bobcat
+% three stations 3.46 in text width (3.6 in overall), 0.35 in gaps, x = 0.25, 4.2, 8.15
+\noindent\scalebox{1.333333}{%
+\begin{tikzpicture}[x=1in, y=1in]
+\useasboundingbox (0,0) rectangle (12,7.5);
+\draw[line width=0.8pt] (0,0) rectangle (12,7.5);
+\heading{Value to Doosan Bobcat}{Every finished document is a standard, branded PDF, produced with tools the
+  company already owns or that are free.}
+\nav{4}
+\node[station, anchor=north west, text width=3.46in] (h1) at (0.25,6.4) {Cost};
+\node[box, anchor=north, text width=3.46in] (b1) at (h1.south) {\fixh{2.15in}{%
+  \stat{\$0}{licence cost to roll out, and per document created}
+  \begin{itemize}
+  \item Free, open-licence parts: Tectonic (MIT), TeX Live packages (LPPL), Tauri and Rust (MIT/Apache), Carlito font (OFL)
+  \item Runs on what the company already pays for: Windows, Microsoft~365, SharePoint, Calibri
+  \item No subscriptions, cloud services, AI services or paid add-ins
+  \item The only cost is staff time to write the content
+  \end{itemize}}};
+\node[station, anchor=north west, text width=3.46in] (h2) at (4.2,6.4) {Consistency and control};
+\node[box, anchor=north, text width=3.46in] (b2) at (h2.south) {\fixh{2.15in}{%
+  \stat{PDF only}{every final version, in one standard look}
+  \begin{itemize}
+  \item Controlled-document elements on every page: header with Title, Owner, Location, Section, Rev Date and Page x of y; the three footer statements
+  \item Revision History on every document
+  \item New Doosan logo in Endeavour Blue, with the current Bobcat logo
+  \item Process maps print exactly as supplied, at full resolution
+  \end{itemize}}};
+\node[station, anchor=north west, text width=3.46in] (h3) at (8.15,6.4) {Scale and continuity};
+\node[box, anchor=north, text width=3.46in] (b3) at (h3.south) {\fixh{2.15in}{%
+  \stat{30}{North America QMS documents already converted}
+  \begin{itemize}
+  \item The library grows in SharePoint, not in the app
+  \item One \val{.exe} to share with another person or function
+  \item No lock-in: any TeX engine rebuilds a document from its source zip, even without the app
+  \item Versioned data format; older files upgrade on opening
+  \end{itemize}}};
+% ---- next steps
+\node[station, anchor=north west, text width=6.55in] (hn) at (0.25,3.45) {Proposed next steps};
+\node[box, anchor=north, text width=6.55in] (bn) at (hn.south) {\fixh{1.12in}{%
+  \begin{enumerate}[itemsep=6pt]
+  \item Review the QMS-022 proof of concept and approve the format.
+  \item Capture the process maps for the remaining documents in one batch from the Word originals.
+  \item Publish each document through SharePoint document control.
+  \item Give \val{QMS Editor.exe} to the people who maintain QMS documents.
+  \end{enumerate}}};
+\node[anchor=north west, draw, line width=0.5pt, fill=flagpeach, text width=4.17in, align=left, inner sep=8pt]
+  (op) at (7.36,3.45) {\fixh{1.34in}{{\bfseries\large Open point}\par\vspace{6pt}
+  The app is built on one PC with Microsoft Visual Studio 2022 Build Tools (free C++ workload).
+  Confirm the licence with IT; users do not need it.}};
+\titleblock{Value}{4 of 4}
+\end{tikzpicture}}
+\end{document}
