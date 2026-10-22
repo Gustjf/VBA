@@ -90,7 +90,7 @@
 \newcommand{\titleblock}[2]{%
   \draw[line width=0.5pt] (5.7,0) -- (5.7,0.42) -- (12,0.42);
   \foreach \x in {7.3, 8.95, 9.5, 9.95, 10.75, 11.45} \draw[line width=0.5pt] (\x,0) -- (\x,0.42);
-  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./8,
+  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./9,
                                 9.95/Date/2026-10-22, 10.75/Drawn/Gust F., 11.45/Sheet/#2} {
     \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{7}{8}\selectfont] at (\x+0.07,0.36) {\label};
     \node[anchor=south west, inner sep=0pt, font=\sffamily\bfseries\footnotesize] at (\x+0.07,0.07) {\value};
@@ -248,7 +248,7 @@
 \foreach \a/\b in {h1/h2, h2/h3, h3/h4, h4/h5} \draw[flow] (\a.east) -- (\b.west);
 % ---- how it was proven
 \node[station, anchor=north west, text width=7.0in] (hp) at (0.25,3.6) {How it was proven};
-\node[box, anchor=north, text width=7.0in, font=\sffamily\footnotesize] (bp) at (hp.south) {%
+\node[box, anchor=north, inner ysep=0pt, text width=7.0in, font=\sffamily\footnotesize] (bp) at (hp.south) {%
   \setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{1.62}%
   \begin{tabular}{@{}>{\bfseries}p{1.15in}p{3.55in}p{2.0in}@{}}
   \rowcolor{bandgreen} Test & What it checks & Result \\
@@ -261,10 +261,10 @@
   Pictures       & PNG, JPG, PDF and SVG pictures reach the PDF & Pass \\
   Code reviews   & Independent review of the desktop code and SharePoint sign-in & Issues found and fixed \\
   On a work PC   & Real build, PDF engine, job-title lookup, turtle look & Confirmed \\
-  \end{tabular}};
+  \end{tabular}\par\vspace{5pt}};
 % ---- proof of concept
 \node[station, anchor=north west, text width=3.86in] (hq) at (7.75,3.6) {Proof of concept: QMS-022};
-\node[box, anchor=north, text width=3.86in] (bq) at (hq.south) {\fixh{2.3in}{%
+\node[box, anchor=north, text width=3.86in] (bq) at (hq.south) {\fixh{2.11in}{%
   \by{ECN Factory Implementation Process}
   {\color{headgreen}\fontsize{30}{32}\selectfont\ding{51}}\\[2pt]
   {\footnotesize\itshape Passed every check: zero errors, zero warnings, and it reopens exactly\par}\vspace{8pt}
@@ -337,7 +337,8 @@
   {Final .PDF \&\\updated\\source files\\(.zip)};
 % ---- inside a source zip
 \node[station, anchor=north west, text width=3.06in] (hz) at (8.55,6.4) {Inside a source zip};
-\draw[line width=0.5pt] (8.55,6.04) rectangle (11.75,2.98);
+\draw[line width=0.5pt] (hz.south west) rectangle (11.75,2.98);
+\begin{scope}[yshift=0.1in]
 \node[anchor=north west, inner sep=0pt, font=\sffamily\bfseries\footnotesize] (zr) at (8.7,5.9) {\val{\bfseries QMS-0NN\_source.zip}};
 \foreach \i/\file/\what in {
    1/QMS-0NN.tex/{The document: text and data},
@@ -352,11 +353,12 @@
 \draw[line width=0.5pt, headgreen] (8.82,5.72) -- (8.82,4.0);
 \node[anchor=north west, inner sep=0pt, text width=2.9in, font=\sffamily\footnotesize] at (8.7,3.55)
   {Everything needed to rebuild the PDF, in one file. Open it next time to keep editing.};
+\end{scope}
 % ---- inside a .tex
 \node[station, anchor=north west, text width=5.0in] (ht) at (0.25,2.6) {Inside a \val{.tex} file};
-\draw[line width=0.5pt] (0.25,2.24) rectangle (5.39,0.6);
+\draw[line width=0.5pt] (ht.south west) rectangle (5.39,0.6);
 \node[draw=headgreen, line width=0.5pt, fill=bandgreen, anchor=north west, text width=2.05in, minimum height=0.62in,
-      font=\ttfamily\scriptsize, align=left] (t1) at (0.4,2.05)
+      font=\ttfamily\scriptsize, align=left] (t1) at (0.4,2.16)
   {\textbackslash documentclass\{doosanqms\}\\ \ldots\\ \textbackslash end\{document\}};
 \node[draw=headgreen, line width=0.5pt, dashed, fill=white, anchor=north west, text width=2.05in, minimum height=0.62in,
       font=\ttfamily\scriptsize, align=left] (t2) at ($(t1.south west)+(0,-0.12)$)
@@ -368,13 +370,13 @@
    Older files without it are read from the TeX.};
 % ---- how the PDF and zip are made
 \node[station, anchor=north west, text width=5.86in] (hm) at (5.75,2.6) {How the PDF and zip are made};
-\draw[line width=0.5pt] (5.75,2.24) rectangle (11.75,0.6);
-\node[chip, anchor=west, text width=0.95in] (m1) at (5.9,1.8) {Form data};
-\node[chip, anchor=west, text width=1.15in] (m2) at (7.2,1.8) {\val{core.js} writes the \val{.tex}};
-\node[chip, anchor=west, text width=1.0in] (m3) at (8.7,1.8) {Tectonic compiles};
-\node[outchip, anchor=west, text width=1.15in] (m4) at (10.05,1.8) {\val{\bfseries QMS-0NN.pdf}};
-\node[chip, anchor=west, text width=1.9in] (m5) at (7.2,1.1) {Zip the \val{.tex}, maps and design files};
-\node[outchip, anchor=west, text width=1.15in] (m6) at (10.05,1.1) {\val{\bfseries QMS-0NN\_source.zip}};
+\draw[line width=0.5pt] (hm.south west) rectangle (11.75,0.6);
+\node[chip, anchor=west, text width=0.95in] (m1) at (5.9,1.88) {Form data};
+\node[chip, anchor=west, text width=1.15in] (m2) at (7.2,1.88) {\val{core.js} writes the \val{.tex}};
+\node[chip, anchor=west, text width=1.0in] (m3) at (8.7,1.88) {Tectonic compiles};
+\node[outchip, anchor=west, text width=1.15in] (m4) at (10.05,1.88) {\val{\bfseries QMS-0NN.pdf}};
+\node[chip, anchor=west, text width=1.9in] (m5) at (7.2,1.18) {Zip the \val{.tex}, maps and design files};
+\node[outchip, anchor=west, text width=1.15in] (m6) at (10.05,1.18) {\val{\bfseries QMS-0NN\_source.zip}};
 \draw[flow] (m1) -- (m2); \draw[flow] (m2) -- (m3); \draw[flow] (m3) -- (m4);
 \draw[flow] (m2) -- (m5); \draw[flow] (m5) -- (m6);
 \node[anchor=south west, inner sep=0pt, font=\sffamily\scriptsize\itshape] at (5.9,0.7)
@@ -429,7 +431,7 @@
 \foreach \a/\b in {h1/h2, h2/h3, h3/h4, h4/h5} \draw[flow] (\a.east) -- (\b.west);
 % ---- ways in and out
 \node[station, anchor=north west, text width=6.55in] (hi) at (0.25,3.95) {Ways in and out};
-\node[box, anchor=north, text width=6.55in, font=\sffamily\footnotesize] (bi) at (hi.south) {%
+\node[box, anchor=north, inner ysep=0pt, text width=6.55in, font=\sffamily\footnotesize] (bi) at (hi.south) {%
   \setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{1.7}%
   \begin{tabular}{@{}p{2.35in}p{4.05in}@{}}
   \rowcolor{bandgreen}\multicolumn{2}{@{}l@{}}{\bfseries\enspace Load} \\
@@ -440,10 +442,10 @@
   \rowcolor{bandgreen}\multicolumn{2}{@{}l@{}}{\bfseries\enspace Save} \\
   \btn{Save to this PC} & The PDF and the source zip to a folder the user picks \\
   \btn{Upload to SharePoint} & Both files to the document folder; asks before replacing an existing file \\
-  \end{tabular}};
+  \end{tabular}\par\vspace{5pt}};
 % ---- what the editor takes care of
 \node[station, anchor=north west, text width=4.25in] (he) at (7.36,3.95) {What the editor takes care of};
-\node[box, anchor=north, text width=4.25in] (be) at (he.south) {\fixh{2.12in}{%
+\node[box, anchor=north, text width=4.25in] (be) at (he.south) {\fixh{1.91in}{%
   \by{The user supplies content; the rest is automatic}
   \begin{itemize}[itemsep=7pt]
   \item \textbf{Layout.} Fonts, branding, spacing and page breaks are fixed by the page design; the user cannot drift from the standard.
