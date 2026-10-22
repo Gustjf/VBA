@@ -88,7 +88,7 @@
 \newcommand{\titleblock}[2]{%
   \draw[line width=0.5pt] (5.7,0) -- (5.7,0.42) -- (12,0.42);
   \foreach \x in {7.3, 8.95, 9.5, 9.95, 10.75, 11.45} \draw[line width=0.5pt] (\x,0) -- (\x,0.42);
-  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./3,
+  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./4,
                                 9.95/Date/2026-10-22, 10.75/Drawn/Gust F., 11.45/Sheet/#2} {
     \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{7}{8}\selectfont] at (\x+0.07,0.36) {\label};
     \node[anchor=south west, inner sep=0pt, font=\sffamily\bfseries\footnotesize] at (\x+0.07,0.07) {\value};
@@ -187,12 +187,11 @@
 \node[anchor=north west, align=left, text width=2.2in, inner sep=0pt] at (9.25,3.75) {\textbf{Open discussion}\enspace{\footnotesize\itshape 15 min}\\[3pt]
   \begin{itemize}
   \item Questions on the editor and the six documents
-  \item Agree the next steps on sheet 5, with an owner for each
+  \item Agree the next steps on sheet 5
   \end{itemize}};
 % ---- outcome
 \node[anchor=north west, draw, line width=0.5pt, fill=bandgreen, text width=10.82in, align=left] at (0.5,1.5)
-  {\textbf{We leave with:} approval of the QMS-022 format, a plan to review and approve the remaining documents,
-  and an owner for each next step.};
+  {\textbf{We leave with:} approval of the QMS-022 format and a plan to review and approve the remaining documents.};
 \titleblock{Agenda}{1 of 5}
 \end{tikzpicture}}
 
