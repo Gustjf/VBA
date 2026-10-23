@@ -90,7 +90,7 @@
 \newcommand{\titleblock}[2]{%
   \draw[line width=0.5pt] (5.7,0) -- (5.7,0.42) -- (12,0.42);
   \foreach \x in {7.3, 8.95, 9.5, 9.95, 10.75, 11.45} \draw[line width=0.5pt] (\x,0) -- (\x,0.42);
-  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./10,
+  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./11,
                                 9.95/Date/2026-10-23, 10.75/Drawn/Gust F., 11.45/Sheet/#2} {
     \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{7}{8}\selectfont] at (\x+0.07,0.36) {\label};
     \node[anchor=south west, inner sep=0pt, font=\sffamily\bfseries\footnotesize] at (\x+0.07,0.07) {\value};
@@ -322,9 +322,13 @@
 \node[anchor=west, fill=white, inner xsep=3pt, inner ysep=0pt, text=headgreen, font=\sffamily\bfseries\scriptsize]
   at ($(PD.south west)+(0,-0.14)$) {PDF BUILD};
 \draw[line width=0.5pt] (ha.south west) rectangle ($(PD.south east)+(0.24,-0.28)$);
-% page design up into the PDF engine, the PDF build up into the core engine: every flow goes up
+% page design up into the PDF engine; the core engine and the PDF build trade files both ways:
+% the .tex goes down, the PDF comes back up (two arrows side by side, each labelled)
 \draw[flow] (PD.north) -- (PE.south);
-\draw[flow] ($(CE.south)+(0,-0.32)$) -- (CE.south);
+\draw[flow] ($(CE.south)+(-0.2,0)$) -- ($(CE.south)+(-0.2,-0.32)$);
+\draw[flow] ($(CE.south)+(0.2,-0.32)$) -- ($(CE.south)+(0.2,0)$);
+\node[anchor=east, inner sep=0pt, font=\sffamily\scriptsize] at ($(CE.south)+(-0.29,-0.16)$) {\val{.tex}};
+\node[anchor=west, inner sep=0pt, font=\sffamily\scriptsize] at ($(CE.south)+(0.29,-0.16)$) {PDF};
 \node[anchor=north west, inner sep=0pt, text width=4.0in, font=\sffamily\footnotesize] at ($(ha.south west |- PD.south)+(0,-0.36)$)
   {\textit{Runs entirely on the PC; it reaches only SharePoint and the company directory.}};
 % in from SharePoint to the screens; out from the core engine straight back to SharePoint.

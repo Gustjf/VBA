@@ -1,6 +1,6 @@
-# Gust SWI Template v5: Reusable Prompt
+# Gust SWI Template v6: Reusable Prompt
 
-Version 5, 2026-10-23. A style guide with two tools in the same house style:
+Version 6, 2026-10-23. A style guide with two tools in the same house style:
 
 - **Tool 1, the SWI:** a Standard Work Instruction on any topic.
 - **Tool 2, the Boardroom Deck:** a 4 to 6 sheet deck that presents a finished project to a manager. It has an agenda with a timeline drawn to scale, then design process, architecture, user guide and value sheets.
@@ -211,7 +211,7 @@ Write a Standard Work Instruction (SWI) as one self-contained pdfLaTeX file in T
 
 # Tool 2: The Boardroom Deck
 
-Write a Boardroom Deck as one self-contained pdfLaTeX file in TikZ: 4 to 6 sheets that present a finished tool or project to a manager and carry the meeting about it. It uses the SWI's page, grid, colors, title block, heading, stations, boxes, markers and `\btn`/`\val`. It has no critical-task sheet and no `alertorange`. Follow this specification exactly. The reference build is the QMS Editor deck (`source/qms-editor/qms-editor-overview-v10-2026-10-23.tex` in the `gustjf/vba` repo).
+Write a Boardroom Deck as one self-contained pdfLaTeX file in TikZ: 4 to 6 sheets that present a finished tool or project to a manager and carry the meeting about it. It uses the SWI's page, grid, colors, title block, heading, stations, boxes, markers and `\btn`/`\val`. It has no critical-task sheet and no `alertorange`. Follow this specification exactly. The reference build is the QMS Editor deck (`source/qms-editor/qms-editor-overview-v11-2026-10-23.tex` in the `gustjf/vba` repo).
 
 ## Purpose
 - The reader is the owner's manager. In a few minutes per sheet they should see that the work was planned, built in stages and proven. They should also see what the system is, how people use it, and what it is worth to the company.
@@ -250,7 +250,8 @@ On every sheet, `\nav{n}` at the top right lists the sheets with the current one
      - A station bar named for the outer layer, with its technology right-aligned in the bar (`\mdseries\footnotesize\itshape`) and its role in italic just under the bar.
      - Inside, the other layers as `\layerbody` boxes.
      - A pair that works as one goes in a thin, rounded green group box. Its small-caps label sits on the lower-left border, so it never crowds the arrow at the top.
-   - **Flows:** inside the container, flows run straight down the middle (or straight up), all in one direction, never against each other.
+   - **Flows:** inside the container, a one-way flow runs straight down the middle (or straight up). Keep one-way flows in the same direction, never against each other.
+   - **Exchanges:** where two parts trade files both ways, draw two short arrows side by side, one each way, each labelled with what it carries (for example `.tex` down, PDF up).
    - **Input and output arrows** between the files column and the container:
      - Straight, with no bends. The out arrow leaves from the layer that writes the files and lands inside the target card.
      - Labels are centred in the gap, 0.07 in clear of the arrow. A long label goes under its arrow in short, centred lines.
@@ -365,8 +366,11 @@ Sheet pieces (each goes inside the SWI sheet frame: `\scalebox`, `tikzpicture`, 
 \node[anchor=west, fill=white, inner xsep=3pt, inner ysep=0pt, text=headgreen, font=\sffamily\bfseries\scriptsize]
   at ($(G2.south west)+(0,-0.14)$) {<GROUP NAME>};
 \draw[line width=0.5pt] (ha.south west) rectangle ($(G2.south east)+(0.24,-0.28)$);
-\draw[flow] (G2.north) -- (G1.south);                          % every flow one way, down the middle
-\draw[flow] ($(CE.south)+(0,-0.32)$) -- (CE.south);
+\draw[flow] (G2.north) -- (G1.south);                          % one-way flow, straight up the middle
+\draw[flow] ($(CE.south)+(-0.2,0)$) -- ($(CE.south)+(-0.2,-0.32)$);   % an exchange: two arrows, one each way
+\draw[flow] ($(CE.south)+(0.2,-0.32)$) -- ($(CE.south)+(0.2,0)$);
+\node[anchor=east, inner sep=0pt, font=\sffamily\scriptsize] at ($(CE.south)+(-0.29,-0.16)$) {<sent>};
+\node[anchor=west, inner sep=0pt, font=\sffamily\scriptsize] at ($(CE.south)+(0.29,-0.16)$) {<returned>};
 \draw[flow] (3.48,0 |- S.west) -- (S.west);                    % in, from the files card (right edge 3.45)
 \node[anchor=south, font=\sffamily\scriptsize, inner sep=0pt] at ($(3.8,0 |- S.west)+(0,0.07)$) {Input};
 \coordinate (out) at ($(CE.north west)+(0,-0.15)$);            % out, straight into the files card
