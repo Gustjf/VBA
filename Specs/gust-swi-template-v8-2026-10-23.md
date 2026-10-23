@@ -1,6 +1,6 @@
-# Gust SWI Template v7: Reusable Prompt
+# Gust SWI Template v8: Reusable Prompt
 
-Version 7, 2026-10-23. A style guide with two tools in the same house style:
+Version 8, 2026-10-23. A style guide with two tools in the same house style:
 
 - **Tool 1, the SWI:** a Standard Work Instruction on any topic.
 - **Tool 2, the Boardroom Deck:** a 4 to 6 sheet deck that presents a finished project to a manager. It has an agenda with a timeline drawn to scale, then design process, architecture, user guide and value sheets.
@@ -262,7 +262,8 @@ On every sheet, `\nav{n}` at the top right lists the sheets with the current one
    - A **Loading and saving** table of every button (`\btn`), grouped under `bandgreen` band rows (Load, Save).
    - A box on **what the tool takes care of**: a bold lead word and one sentence each (layout, error checking, fast feedback, simple entry). Treat the inside as a black box: show benefits, not internals.
 5. **Value**
-   - Three stations: Cost, Consistency and control, Scale and continuity. Each opens with `\stat{<big figure>}{<caption>}`, for example `$0`, `PDF only`, `30`.
+   - Three stations: Cost, Consistency and control, Scale and continuity. Each opens with `\stat{<big figure>}{<caption>}`, for example `$0`, `PDF only`, `6 / 30`.
+   - A figure for work that is done is green. A figure for work still in progress is `progressgold` (`\stat[progressgold]{...}{...}`), and its caption says what is left, with "in progress" in the same color.
    - A full-width **Proposed next steps** numbered list. Show an open point only while it is still open.
 
 ## Finish rules
@@ -279,6 +280,7 @@ Use the SWI template's preamble, then add this:
 ```latex
 \usepackage{array}
 \usepackage{pifont}
+\definecolor{progressgold}{HTML}{BF8F00}   % work still in progress (the deck's only extra color)
 \setlist[enumerate]{leftmargin=1.2em, labelsep=0.35em, itemsep=2.5pt, parsep=0pt, topsep=0pt, partopsep=0pt}
 \tikzset{
   layer/.style={draw=headgreen, line width=0.5pt, fill=bandgreen, align=left, anchor=north west},
@@ -289,8 +291,8 @@ Use the SWI template's preamble, then add this:
 \renewcommand{\by}[1]{{\footnotesize\itshape #1\par}\vspace{5pt}}
 % fixed-height box body, so the boxes in a row line up
 \newcommand{\fixh}[2]{\begin{minipage}[t][#1][t]{\linewidth}#2\end{minipage}}
-% big figure at the top of a box
-\newcommand{\stat}[2]{{\color{headgreen}\bfseries\fontsize{26}{28}\selectfont #1}\\[2pt]{\footnotesize\itshape #2\par}\vspace{8pt}}
+% big figure at the top of a box; green when done, \stat[progressgold]{...}{...} for work still in progress
+\newcommand{\stat}[3][headgreen]{{\color{#1}\bfseries\fontsize{26}{28}\selectfont #2}\\[2pt]{\footnotesize\itshape #3\par}\vspace{8pt}}
 \newcommand{\badge}[1]{{\setlength{\fboxsep}{2pt}\colorbox{headgreen}{\textcolor{white}{\bfseries #1}}}}
 % a layer of the app: bold name, technology on the right, role underneath
 \newcommand{\layerbody}[3]{\textbf{#1}\hfill{\footnotesize\itshape #2}\\[2pt]{\footnotesize #3}}

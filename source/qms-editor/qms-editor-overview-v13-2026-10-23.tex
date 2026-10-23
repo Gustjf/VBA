@@ -27,6 +27,7 @@
 \definecolor{flagpeach}{HTML}{FCE4D6}
 \definecolor{inputyellow}{HTML}{FFFFCC}
 \definecolor{alertorange}{HTML}{C55A11}
+\definecolor{progressgold}{HTML}{BF8F00}
 \tikzset{
   every node/.style={font=\sffamily\small, inner sep=5pt},
   box/.style={draw, line width=0.5pt, fill=white, align=left},
@@ -49,8 +50,8 @@
 \newcommand{\val}[1]{{\ttfamily #1}}
 % fixed-height box body, so the boxes in a row line up
 \newcommand{\fixh}[2]{\begin{minipage}[t][#1][t]{\linewidth}#2\end{minipage}}
-% big figure at the top of a box
-\newcommand{\stat}[2]{{\color{headgreen}\bfseries\fontsize{26}{28}\selectfont #1}\\[2pt]{\footnotesize\itshape #2\par}\vspace{8pt}}
+% big figure at the top of a box; green when done, \stat[progressgold]{...}{...} for work still in progress
+\newcommand{\stat}[3][headgreen]{{\color{#1}\bfseries\fontsize{26}{28}\selectfont #2}\\[2pt]{\footnotesize\itshape #3\par}\vspace{8pt}}
 \newcommand{\badge}[1]{{\setlength{\fboxsep}{2pt}\colorbox{headgreen}{\textcolor{white}{\bfseries #1}}}}
 % miniatures of sheets 2 to 5 for the agenda, drawn in each sheet's own 12 x 7.5 coordinates (use in a scaled scope)
 \newcommand{\thumbframe}{%
@@ -90,7 +91,7 @@
 \newcommand{\titleblock}[2]{%
   \draw[line width=0.5pt] (5.7,0) -- (5.7,0.42) -- (12,0.42);
   \foreach \x in {7.3, 8.95, 9.5, 9.95, 10.75, 11.45} \draw[line width=0.5pt] (\x,0) -- (\x,0.42);
-  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./12,
+  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./13,
                                 9.95/Date/2026-10-23, 10.75/Drawn/Gust F., 11.45/Sheet/#2} {
     \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{7}{8}\selectfont] at (\x+0.07,0.36) {\label};
     \node[anchor=south west, inner sep=0pt, font=\sffamily\bfseries\footnotesize] at (\x+0.07,0.07) {\value};
@@ -493,7 +494,7 @@
   \end{itemize}}};
 \node[station, anchor=north west, text width=3.46in] (h3) at (8.15,6.4) {Scale and continuity};
 \node[box, anchor=north, text width=3.46in] (b3) at (h3.south) {\fixh{2.15in}{%
-  \stat{30}{North America QMS documents already converted}
+  \stat[progressgold]{6\,/\,30}{North America QMS documents fully converted; the appendices of the other 24 are {\color{progressgold}\bfseries in progress}}
   \begin{itemize}
   \item The library grows in SharePoint, not in the app
   \item One \val{.exe} to share with another person or function
