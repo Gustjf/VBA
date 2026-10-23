@@ -1,6 +1,6 @@
-# Gust SWI Template v6: Reusable Prompt
+# Gust SWI Template v7: Reusable Prompt
 
-Version 6, 2026-10-23. A style guide with two tools in the same house style:
+Version 7, 2026-10-23. A style guide with two tools in the same house style:
 
 - **Tool 1, the SWI:** a Standard Work Instruction on any topic.
 - **Tool 2, the Boardroom Deck:** a 4 to 6 sheet deck that presents a finished project to a manager. It has an agenda with a timeline drawn to scale, then design process, architecture, user guide and value sheets.
@@ -211,7 +211,7 @@ Write a Standard Work Instruction (SWI) as one self-contained pdfLaTeX file in T
 
 # Tool 2: The Boardroom Deck
 
-Write a Boardroom Deck as one self-contained pdfLaTeX file in TikZ: 4 to 6 sheets that present a finished tool or project to a manager and carry the meeting about it. It uses the SWI's page, grid, colors, title block, heading, stations, boxes, markers and `\btn`/`\val`. It has no critical-task sheet and no `alertorange`. Follow this specification exactly. The reference build is the QMS Editor deck (`source/qms-editor/qms-editor-overview-v11-2026-10-23.tex` in the `gustjf/vba` repo).
+Write a Boardroom Deck as one self-contained pdfLaTeX file in TikZ: 4 to 6 sheets that present a finished tool or project to a manager and carry the meeting about it. It uses the SWI's page, grid, colors, title block, heading, stations, boxes, markers and `\btn`/`\val`. It has no critical-task sheet and no `alertorange`. Follow this specification exactly. The reference build is the QMS Editor deck: the latest `source/qms-editor/qms-editor-overview-v<N>-<date>.tex` in the `gustjf/vba` repo.
 
 ## Purpose
 - The reader is the owner's manager. In a few minutes per sheet they should see that the work was planned, built in stages and proven. They should also see what the system is, how people use it, and what it is worth to the company.

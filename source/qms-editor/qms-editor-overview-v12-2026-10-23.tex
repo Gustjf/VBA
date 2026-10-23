@@ -90,7 +90,7 @@
 \newcommand{\titleblock}[2]{%
   \draw[line width=0.5pt] (5.7,0) -- (5.7,0.42) -- (12,0.42);
   \foreach \x in {7.3, 8.95, 9.5, 9.95, 10.75, 11.45} \draw[line width=0.5pt] (\x,0) -- (\x,0.42);
-  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./11,
+  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./12,
                                 9.95/Date/2026-10-23, 10.75/Drawn/Gust F., 11.45/Sheet/#2} {
     \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{7}{8}\selectfont] at (\x+0.07,0.36) {\label};
     \node[anchor=south west, inner sep=0pt, font=\sffamily\bfseries\footnotesize] at (\x+0.07,0.07) {\value};
@@ -108,8 +108,8 @@
 
 \begin{document}
 % ================================================================ sheet 1: agenda
-% timeline: 90 minutes from x = 0.5 to x = 11.5 (11/90 in a minute): 0:05 at 1.1111, 0:15 at 2.3333, 0:20 at 2.9444,
-% 0:40 at 5.3889, 1:10 at 9.0556; QMS-001 to QMS-005 take 6 min (0.7333 in) each from 0:40
+% timeline: 90 minutes from x = 0.5 to x = 11.5 (11/90 in a minute): 0:05 at 1.1111, 0:20 at 2.9444, 0:25 at 3.5556,
+% 0:45 at 6.0, 1:10 at 9.0556; QMS-001 to QMS-005 take 5 min (0.6111 in) each from 0:45
 \noindent\scalebox{1.333333}{%
 \begin{tikzpicture}[x=1in, y=1in]
 \useasboundingbox (0,0) rectangle (12,7.5);
@@ -117,33 +117,33 @@
 \heading{Agenda}{QMS Editor review: the editor, then the six documents built with it. 1 hr 30 min.}
 \nav{1}
 % ---- the three parts
-\foreach \a/\b/\t/\m in {0.5/2.9044/{Part 1\quad The Editor}/20 min,
-                         2.9844/9.0156/{Part 2\quad The Documents}/50 min,
+\foreach \a/\b/\t/\m in {0.5/3.5156/{Part 1\quad The Editor}/25 min,
+                         3.5956/9.0156/{Part 2\quad The Documents}/45 min,
                          9.0956/11.5/{Part 3\quad Next Steps}/20 min} {
   \draw[line width=0.5pt, fill=headgreen] (\a,6.0) rectangle (\b,6.32);
   \node[anchor=west, text=white, font=\sffamily\bfseries\normalsize, text height=1.6ex, text depth=0.45ex] at (\a,6.16) {\t};
   \node[anchor=east, text=white, font=\sffamily\bfseries\normalsize, text height=1.6ex, text depth=0.45ex] at (\b,6.16) {\m};
 }
 % ---- the timeline, to scale
-\foreach \a/\b/\t in {0.5/1.1111/{Design\\Process}, 1.1111/2.3333/{Architecture}, 2.3333/2.9444/{User\\Guide},
-                      5.3889/6.1222/{QMS-001}, 6.1222/6.8556/{QMS-002}, 6.8556/7.5889/{QMS-003},
-                      7.5889/8.3222/{QMS-004}, 8.3222/9.0556/{QMS-005}} {
+\foreach \a/\b/\t in {0.5/1.1111/{Design\\Process}, 1.1111/2.9444/{Architecture}, 2.9444/3.5556/{User\\Guide},
+                      6.0/6.6111/{QMS-001}, 6.6111/7.2222/{QMS-002}, 7.2222/7.8333/{QMS-003},
+                      7.8333/8.4444/{QMS-004}, 8.4444/9.0556/{QMS-005}} {
   \draw[line width=0.5pt, fill=white] (\a,5.3) rectangle (\b,5.86);
   \node[align=center, font=\sffamily\bfseries\footnotesize, inner sep=0pt] at ({(\a+\b)/2},5.58) {\t};
 }
-\draw[line width=0.5pt, fill=headgreen] (2.9444,5.3) rectangle (5.3889,5.86);
-\node[text=white, font=\sffamily\bfseries\normalsize, inner sep=0pt] at (4.1667,5.58) {QMS-022: First Prototype};
+\draw[line width=0.5pt, fill=headgreen] (3.5556,5.3) rectangle (6.0,5.86);
+\node[text=white, font=\sffamily\bfseries\normalsize, inner sep=0pt] at (4.7778,5.58) {QMS-022: First Prototype};
 \draw[line width=0.5pt, fill=bandgreen] (9.0556,5.3) rectangle (11.5,5.86);
 \node[font=\sffamily\bfseries\normalsize, inner sep=0pt] at (10.2778,5.58) {Value and Next Steps};
-\foreach \x/\t in {0.5/0:00, 1.1111/0:05, 2.3333/0:15, 2.9444/0:20, 5.3889/0:40, 9.0556/1:10, 11.5/1:30} {
+\foreach \x/\t in {0.5/0:00, 1.1111/0:05, 2.9444/0:20, 3.5556/0:25, 6.0/0:45, 9.0556/1:10, 11.5/1:30} {
   \draw[line width=0.5pt] (\x,5.3) -- (\x,5.18);
   \node[anchor=north, font=\sffamily\bfseries\footnotesize, inner sep=0pt] at (\x,5.13) {\t};
 }
-\foreach \x in {6.1222, 6.8556, 7.5889, 8.3222} \draw[line width=0.5pt] (\x,5.3) -- (\x,5.22);
+\foreach \x in {6.6111, 7.2222, 7.8333, 8.4444} \draw[line width=0.5pt] (\x,5.3) -- (\x,5.22);
 % ends of parts 1 and 2
-\foreach \x in {2.9444, 9.0556} \draw[line width=0.5pt, dash pattern=on 4pt off 3pt] (\x,4.95) -- (\x,1.72);
+\foreach \x in {3.5556, 9.0556} \draw[line width=0.5pt, dash pattern=on 4pt off 3pt] (\x,4.95) -- (\x,1.72);
 % ---- part 1: sheets 2 to 4
-\foreach \i/\pic/\sheet/\name/\m in {0/\thumbdesign/2/{Design Process}/5 min, 1/\thumbarch/3/{Architecture}/10 min,
+\foreach \i/\pic/\sheet/\name/\m in {0/\thumbdesign/2/{Design Process}/5 min, 1/\thumbarch/3/{Architecture}/15 min,
                                      2/\thumbguide/4/{User Guide}/5 min} {
   \begin{scope}[shift={(0.5,{4.75-0.85*\i-0.625})}, scale=0.083333, x=1in, y=1in]
     \pic
@@ -153,7 +153,7 @@
 }
 % ---- part 2: QMS-022, the centerpiece
 \node[anchor=north west, draw=headgreen, line width=1.6pt, fill=white, text width=2.05in, align=left, inner sep=7pt]
-  (cp) at (3.12,4.8) {%
+  (cp) at (3.72,4.8) {%
   \badge{Centerpiece}\enspace{\footnotesize\itshape the first prototype}\\[6pt]
   {\bfseries\fontsize{20}{22}\selectfont QMS-022}\\[2pt]
   {\footnotesize ECN Factory Implementation Process}\\[8pt]
@@ -168,13 +168,16 @@
   \end{enumerate}}\par\vspace{6pt}
   {\footnotesize\itshape Questions as we go}};
 % ---- part 2: QMS-001 to QMS-005
-\node[anchor=north west, inner sep=0pt, font=\sffamily\bfseries\large] at (5.5,4.8) {QMS-001 to QMS-005};
-\node[anchor=north west, inner sep=0pt, font=\sffamily\footnotesize\itshape] at (5.5,4.48) {6 min each};
+\node[anchor=north west, inner sep=0pt, font=\sffamily\bfseries\large] at (6.12,4.8) {QMS-001 to QMS-005};
+\node[anchor=north west, inner sep=0pt, font=\sffamily\footnotesize\itshape] at (6.12,4.48) {5 min each};
+% one page under each 5-minute segment, drawn at 85 % so the pages keep a gap
 \foreach \i in {1,...,5} {
-  \pgfmathsetmacro{\xa}{5.3889+(\i-1)*0.7333+0.0867}
-  \docicon{\xa}{4.15}
+  \pgfmathsetmacro{\xa}{6.0+(\i-1)*0.6111+0.0675}
+  \begin{scope}[shift={(\xa,4.15)}, scale=0.85]
+    \docicon{0}{0}
+  \end{scope}
 }
-\node[anchor=north west, align=left, text width=3.35in, inner sep=0pt] at (5.5,3.15) {\textbf{For each document}\\[3pt]
+\node[anchor=north west, align=left, text width=2.8in, inner sep=0pt] at (6.12,3.15) {\textbf{For each document}\\[3pt]
   \begin{itemize}
   \item Page through the PDF next to its Word original
   \item Note content corrections for the document owner
