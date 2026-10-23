@@ -1,6 +1,6 @@
-# Gust SWI Template v4: Reusable Prompt
+# Gust SWI Template v5: Reusable Prompt
 
-Version 4, 2026-10-22. A style guide with two tools in the same house style:
+Version 5, 2026-10-23. A style guide with two tools in the same house style:
 
 - **Tool 1, the SWI:** a Standard Work Instruction on any topic.
 - **Tool 2, the Boardroom Deck:** a 4 to 6 sheet deck that presents a finished project to a manager. It has an agenda with a timeline drawn to scale, then design process, architecture, user guide and value sheets.
@@ -211,7 +211,7 @@ Write a Standard Work Instruction (SWI) as one self-contained pdfLaTeX file in T
 
 # Tool 2: The Boardroom Deck
 
-Write a Boardroom Deck as one self-contained pdfLaTeX file in TikZ: 4 to 6 sheets that present a finished tool or project to a manager and carry the meeting about it. It uses the SWI's page, grid, colors, title block, heading, stations, boxes, markers and `\btn`/`\val`. It has no critical-task sheet and no `alertorange`. Follow this specification exactly. The reference build is the QMS Editor deck (`source/qms-editor/qms-editor-overview-v9-2026-10-22.tex` in the `gustjf/vba` repo).
+Write a Boardroom Deck as one self-contained pdfLaTeX file in TikZ: 4 to 6 sheets that present a finished tool or project to a manager and carry the meeting about it. It uses the SWI's page, grid, colors, title block, heading, stations, boxes, markers and `\btn`/`\val`. It has no critical-task sheet and no `alertorange`. Follow this specification exactly. The reference build is the QMS Editor deck (`source/qms-editor/qms-editor-overview-v10-2026-10-23.tex` in the `gustjf/vba` repo).
 
 ## Purpose
 - The reader is the owner's manager. In a few minutes per sheet they should see that the work was planned, built in stages and proven. They should also see what the system is, how people use it, and what it is worth to the company.
@@ -251,14 +251,14 @@ On every sheet, `\nav{n}` at the top right lists the sheets with the current one
      - Inside, the other layers as `\layerbody` boxes.
      - A pair that works as one goes in a thin, rounded green group box. Its small-caps label sits on the lower-left border, so it never crowds the arrow at the top.
    - **Flows:** inside the container, flows run straight down the middle (or straight up), all in one direction, never against each other.
-   - **In and out arrows** between the files column and the container:
+   - **Input and output arrows** between the files column and the container:
      - Straight, with no bends. The out arrow leaves from the layer that writes the files and lands inside the target card.
      - Labels are centred in the gap, 0.07 in clear of the arrow. A long label goes under its arrow in short, centred lines.
    - **Right:** a tree of what is inside the package.
    - **Lower row:** the anatomy of one file, and a pipeline of `chip` boxes with the outputs as `outchip`.
 4. **User Guide**
    - Five stations: set up, load, edit, finish, hand off.
-   - A **Ways in and out** table of every button (`\btn`), grouped under `bandgreen` band rows (Load, Save).
+   - A **Loading and saving** table of every button (`\btn`), grouped under `bandgreen` band rows (Load, Save).
    - A box on **what the tool takes care of**: a bold lead word and one sentence each (layout, error checking, fast feedback, simple entry). Treat the inside as a black box: show benefits, not internals.
 5. **Value**
    - Three stations: Cost, Consistency and control, Scale and continuity. Each opens with `\stat{<big figure>}{<caption>}`, for example `$0`, `PDF only`, `30`.

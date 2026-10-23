@@ -90,8 +90,8 @@
 \newcommand{\titleblock}[2]{%
   \draw[line width=0.5pt] (5.7,0) -- (5.7,0.42) -- (12,0.42);
   \foreach \x in {7.3, 8.95, 9.5, 9.95, 10.75, 11.45} \draw[line width=0.5pt] (\x,0) -- (\x,0.42);
-  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./9,
-                                9.95/Date/2026-10-22, 10.75/Drawn/Gust F., 11.45/Sheet/#2} {
+  \foreach \x/\label/\value in {5.7/Title/#1, 7.3/Project/QMS Editor, 8.95/Version/2.0, 9.5/Rev./10,
+                                9.95/Date/2026-10-23, 10.75/Drawn/Gust F., 11.45/Sheet/#2} {
     \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{7}{8}\selectfont] at (\x+0.07,0.36) {\label};
     \node[anchor=south west, inner sep=0pt, font=\sffamily\bfseries\footnotesize] at (\x+0.07,0.07) {\value};
   }}
@@ -403,7 +403,7 @@
   \item Done
   \end{enumerate}}};
 \node[station, anchor=north west, text width=1.92in] (h2) at (2.61,6.4) {2\quad Load};
-\node[box, anchor=north, text width=1.92in] (b2) at (h2.south) {\fixh{1.55in}{\by{Three ways in (table below)}
+\node[box, anchor=north, text width=1.92in] (b2) at (h2.south) {\fixh{1.55in}{\by{Three ways to load (table below)}
   \begin{itemize}
   \item The file lands in the Input list
   \item Load several documents in one session
@@ -429,8 +429,8 @@
   \item Review then runs in SharePoint document control, outside the app
   \end{itemize}}};
 \foreach \a/\b in {h1/h2, h2/h3, h3/h4, h4/h5} \draw[flow] (\a.east) -- (\b.west);
-% ---- ways in and out
-\node[station, anchor=north west, text width=6.55in] (hi) at (0.25,3.95) {Ways in and out};
+% ---- loading and saving
+\node[station, anchor=north west, text width=6.55in] (hi) at (0.25,3.95) {Loading and saving};
 \node[box, anchor=north, inner ysep=0pt, text width=6.55in, font=\sffamily\footnotesize] (bi) at (hi.south) {%
   \setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{1.7}%
   \begin{tabular}{@{}p{2.35in}p{4.05in}@{}}
