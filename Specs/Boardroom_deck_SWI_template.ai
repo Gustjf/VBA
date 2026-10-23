@@ -1,0 +1,31 @@
+# Boardroom Deck: Short Template
+
+A short prompt for a 4 to 6 sheet deck that presents a finished project to a manager. Paste it into an AI and add your notes at the end.
+
+---
+
+Make a short landscape slide deck (11 x 17 or widescreen) that presents a finished project to a manager. Keep it minimal, professional and easy to talk to.
+
+## Rules
+- Plain, concise words. No hype.
+- Each sheet's subtitle is the first sentence the presenter says.
+- Don't repeat a fact on two sheets.
+- Use only facts from the notes. Mark anything you drafted yourself.
+- One accent color, plus a second color for anything still in progress.
+
+## Sheets
+1. **Agenda** (only for a meeting): a timeline drawn to scale, split into parts. Highlight the main item. End with one line: "We leave with: ...".
+2. **Design Process:** the steps in order, in the past tense, each starting with a verb. Add a short table of how the work was checked, with real results.
+3. **Architecture:**
+   - where the files live
+   - the parts of the system and how data flows between them, in one direction where possible
+   - what goes in and what comes out
+4. **User Guide:** the steps a user follows, a table of the buttons for loading and saving, and what the tool handles for the user.
+5. **Value:** three headline figures (for example cost, consistency, scale), each with a short caption, then the proposed next steps.
+
+## Finish
+- Line up boxes that sit side by side.
+- Keep labels clear of lines and box edges.
+- Check every sheet before handing it over.
+
+Add your notes below: the project, the audience, the meeting length, the main item, and the facts.
